@@ -1,0 +1,237 @@
+{
+  "app": {
+    "name": "asocial",
+    "tagline": "Gentle training wheels for keeping your friendships alive"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "calendar": "Calendar",
+    "friends": "Friends",
+    "circles": "Circles",
+    "settings": "Settings",
+    "invites": "Invites",
+    "logout": "Log out"
+  },
+  "home": {
+    "welcome": "Welcome to asocial"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "create": "Create",
+    "back": "Back",
+    "days": "days",
+    "everyNDays": "every ~{n} days",
+    "optional": "optional",
+    "none": "none",
+    "actions": "Actions",
+    "errors": {
+      "invalid": "Please check the form and try again.",
+      "duplicateName": "That name is already in use."
+    }
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "displayName": "Your name",
+    "login": "Log in",
+    "loginTitle": "Log in to asocial",
+    "register": "Create account",
+    "registerTitle": "Create your account",
+    "bootstrapHint": "You are the first user — this account will be the administrator.",
+    "inviteNeededHint": "Registration requires an invite link from an administrator.",
+    "noAccountYet": "First time here? Create the admin account",
+    "haveAccount": "Already have an account? Log in",
+    "errors": {
+      "invalid": "Please check the form and try again.",
+      "invalidCredentials": "Wrong email or password.",
+      "emailTaken": "An account with this email already exists.",
+      "inviteInvalid": "This invite link is invalid, used or expired."
+    }
+  },
+  "invites": {
+    "title": "Invites",
+    "emailOptional": "Email (optional)",
+    "create": "Create invite",
+    "copyHint": "Copy this link now — it is shown only once:",
+    "listTitle": "Issued invites",
+    "empty": "No invites issued yet.",
+    "revoke": "Revoke",
+    "status": {
+      "open": "Open",
+      "used": "Used",
+      "expired": "Expired"
+    },
+    "anyEmail": "any email",
+    "expires": "Expires {date}"
+  },
+  "circles": {
+    "title": "Circles",
+    "intro": "Circles group your friends and set their default contact rhythm. A friend in several circles follows the most frequent one.",
+    "name": "Name",
+    "color": "Color",
+    "interval": "Contact interval",
+    "members": "{n, plural, =0 {no friends} one {# friend} other {# friends}}",
+    "createTitle": "New circle",
+    "empty": "No circles yet. Create one to give your friends a rhythm.",
+    "deleteConfirm": "Delete this circle? Friends in it are kept; they fall back to other circles or your default interval.",
+    "typePrefs": "Activity preferences",
+    "typePrefsHint": "Weights for suggestions in this circle. Empty = inherited, 0 = never suggest.",
+    "examples": "e.g. Close friends 14, Old classmates 60"
+  },
+  "friends": {
+    "title": "Friends",
+    "add": "Add friend",
+    "search": "Search…",
+    "empty": "No friends yet. Add the people you want to stay close to.",
+    "emptySearch": "Nobody matches your search.",
+    "lastContact": "Last contact",
+    "nextContact": "Next contact",
+    "never": "never",
+    "logContact": "Log contact",
+    "newTitle": "Add a friend",
+    "editTitle": "Edit friend",
+    "name": "Name",
+    "notes": "Notes",
+    "notesHint": "Anything worth remembering — partner, kids, topics to avoid…",
+    "circlesLabel": "Circles",
+    "noCircles": "No circles yet — create some first for automatic rhythms.",
+    "intervalOverride": "Personal contact interval",
+    "intervalOverrideHint": "Overrides circle rhythms for this friend. Leave empty to follow their circles.",
+    "intervalSource": {
+      "override": "every ~{n} days (personal)",
+      "circle": "every ~{n} days (from {circle})",
+      "default": "every ~{n} days (your default)"
+    },
+    "autoschedule": "Suggest contact automatically",
+    "birthday": "Birthday",
+    "birthdayDay": "Day",
+    "birthdayMonth": "Month",
+    "birthdayYear": "Year ({optional})",
+    "age": "turns {age}",
+    "archive": "Archive",
+    "unarchive": "Restore",
+    "archived": "Archived",
+    "archiveConfirm": "Archive this friend? Pending suggestions are cancelled. The journal is kept and you can restore them anytime.",
+    "showArchived": "Show archived",
+    "typePrefs": "Activity preferences",
+    "typePrefsHint": "How suggestions are weighted for this friend. Empty = inherited, 0 = never suggest."
+  },
+  "journal": {
+    "title": "Journal",
+    "empty": "No contact logged yet.",
+    "logTitle": "Log contact",
+    "what": "What",
+    "when": "When",
+    "note": "What did you talk about?",
+    "save": "Log it",
+    "deleteConfirm": "Delete this journal entry?"
+  },
+  "contactTypes": {
+    "message": "Send a message",
+    "call": "Phone call",
+    "coffee": "Meet for coffee",
+    "activity": "Do something together",
+    "visit_them": "Visit them",
+    "host_visit": "Have them over",
+    "congratulate": "Wish happy birthday"
+  },
+  "settings": {
+    "title": "Settings",
+    "typesTitle": "Interaction types",
+    "typesIntro": "How asocial may suggest you reach out. Set a weight to 0 to never get that suggestion; higher weights come up more often.",
+    "typeWeight": "Weight",
+    "typeWeightHint": "Empty = default ({n})",
+    "builtin": "Built-in",
+    "custom": "Your own",
+    "addType": "Add your own type",
+    "typeName": "Name",
+    "typeEmoji": "Emoji",
+    "archive": "Archive",
+    "restore": "Restore",
+    "archivedTag": "archived"
+  },
+  "tasks": {
+    "suggestion": "{type}",
+    "birthdaySuggestion": "Birthday! {type}",
+    "state": {
+      "upcoming": "opens {date}",
+      "open": "window open since {date}",
+      "stillOpen": "still open (since {date})"
+    },
+    "done": "Did it",
+    "snooze": "Snooze",
+    "snoozeDays": "+{n} days",
+    "skip": "Skip this time",
+    "reschedule": "Move",
+    "newDate": "New date",
+    "cancel": "Cancel",
+    "whatHappened": "What happened",
+    "when": "When",
+    "noteLabel": "What did you talk about?",
+    "logAndDone": "Log & done",
+    "planTitle": "Plan the next contact",
+    "plan": "Plan it",
+    "surpriseMe": "Surprise me",
+    "nextUp": "Next up",
+    "errors": {
+      "invalid": "Please check the form and try again.",
+      "gone": "This suggestion was already resolved."
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "intro": "Your action windows — colored bands show when to reach out to whom. Click a band to act on it.",
+    "empty": "Nothing scheduled yet. Add friends and circles, and asocial will suggest when to reach out.",
+    "legendUpcoming": "upcoming",
+    "legendOpen": "open — act now",
+    "legendStillOpen": "still open",
+    "legendBirthday": "birthday"
+  },
+  "calendar": {
+    "today": "Today"
+  },
+  "digest": {
+    "title": "{n, plural, one {# friend} other {# friends}} to reach out to",
+    "line": "{type} — {name}",
+    "lineBirthday": "It's {name}'s birthday — {type}",
+    "tomorrow": "tomorrow",
+    "openApp": "Open asocial"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "intro": "A short daily digest at your chosen hour — only when something is actually open, and lingering suggestions only every third day.",
+    "pushoverTitle": "Pushover",
+    "pushoverToken": "API token",
+    "pushoverUserKey": "User key",
+    "emailTitle": "Email digest",
+    "emailAddress": "Address (empty = account email)",
+    "enabled": "Enabled",
+    "saveChannel": "Save",
+    "sendTest": "Send test",
+    "testOk": "Test sent!",
+    "logTitle": "Recent sends",
+    "logEmpty": "Nothing sent yet.",
+    "saved": "Saved.",
+    "errors": {
+      "invalid": "Please check the form and try again.",
+      "invalidTimezone": "Unknown timezone.",
+      "pushoverConfigMissing": "Pushover needs both API token and user key.",
+      "channelNotConfigured": "Save the channel configuration first."
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "language": "Language",
+    "timezone": "Timezone"
+  },
+  "scheduling": {
+    "title": "Scheduling",
+    "windowDays": "Action window (days)",
+    "jitterPct": "Randomness (± %)",
+    "defaultInterval": "Default interval (days)",
+    "digestHour": "Digest hour (0–23)"
+  }
+}
