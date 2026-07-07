@@ -1,5 +1,8 @@
 services:
   asocial:
+    # Prebuilt image published by CI on each release. `docker compose up` still
+    # builds locally by default; run `docker compose pull` to use this instead.
+    image: kiloniner/asocial:latest
     build: .
     ports:
       - "3000:3000"
