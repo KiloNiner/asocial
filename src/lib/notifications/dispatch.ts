@@ -10,6 +10,7 @@ import {
   tasks,
   users,
   userSettings,
+  type UserSettings,
 } from "@/db/schema";
 import { today } from "@/lib/scheduler/clock";
 import { composeDigest, type DigestTask } from "./digest";
@@ -30,7 +31,10 @@ export type DispatchStats = {
   usersConsidered: number;
 };
 
-function pendingDigestTasks(userId: string, locale: "en" | "da"): DigestTask[] {
+function pendingDigestTasks(
+  userId: string,
+  locale: UserSettings["locale"],
+): DigestTask[] {
   const t = digestTranslator(locale);
   const rows = db
     .select({ task: tasks, friendName: friends.name, type: contactTypes })

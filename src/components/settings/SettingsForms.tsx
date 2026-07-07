@@ -69,6 +69,8 @@ export function ProfileForm({
         <select name="locale" defaultValue={settings.locale} className={inputClass}>
           <option value="en">English</option>
           <option value="da">Dansk</option>
+          <option value="sv">Svenska</option>
+          <option value="tlh">tlhIngan Hol</option>
         </select>
       </label>
       <label className={labelClass}>

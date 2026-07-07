@@ -25,7 +25,7 @@ function revalidate() {
 
 const profileSchema = z.object({
   displayName: z.string().trim().min(1).max(100),
-  locale: z.enum(["en", "da"]),
+  locale: z.enum(["en", "da", "sv", "tlh"]),
   timezone: z.string().min(1).max(60),
 });
 

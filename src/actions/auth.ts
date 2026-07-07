@@ -65,8 +65,13 @@ export async function register(
       })
       .returning({ id: users.id })
       .get();
+    const initialLocale = (["en", "da", "sv", "tlh"] as const).includes(
+      locale as "en" | "da" | "sv" | "tlh",
+    )
+      ? (locale as "en" | "da" | "sv" | "tlh")
+      : "en";
     tx.insert(userSettings)
-      .values({ userId: user.id, locale: locale === "da" ? "da" : "en" })
+      .values({ userId: user.id, locale: initialLocale })
       .run();
     if (inviteId) markInviteUsed(inviteId, user.id);
     return user.id;

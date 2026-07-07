@@ -32,12 +32,15 @@ export const userSettings = sqliteTable("user_settings", {
   userId: text("user_id")
     .primaryKey()
     .references(() => users.id, { onDelete: "cascade" }),
-  locale: text("locale", { enum: ["en", "da"] }).notNull().default("en"),
+  locale: text("locale", { enum: ["en", "da", "sv", "tlh"] })
+    .notNull()
+    .default("en"),
   timezone: text("timezone").notNull().default("Europe/Copenhagen"),
   actionWindowDays: integer("action_window_days").notNull().default(7),
   jitterPct: integer("jitter_pct").notNull().default(25),
   digestHour: integer("digest_hour").notNull().default(8),
   defaultIntervalDays: integer("default_interval_days").notNull().default(30),
+  theme: text("theme").notNull().default("auto"),
 });
 
 export const sessions = sqliteTable(
