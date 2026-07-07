@@ -19,7 +19,7 @@ export async function AppShell({
 
   return (
     <div className="flex min-h-screen flex-col md:flex-row">
-      <aside className="flex w-full shrink-0 flex-col gap-4 border-b border-stone-200 bg-white p-4 md:min-h-screen md:w-52 md:border-b-0 md:border-r">
+      <aside className="flex w-full shrink-0 flex-col gap-4 border-b border-line bg-panel p-4 md:min-h-screen md:w-52 md:border-b-0 md:border-r">
         <Link href="/" className="text-lg font-bold tracking-tight">
           asocial
         </Link>
@@ -28,7 +28,7 @@ export async function AppShell({
             <Link
               key={item.key}
               href={item.href}
-              className="rounded-md px-3 py-1.5 text-sm text-stone-700 hover:bg-stone-100"
+              className="rounded-md px-3 py-1.5 text-sm text-ink hover:bg-faint"
             >
               {t(item.key)}
             </Link>
@@ -36,18 +36,18 @@ export async function AppShell({
           {user.role === "admin" ? (
             <Link
               href="/admin/invites"
-              className="rounded-md px-3 py-1.5 text-sm text-stone-700 hover:bg-stone-100"
+              className="rounded-md px-3 py-1.5 text-sm text-ink hover:bg-faint"
             >
               {t("invites")}
             </Link>
           ) : null}
         </nav>
         <div className="mt-auto flex flex-col gap-2 text-sm">
-          <span className="truncate text-stone-500">{user.displayName}</span>
+          <span className="truncate text-muted">{user.displayName}</span>
           <form action={logout}>
             <button
               type="submit"
-              className="rounded-md px-3 py-1.5 text-left text-sm text-stone-500 hover:bg-stone-100"
+              className="rounded-md px-3 py-1.5 text-left text-sm text-muted hover:bg-faint"
             >
               {t("logout")}
             </button>

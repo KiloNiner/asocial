@@ -68,15 +68,15 @@ export async function ActionWindowBoard({
   const typeById = new Map(types.map((type) => [type.id, type]));
 
   if (rows.length === 0) {
-    return <p className="text-sm text-stone-500">{t("empty")}</p>;
+    return <p className="text-sm text-muted">{t("empty")}</p>;
   }
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-stone-200 bg-white p-3">
+    <div className="overflow-x-auto rounded-xl border border-line bg-panel p-3">
       <div className="min-w-[720px]">
         {/* header */}
         <div
-          className="grid border-b border-stone-200 pb-1 text-center text-[10px] text-stone-400"
+          className="grid border-b border-line pb-1 text-center text-[10px] text-subtle"
           style={{
             gridTemplateColumns: `11rem repeat(${COLUMNS}, minmax(24px, 1fr))`,
           }}
@@ -89,8 +89,8 @@ export async function ActionWindowBoard({
               <span
                 className={
                   day.isToday
-                    ? "rounded-full bg-teal-700 px-1 font-semibold text-white"
-                    : "text-stone-500"
+                    ? "rounded-full bg-accent px-1 font-semibold text-on-accent"
+                    : "text-muted"
                 }
               >
                 {day.dayLabel}
@@ -113,8 +113,8 @@ export async function ActionWindowBoard({
                   key={day.date}
                   className={
                     day.isToday
-                      ? "border-x border-teal-300/70 bg-teal-50/40"
-                      : "bg-stone-50"
+                      ? "border-x border-accent/70 bg-accent-soft/40"
+                      : "bg-surface"
                   }
                   style={{ gridColumn: day.col, gridRow: "1 / -1" }}
                 />
@@ -175,17 +175,17 @@ export async function ActionWindowBoard({
         </div>
 
         {/* legend */}
-        <div className="mt-3 flex flex-wrap gap-4 text-xs text-stone-500">
+        <div className="mt-3 flex flex-wrap gap-4 text-xs text-muted">
           <span className="flex items-center gap-1">
-            <span className="h-3 w-6 rounded-full bg-stone-400 opacity-45" />
+            <span className="h-3 w-6 rounded-full bg-dot opacity-45" />
             {t("legendUpcoming")}
           </span>
           <span className="flex items-center gap-1">
-            <span className="h-3 w-6 rounded-full bg-stone-400" />
+            <span className="h-3 w-6 rounded-full bg-dot" />
             {t("legendOpen")}
           </span>
           <span className="flex items-center gap-1">
-            <span className="h-3 w-6 rounded-full bg-stone-400 opacity-80 saturate-50" />
+            <span className="h-3 w-6 rounded-full bg-dot opacity-80 saturate-50" />
             {t("legendStillOpen")}
           </span>
           <span className="flex items-center gap-1">🎂 {t("legendBirthday")}</span>

@@ -38,9 +38,9 @@ export default async function InvitesPage() {
       <section className="flex flex-col gap-2">
         <h2 className="text-lg font-medium">{t("listTitle")}</h2>
         {rows.length === 0 ? (
-          <p className="text-sm text-stone-500">{t("empty")}</p>
+          <p className="text-sm text-muted">{t("empty")}</p>
         ) : (
-          <ul className="divide-y divide-stone-200 rounded-md border border-stone-200 bg-white">
+          <ul className="divide-y divide-line rounded-md border border-line bg-panel">
             {rows.map(({ invite, usedByName }) => {
               const status = invite.usedBy
                 ? "used"
@@ -57,7 +57,7 @@ export default async function InvitesPage() {
                       {invite.email ?? t("anyEmail")}
                       {usedByName ? ` → ${usedByName}` : ""}
                     </span>
-                    <span className="text-xs text-stone-500">
+                    <span className="text-xs text-muted">
                       {t(`status.${status}`)}
                       {status === "open"
                         ? ` · ${t("expires", {

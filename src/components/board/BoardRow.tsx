@@ -47,7 +47,7 @@ export function BoardRow({
   const [expanded, setExpanded] = useState<"contact" | "birthday" | null>(null);
 
   return (
-    <div className="border-b border-stone-100">
+    <div className="border-b border-line">
       <div
         className="grid items-center"
         style={{
@@ -56,7 +56,7 @@ export function BoardRow({
       >
         <Link
           href={`/friends/${friendId}`}
-          className="sticky left-0 z-10 flex items-center gap-1.5 truncate bg-white py-1.5 pr-2 text-sm hover:underline"
+          className="sticky left-0 z-10 flex items-center gap-1.5 truncate bg-panel py-1.5 pr-2 text-sm hover:underline"
           style={{ gridColumn: "1" }}
         >
           <span className="truncate">{friendName}</span>

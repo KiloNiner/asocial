@@ -96,7 +96,7 @@ export function JournalTimeline({
   const typeById = new Map(types.map((type) => [type.id, type]));
 
   if (entries.length === 0) {
-    return <p className="text-sm text-stone-500">{t("journal.empty")}</p>;
+    return <p className="text-sm text-muted">{t("journal.empty")}</p>;
   }
 
   return (
@@ -106,16 +106,16 @@ export function JournalTimeline({
         return (
           <li
             key={entry.id}
-            className="group relative border-l-2 border-stone-200 pb-4 pl-4"
+            className="group relative border-l-2 border-line pb-4 pl-4"
           >
-            <span className="absolute -left-[7px] top-1 h-3 w-3 rounded-full bg-stone-300" />
+            <span className="absolute -left-[7px] top-1 h-3 w-3 rounded-full bg-dot" />
             <div className="flex items-baseline gap-2 text-sm">
               <span className="font-medium">
                 {type
                   ? `${type.emoji ?? ""} ${contactTypeLabel(type, tTypes)}`.trim()
                   : entry.contactTypeId}
               </span>
-              <span className="text-stone-500">
+              <span className="text-muted">
                 {format.dateTime(new Date(`${entry.occurredOn}T12:00:00`), {
                   dateStyle: "medium",
                 })}
@@ -127,13 +127,13 @@ export function JournalTimeline({
                     void deleteInteraction(entry.id, friendId);
                   }
                 }}
-                className="invisible ml-auto text-xs text-stone-400 hover:text-red-700 group-hover:visible"
+                className="invisible ml-auto text-xs text-subtle hover:text-danger group-hover:visible"
               >
                 {t("common.delete")}
               </button>
             </div>
             {entry.note ? (
-              <p className="mt-1 whitespace-pre-wrap text-sm text-stone-600">
+              <p className="mt-1 whitespace-pre-wrap text-sm text-muted">
                 {entry.note}
               </p>
             ) : null}

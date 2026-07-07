@@ -14,7 +14,7 @@ export default async function RegisterPage({
     <div className="flex flex-col gap-4">
       <h1 className="text-xl font-semibold">{t("registerTitle")}</h1>
       <RegisterForm invite={invite} bootstrap={bootstrap} />
-      <Link href="/login" className="text-sm text-teal-700 hover:underline">
+      <Link href="/login" className="text-sm text-accent hover:underline">
         {t("haveAccount")}
       </Link>
     </div>

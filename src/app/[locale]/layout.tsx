@@ -1,9 +1,27 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { routing } from "@/i18n/routing";
+import { getCurrentUser, getSettings } from "@/lib/auth/current-user";
+import { THEME_COOKIE, isThemeChoice, type ThemeChoice } from "@/lib/themes";
 import "../globals.css";
+
+/**
+ * Resolve the active theme without a flash: the logged-in user's setting
+ * wins, else the theme cookie (so login pages match), else auto.
+ */
+async function resolveTheme(): Promise<ThemeChoice> {
+  const user = await getCurrentUser();
+  if (user) {
+    const settings = await getSettings(user.id);
+    if (isThemeChoice(settings.theme)) return settings.theme;
+  }
+  const cookieValue = (await cookies()).get(THEME_COOKIE)?.value;
+  if (cookieValue && isThemeChoice(cookieValue)) return cookieValue;
+  return "auto";
+}
 
 export const metadata: Metadata = {
   title: "asocial",
@@ -26,10 +44,16 @@ export default async function LocaleLayout({
     notFound();
   }
   setRequestLocale(locale);
+  const theme = await resolveTheme();
 
   return (
-    <html lang={locale} className="h-full antialiased">
-      <body className="min-h-full flex flex-col bg-stone-50 text-stone-900">
+    <html
+      lang={locale}
+      className="h-full antialiased"
+      // Auto stamps no attribute so the prefers-color-scheme media query decides.
+      data-theme={theme === "auto" ? undefined : theme}
+    >
+      <body className="min-h-full flex flex-col bg-surface text-ink">
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>
     </html>

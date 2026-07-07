@@ -31,7 +31,7 @@ export function PrefEditor({
 
   return (
     <div className="flex flex-col gap-2">
-      <p className="text-xs text-stone-500">{hint}</p>
+      <p className="text-xs text-muted">{hint}</p>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
         {rows.map((row) => (
           <PrefField key={row.type.id} row={row} action={action} label={
@@ -56,7 +56,7 @@ function PrefField({
 
   return (
     <form ref={formRef} action={action} className="flex flex-col gap-0.5">
-      <label className="flex flex-col gap-0.5 text-xs text-stone-600">
+      <label className="flex flex-col gap-0.5 text-xs text-muted">
         <span className="truncate" title={label}>
           {label}
         </span>

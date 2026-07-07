@@ -44,9 +44,9 @@ function windowState(task: Task, today: string) {
 }
 
 const stateStyles = {
-  upcoming: "border-stone-200 bg-white",
-  open: "border-teal-300 bg-teal-50",
-  stillOpen: "border-amber-200 bg-amber-50",
+  upcoming: "border-line bg-panel",
+  open: "border-accent bg-accent-soft",
+  stillOpen: "border-warn bg-warn-soft",
 };
 
 export function TaskCard({
@@ -71,7 +71,7 @@ export function TaskCard({
             type: typeText(types, task.suggestedTypeId, tTypes),
           })}
         </span>
-        <span className="ml-auto rounded-full px-2 py-0.5 text-xs text-stone-500">
+        <span className="ml-auto rounded-full px-2 py-0.5 text-xs text-muted">
           {t(`state.${state}`, {
             date: format.dateTime(new Date(`${task.dueDate}T12:00:00`), {
               day: "numeric",
@@ -107,7 +107,7 @@ export function TaskCard({
           <button
             type="button"
             onClick={() => void skipTask(task.id)}
-            className={`${buttonGhostClass} text-stone-500`}
+            className={`${buttonGhostClass} text-muted`}
           >
             {t("skip")}
           </button>
@@ -148,7 +148,7 @@ export function TaskCard({
           <button
             type="button"
             onClick={() => setMode("idle")}
-            className="text-sm text-stone-500 hover:underline"
+            className="text-sm text-muted hover:underline"
           >
             {t("cancel")}
           </button>
@@ -181,7 +181,7 @@ export function TaskCard({
           <button
             type="button"
             onClick={() => setMode("idle")}
-            className="text-sm text-stone-500 hover:underline"
+            className="text-sm text-muted hover:underline"
           >
             {t("cancel")}
           </button>
@@ -253,7 +253,7 @@ function CompleteTaskForm({
         <button
           type="button"
           onClick={onCancel}
-          className="text-sm text-stone-500 hover:underline"
+          className="text-sm text-muted hover:underline"
         >
           {t("cancel")}
         </button>
@@ -276,7 +276,7 @@ export function ManualTaskForm({
 
   return (
     <form action={action} className={`${cardClass} flex flex-wrap items-end gap-2`}>
-      <h3 className="w-full text-sm font-medium text-stone-600">
+      <h3 className="w-full text-sm font-medium text-muted">
         {t("planTitle")}
       </h3>
       {state.error ? (

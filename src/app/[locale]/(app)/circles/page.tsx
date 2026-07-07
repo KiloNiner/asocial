@@ -22,11 +22,11 @@ export default async function CirclesPage() {
     <div className="flex max-w-3xl flex-col gap-6">
       <div>
         <h1 className="text-2xl font-semibold">{t("title")}</h1>
-        <p className="mt-1 text-sm text-stone-500">{t("intro")}</p>
+        <p className="mt-1 text-sm text-muted">{t("intro")}</p>
       </div>
 
       {circleList.length === 0 ? (
-        <p className="text-sm text-stone-500">{t("empty")}</p>
+        <p className="text-sm text-muted">{t("empty")}</p>
       ) : (
         <div className="flex flex-col gap-3">
           {circleList.map((circle) => {

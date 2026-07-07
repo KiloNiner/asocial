@@ -70,16 +70,16 @@ export default async function FriendDetailPage({
           <h1 className="text-2xl font-semibold">
             {friend.name}
             {friend.archived ? (
-              <span className="ml-2 rounded bg-stone-100 px-2 py-0.5 align-middle text-xs text-stone-500">
+              <span className="ml-2 rounded bg-faint px-2 py-0.5 align-middle text-xs text-muted">
                 {t("friends.archived")}
               </span>
             ) : null}
           </h1>
-          <div className="flex flex-wrap items-center gap-2 text-sm text-stone-500">
+          <div className="flex flex-wrap items-center gap-2 text-sm text-muted">
             {circles.map((circle) => (
               <span
                 key={circle.id}
-                className="flex items-center gap-1 rounded-full border border-stone-200 px-2 py-0.5"
+                className="flex items-center gap-1 rounded-full border border-line px-2 py-0.5"
               >
                 <span
                   className="h-2.5 w-2.5 rounded-full"
@@ -106,7 +106,7 @@ export default async function FriendDetailPage({
       </div>
 
       {friend.notes ? (
-        <p className={`${cardClass} whitespace-pre-wrap text-sm text-stone-600`}>
+        <p className={`${cardClass} whitespace-pre-wrap text-sm text-muted`}>
           {friend.notes}
         </p>
       ) : null}

@@ -36,7 +36,7 @@ function StateNote({ state }: Readonly<{ state: SettingsFormState }>) {
     );
   }
   if (state.ok) {
-    return <p className="text-sm text-teal-700">{t("saved")}</p>;
+    return <p className="text-sm text-accent">{t("saved")}</p>;
   }
   return null;
 }
@@ -149,10 +149,10 @@ function TestButton({ channel }: Readonly<{ channel: ChannelId }>) {
         {t("sendTest")}
       </button>
       {result?.ok ? (
-        <span className="text-sm text-teal-700">{t("testOk")}</span>
+        <span className="text-sm text-accent">{t("testOk")}</span>
       ) : null}
       {result?.error ? (
-        <span className="max-w-60 truncate text-sm text-amber-700" title={result.error}>
+        <span className="max-w-60 truncate text-sm text-warn" title={result.error}>
           {result.error}
         </span>
       ) : null}
@@ -179,10 +179,10 @@ export function NotificationChannelsForm({
 
   return (
     <div className="flex flex-col gap-3">
-      <p className="text-sm text-stone-500">{t("intro")}</p>
+      <p className="text-sm text-muted">{t("intro")}</p>
 
       <form action={poAction} className={`${cardClass} flex flex-wrap items-end gap-3`}>
-        <h3 className="w-full text-sm font-medium text-stone-600">
+        <h3 className="w-full text-sm font-medium text-muted">
           {t("pushoverTitle")}
         </h3>
         <StateNote state={poState} />
@@ -192,7 +192,7 @@ export function NotificationChannelsForm({
             type="checkbox"
             name="enabled"
             defaultChecked={pushover?.enabled ?? false}
-            className="h-4 w-4 accent-teal-700"
+            className="h-4 w-4 accent-accent"
           />
           {t("enabled")}
         </label>
@@ -221,7 +221,7 @@ export function NotificationChannelsForm({
       </form>
 
       <form action={emAction} className={`${cardClass} flex flex-wrap items-end gap-3`}>
-        <h3 className="w-full text-sm font-medium text-stone-600">
+        <h3 className="w-full text-sm font-medium text-muted">
           {t("emailTitle")}
         </h3>
         <StateNote state={emState} />
@@ -231,7 +231,7 @@ export function NotificationChannelsForm({
             type="checkbox"
             name="enabled"
             defaultChecked={email?.enabled ?? false}
-            className="h-4 w-4 accent-teal-700"
+            className="h-4 w-4 accent-accent"
           />
           {t("enabled")}
         </label>
