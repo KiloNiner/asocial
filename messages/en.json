@@ -14,5 +14,40 @@
   },
   "home": {
     "welcome": "Welcome to asocial"
+  },
+  "auth": {
+    "email": "Email",
+    "password": "Password",
+    "displayName": "Your name",
+    "login": "Log in",
+    "loginTitle": "Log in to asocial",
+    "register": "Create account",
+    "registerTitle": "Create your account",
+    "bootstrapHint": "You are the first user — this account will be the administrator.",
+    "inviteNeededHint": "Registration requires an invite link from an administrator.",
+    "noAccountYet": "First time here? Create the admin account",
+    "haveAccount": "Already have an account? Log in",
+    "errors": {
+      "invalid": "Please check the form and try again.",
+      "invalidCredentials": "Wrong email or password.",
+      "emailTaken": "An account with this email already exists.",
+      "inviteInvalid": "This invite link is invalid, used or expired."
+    }
+  },
+  "invites": {
+    "title": "Invites",
+    "emailOptional": "Email (optional)",
+    "create": "Create invite",
+    "copyHint": "Copy this link now — it is shown only once:",
+    "listTitle": "Issued invites",
+    "empty": "No invites issued yet.",
+    "revoke": "Revoke",
+    "status": {
+      "open": "Open",
+      "used": "Used",
+      "expired": "Expired"
+    },
+    "anyEmail": "any email",
+    "expires": "Expires {date}"
   }
 }

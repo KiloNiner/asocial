@@ -14,5 +14,40 @@
   },
   "home": {
     "welcome": "Velkommen til asocial"
+  },
+  "auth": {
+    "email": "E-mail",
+    "password": "Adgangskode",
+    "displayName": "Dit navn",
+    "login": "Log ind",
+    "loginTitle": "Log ind på asocial",
+    "register": "Opret konto",
+    "registerTitle": "Opret din konto",
+    "bootstrapHint": "Du er den første bruger — denne konto bliver administrator.",
+    "inviteNeededHint": "Registrering kræver et invitationslink fra en administrator.",
+    "noAccountYet": "Første gang her? Opret administratorkontoen",
+    "haveAccount": "Har du allerede en konto? Log ind",
+    "errors": {
+      "invalid": "Tjek venligst formularen og prøv igen.",
+      "invalidCredentials": "Forkert e-mail eller adgangskode.",
+      "emailTaken": "Der findes allerede en konto med denne e-mail.",
+      "inviteInvalid": "Dette invitationslink er ugyldigt, brugt eller udløbet."
+    }
+  },
+  "invites": {
+    "title": "Invitationer",
+    "emailOptional": "E-mail (valgfri)",
+    "create": "Opret invitation",
+    "copyHint": "Kopiér dette link nu — det vises kun én gang:",
+    "listTitle": "Udstedte invitationer",
+    "empty": "Ingen invitationer udstedt endnu.",
+    "revoke": "Tilbagekald",
+    "status": {
+      "open": "Åben",
+      "used": "Brugt",
+      "expired": "Udløbet"
+    },
+    "anyEmail": "enhver e-mail",
+    "expires": "Udløber {date}"
   }
 }
