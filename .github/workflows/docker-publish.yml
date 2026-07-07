@@ -1,0 +1,69 @@
+name: Publish Docker image
+
+# Builds the container from the repo Dockerfile and pushes it to Docker Hub.
+# Fires on version tags (e.g. v1.0.0) and on manual dispatch from the Actions tab.
+#
+# Requires two repository secrets (Settings -> Secrets and variables -> Actions):
+#   DOCKERHUB_USERNAME  - your Docker Hub username
+#   DOCKERHUB_TOKEN     - a Docker Hub access token (not your password)
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+
+env:
+  IMAGE_NAME: kiloniner/asocial
+
+# Never run two publishes for the same ref at once.
+concurrency:
+  group: docker-publish-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # arm64 is built under emulation, so QEMU is required.
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Derive image tags
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_NAME }}
+          tags: |
+            # v1.2.3 -> 1.2.3 and 1.2
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            # :latest only for real version tags, never for manual runs
+            type=raw,value=latest,enable=${{ github.ref_type == 'tag' }}
+            # manual runs still get a traceable tag
+            type=sha,enable=${{ github.event_name == 'workflow_dispatch' }}
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

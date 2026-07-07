@@ -59,12 +59,23 @@ first (admin) account.
 
 ```bash
 cp .env.example .env   # edit: APP_URL, CRON_SECRET, SMTP_* for email digests
-docker compose up -d
+docker compose up -d           # builds locally
+# or pull the prebuilt multi-arch image (amd64/arm64):
+docker compose pull && docker compose up -d
 ```
 
 The SQLite database lives on the `asocial-data` volume (`/data/asocial.db`).
-Backup = copy that file (or `sqlite3 /data/asocial.db ".backup backup.db"`).
+Backup = copy that file (or `sqlite3 /data/asocial.db ".backup backup.db"`), or
+use the in-app JSON backup/restore in Settings.
 Migrations run automatically at container start.
+
+### Container images
+
+Published to Docker Hub as **`kiloniner/asocial`** (`:latest` plus each version
+tag, e.g. `:1.0.0`) by the `.github/workflows/docker-publish.yml` GitHub Action.
+It builds `linux/amd64` + `linux/arm64` on every `v*.*.*` git tag (and on manual
+dispatch). Publishing requires two repo secrets: `DOCKERHUB_USERNAME` and a
+`DOCKERHUB_TOKEN` access token.
 
 ### Environment variables
 
