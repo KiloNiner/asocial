@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { login, register, type AuthFormState } from "@/actions/auth";
 
 const inputClass =
-  "w-full rounded-md border border-line bg-panel px-3 py-2 text-sm " +
+  "w-full rounded-md border border-field-border bg-field px-3 py-2 text-sm " +
   "focus:outline-none focus:ring-2 focus:ring-accent";
 
 const buttonClass =

@@ -1,5 +1,5 @@
 export const inputClass =
-  "rounded-md border border-line bg-panel px-3 py-2 text-sm " +
+  "rounded-md border border-field-border bg-field px-3 py-2 text-sm " +
   "focus:outline-none focus:ring-2 focus:ring-accent";
 
 export const buttonClass =
