@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { runDailyScheduler } from "@/lib/scheduler/daily-job";
+import { runDigestDispatch } from "@/lib/notifications/dispatch";
 
 /**
  * Manual/test trigger for background jobs.
@@ -17,6 +18,8 @@ export async function POST(request: NextRequest) {
   switch (job) {
     case "scheduler":
       return NextResponse.json(runDailyScheduler(force));
+    case "digest":
+      return NextResponse.json(await runDigestDispatch(force));
     default:
       return NextResponse.json({ error: "unknown job" }, { status: 400 });
   }

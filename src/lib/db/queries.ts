@@ -14,6 +14,8 @@ import {
   friendContactPrefs,
   friends,
   interactions,
+  notificationChannels,
+  notificationLog,
   tasks,
   userContactPrefs,
   type Circle,
@@ -621,4 +623,35 @@ export function listPendingTasksWithNames(
     ...row,
     color: colorByFriend.get(row.task.friendId) ?? null,
   }));
+}
+
+// ---------- notifications (settings UI) ----------
+
+export function getNotificationChannels(
+  userId: string,
+): Map<string, { enabled: boolean; config: Record<string, string> }> {
+  const rows = db
+    .select()
+    .from(notificationChannels)
+    .where(eq(notificationChannels.userId, userId))
+    .all();
+  return new Map(
+    rows.map((row) => [
+      row.channel,
+      { enabled: row.enabled, config: JSON.parse(row.config) },
+    ]),
+  );
+}
+
+export function listNotificationLog(
+  userId: string,
+  limit = 10,
+): (typeof notificationLog.$inferSelect)[] {
+  return db
+    .select()
+    .from(notificationLog)
+    .where(eq(notificationLog.userId, userId))
+    .orderBy(desc(notificationLog.sentAt))
+    .limit(limit)
+    .all();
 }

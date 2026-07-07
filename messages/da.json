@@ -192,5 +192,46 @@
   },
   "calendar": {
     "today": "I dag"
+  },
+  "digest": {
+    "title": "{n, plural, one {# ven} other {# venner}} at række ud til",
+    "line": "{type} — {name}",
+    "lineBirthday": "Det er {name}s fødselsdag — {type}",
+    "tomorrow": "i morgen",
+    "openApp": "Åbn asocial"
+  },
+  "notifications": {
+    "title": "Notifikationer",
+    "intro": "Et kort dagligt sammendrag på dit valgte tidspunkt — kun når noget faktisk er åbent, og hængende forslag kun hver tredje dag.",
+    "pushoverTitle": "Pushover",
+    "pushoverToken": "API-token",
+    "pushoverUserKey": "Brugernøgle",
+    "emailTitle": "E-mailsammendrag",
+    "emailAddress": "Adresse (tom = kontoens e-mail)",
+    "enabled": "Aktiveret",
+    "saveChannel": "Gem",
+    "sendTest": "Send test",
+    "testOk": "Test sendt!",
+    "logTitle": "Seneste afsendelser",
+    "logEmpty": "Intet sendt endnu.",
+    "saved": "Gemt.",
+    "errors": {
+      "invalid": "Tjek venligst formularen og prøv igen.",
+      "invalidTimezone": "Ukendt tidszone.",
+      "pushoverConfigMissing": "Pushover kræver både API-token og brugernøgle.",
+      "channelNotConfigured": "Gem kanalens konfiguration først."
+    }
+  },
+  "profile": {
+    "title": "Profil",
+    "language": "Sprog",
+    "timezone": "Tidszone"
+  },
+  "scheduling": {
+    "title": "Planlægning",
+    "windowDays": "Handlingsvindue (dage)",
+    "jitterPct": "Tilfældighed (± %)",
+    "defaultInterval": "Standardinterval (dage)",
+    "digestHour": "Sammendragstime (0–23)"
   }
 }

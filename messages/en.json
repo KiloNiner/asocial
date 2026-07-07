@@ -192,5 +192,46 @@
   },
   "calendar": {
     "today": "Today"
+  },
+  "digest": {
+    "title": "{n, plural, one {# friend} other {# friends}} to reach out to",
+    "line": "{type} — {name}",
+    "lineBirthday": "It's {name}'s birthday — {type}",
+    "tomorrow": "tomorrow",
+    "openApp": "Open asocial"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "intro": "A short daily digest at your chosen hour — only when something is actually open, and lingering suggestions only every third day.",
+    "pushoverTitle": "Pushover",
+    "pushoverToken": "API token",
+    "pushoverUserKey": "User key",
+    "emailTitle": "Email digest",
+    "emailAddress": "Address (empty = account email)",
+    "enabled": "Enabled",
+    "saveChannel": "Save",
+    "sendTest": "Send test",
+    "testOk": "Test sent!",
+    "logTitle": "Recent sends",
+    "logEmpty": "Nothing sent yet.",
+    "saved": "Saved.",
+    "errors": {
+      "invalid": "Please check the form and try again.",
+      "invalidTimezone": "Unknown timezone.",
+      "pushoverConfigMissing": "Pushover needs both API token and user key.",
+      "channelNotConfigured": "Save the channel configuration first."
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "language": "Language",
+    "timezone": "Timezone"
+  },
+  "scheduling": {
+    "title": "Scheduling",
+    "windowDays": "Action window (days)",
+    "jitterPct": "Randomness (± %)",
+    "defaultInterval": "Default interval (days)",
+    "digestHour": "Digest hour (0–23)"
   }
 }

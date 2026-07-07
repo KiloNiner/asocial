@@ -1,5 +1,6 @@
 import { Cron } from "croner";
 import { runDailyScheduler, schedulerRanToday } from "./scheduler/daily-job";
+import { runDigestDispatch } from "./notifications/dispatch";
 
 const globalForCron = globalThis as unknown as {
   __asocialCronStarted?: boolean;
@@ -21,6 +22,17 @@ export function startCronJobs(): void {
       console.log("[cron] scheduler:", JSON.stringify(stats));
     } catch (err) {
       console.error("[cron] scheduler failed:", err);
+    }
+  });
+
+  new Cron("5 * * * *", { timezone, name: "digest" }, async () => {
+    try {
+      const stats = await runDigestDispatch();
+      if (!stats.skipped && (stats.sent || stats.failed)) {
+        console.log("[cron] digest:", JSON.stringify(stats));
+      }
+    } catch (err) {
+      console.error("[cron] digest failed:", err);
     }
   });
 
