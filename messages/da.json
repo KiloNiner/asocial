@@ -15,6 +15,23 @@
   "home": {
     "welcome": "Velkommen til asocial"
   },
+  "common": {
+    "save": "Gem",
+    "cancel": "Annullér",
+    "edit": "Redigér",
+    "delete": "Slet",
+    "create": "Opret",
+    "back": "Tilbage",
+    "days": "dage",
+    "everyNDays": "ca. hver {n}. dag",
+    "optional": "valgfri",
+    "none": "ingen",
+    "actions": "Handlinger",
+    "errors": {
+      "invalid": "Tjek venligst formularen og prøv igen.",
+      "duplicateName": "Navnet er allerede i brug."
+    }
+  },
   "auth": {
     "email": "E-mail",
     "password": "Adgangskode",
@@ -49,5 +66,91 @@
     },
     "anyEmail": "enhver e-mail",
     "expires": "Udløber {date}"
+  },
+  "circles": {
+    "title": "Cirkler",
+    "intro": "Cirkler grupperer dine venner og sætter deres kontaktrytme. En ven i flere cirkler følger den hyppigste.",
+    "name": "Navn",
+    "color": "Farve",
+    "interval": "Kontaktinterval",
+    "members": "{n, plural, =0 {ingen venner} one {# ven} other {# venner}}",
+    "createTitle": "Ny cirkel",
+    "empty": "Ingen cirkler endnu. Opret én for at give dine venner en rytme.",
+    "deleteConfirm": "Slet denne cirkel? Vennerne i den beholdes; de falder tilbage på andre cirkler eller dit standardinterval.",
+    "typePrefs": "Aktivitetspræferencer",
+    "typePrefsHint": "Vægte for forslag i denne cirkel. Tom = nedarvet, 0 = foreslå aldrig.",
+    "examples": "f.eks. Nære venner 14, Gamle klassekammerater 60"
+  },
+  "friends": {
+    "title": "Venner",
+    "add": "Tilføj ven",
+    "search": "Søg…",
+    "empty": "Ingen venner endnu. Tilføj de mennesker, du vil holde fast i.",
+    "emptySearch": "Ingen matcher din søgning.",
+    "lastContact": "Seneste kontakt",
+    "nextContact": "Næste kontakt",
+    "never": "aldrig",
+    "logContact": "Log kontakt",
+    "newTitle": "Tilføj en ven",
+    "editTitle": "Redigér ven",
+    "name": "Navn",
+    "notes": "Noter",
+    "notesHint": "Alt der er værd at huske — partner, børn, emner der skal undgås…",
+    "circlesLabel": "Cirkler",
+    "noCircles": "Ingen cirkler endnu — opret nogle først for automatiske rytmer.",
+    "intervalOverride": "Personligt kontaktinterval",
+    "intervalOverrideHint": "Tilsidesætter cirkelrytmer for denne ven. Lad stå tomt for at følge cirklerne.",
+    "intervalSource": {
+      "override": "ca. hver {n}. dag (personligt)",
+      "circle": "ca. hver {n}. dag (fra {circle})",
+      "default": "ca. hver {n}. dag (din standard)"
+    },
+    "autoschedule": "Foreslå kontakt automatisk",
+    "birthday": "Fødselsdag",
+    "birthdayDay": "Dag",
+    "birthdayMonth": "Måned",
+    "birthdayYear": "År ({optional})",
+    "age": "fylder {age}",
+    "archive": "Arkivér",
+    "unarchive": "Gendan",
+    "archived": "Arkiveret",
+    "archiveConfirm": "Arkivér denne ven? Ventende forslag annulleres. Journalen beholdes, og du kan altid gendanne.",
+    "showArchived": "Vis arkiverede",
+    "typePrefs": "Aktivitetspræferencer",
+    "typePrefsHint": "Hvordan forslag vægtes for denne ven. Tom = nedarvet, 0 = foreslå aldrig."
+  },
+  "journal": {
+    "title": "Journal",
+    "empty": "Ingen kontakt logget endnu.",
+    "logTitle": "Log kontakt",
+    "what": "Hvad",
+    "when": "Hvornår",
+    "note": "Hvad talte I om?",
+    "save": "Log det",
+    "deleteConfirm": "Slet denne journalpost?"
+  },
+  "contactTypes": {
+    "message": "Send en besked",
+    "call": "Telefonopkald",
+    "coffee": "Mødes til kaffe",
+    "activity": "Lav noget sammen",
+    "visit_them": "Besøg dem",
+    "host_visit": "Invitér dem hjem",
+    "congratulate": "Ønsk tillykke med fødselsdagen"
+  },
+  "settings": {
+    "title": "Indstillinger",
+    "typesTitle": "Interaktionstyper",
+    "typesIntro": "Hvordan asocial må foreslå, at du rækker ud. Sæt en vægt til 0 for aldrig at få det forslag; højere vægte kommer oftere.",
+    "typeWeight": "Vægt",
+    "typeWeightHint": "Tom = standard ({n})",
+    "builtin": "Indbygget",
+    "custom": "Dine egne",
+    "addType": "Tilføj din egen type",
+    "typeName": "Navn",
+    "typeEmoji": "Emoji",
+    "archive": "Arkivér",
+    "restore": "Gendan",
+    "archivedTag": "arkiveret"
   }
 }

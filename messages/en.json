@@ -15,6 +15,23 @@
   "home": {
     "welcome": "Welcome to asocial"
   },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "create": "Create",
+    "back": "Back",
+    "days": "days",
+    "everyNDays": "every ~{n} days",
+    "optional": "optional",
+    "none": "none",
+    "actions": "Actions",
+    "errors": {
+      "invalid": "Please check the form and try again.",
+      "duplicateName": "That name is already in use."
+    }
+  },
   "auth": {
     "email": "Email",
     "password": "Password",
@@ -49,5 +66,91 @@
     },
     "anyEmail": "any email",
     "expires": "Expires {date}"
+  },
+  "circles": {
+    "title": "Circles",
+    "intro": "Circles group your friends and set their default contact rhythm. A friend in several circles follows the most frequent one.",
+    "name": "Name",
+    "color": "Color",
+    "interval": "Contact interval",
+    "members": "{n, plural, =0 {no friends} one {# friend} other {# friends}}",
+    "createTitle": "New circle",
+    "empty": "No circles yet. Create one to give your friends a rhythm.",
+    "deleteConfirm": "Delete this circle? Friends in it are kept; they fall back to other circles or your default interval.",
+    "typePrefs": "Activity preferences",
+    "typePrefsHint": "Weights for suggestions in this circle. Empty = inherited, 0 = never suggest.",
+    "examples": "e.g. Close friends 14, Old classmates 60"
+  },
+  "friends": {
+    "title": "Friends",
+    "add": "Add friend",
+    "search": "Search…",
+    "empty": "No friends yet. Add the people you want to stay close to.",
+    "emptySearch": "Nobody matches your search.",
+    "lastContact": "Last contact",
+    "nextContact": "Next contact",
+    "never": "never",
+    "logContact": "Log contact",
+    "newTitle": "Add a friend",
+    "editTitle": "Edit friend",
+    "name": "Name",
+    "notes": "Notes",
+    "notesHint": "Anything worth remembering — partner, kids, topics to avoid…",
+    "circlesLabel": "Circles",
+    "noCircles": "No circles yet — create some first for automatic rhythms.",
+    "intervalOverride": "Personal contact interval",
+    "intervalOverrideHint": "Overrides circle rhythms for this friend. Leave empty to follow their circles.",
+    "intervalSource": {
+      "override": "every ~{n} days (personal)",
+      "circle": "every ~{n} days (from {circle})",
+      "default": "every ~{n} days (your default)"
+    },
+    "autoschedule": "Suggest contact automatically",
+    "birthday": "Birthday",
+    "birthdayDay": "Day",
+    "birthdayMonth": "Month",
+    "birthdayYear": "Year ({optional})",
+    "age": "turns {age}",
+    "archive": "Archive",
+    "unarchive": "Restore",
+    "archived": "Archived",
+    "archiveConfirm": "Archive this friend? Pending suggestions are cancelled. The journal is kept and you can restore them anytime.",
+    "showArchived": "Show archived",
+    "typePrefs": "Activity preferences",
+    "typePrefsHint": "How suggestions are weighted for this friend. Empty = inherited, 0 = never suggest."
+  },
+  "journal": {
+    "title": "Journal",
+    "empty": "No contact logged yet.",
+    "logTitle": "Log contact",
+    "what": "What",
+    "when": "When",
+    "note": "What did you talk about?",
+    "save": "Log it",
+    "deleteConfirm": "Delete this journal entry?"
+  },
+  "contactTypes": {
+    "message": "Send a message",
+    "call": "Phone call",
+    "coffee": "Meet for coffee",
+    "activity": "Do something together",
+    "visit_them": "Visit them",
+    "host_visit": "Have them over",
+    "congratulate": "Wish happy birthday"
+  },
+  "settings": {
+    "title": "Settings",
+    "typesTitle": "Interaction types",
+    "typesIntro": "How asocial may suggest you reach out. Set a weight to 0 to never get that suggestion; higher weights come up more often.",
+    "typeWeight": "Weight",
+    "typeWeightHint": "Empty = default ({n})",
+    "builtin": "Built-in",
+    "custom": "Your own",
+    "addType": "Add your own type",
+    "typeName": "Name",
+    "typeEmoji": "Emoji",
+    "archive": "Archive",
+    "restore": "Restore",
+    "archivedTag": "archived"
   }
 }
