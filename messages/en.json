@@ -247,5 +247,18 @@
       "tokyo-night": "Tokyo Night",
       "rose-pine": "Rosé Pine"
     }
+  },
+  "backup": {
+    "title": "Backup & restore",
+    "intro": "Download all your circles, friends and journal as a JSON file, or restore from one.",
+    "export": "Download backup",
+    "importTitle": "Restore from a backup",
+    "file": "Backup file (.json)",
+    "import": "Restore",
+    "replaceWarning": "Restoring replaces ALL your current circles, friends and journal with the file's contents. Pending suggestions will be regenerated. Continue?",
+    "imported": "Restored {friends} friends, {circles} circles and {interactions} journal entries.",
+    "errors": {
+      "invalidFile": "That doesn't look like a valid asocial backup file."
+    }
   }
 }

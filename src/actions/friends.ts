@@ -3,8 +3,10 @@
 import { revalidatePath } from "next/cache";
 import { getLocale } from "next-intl/server";
 import { z } from "zod";
-import { requireUser } from "@/lib/auth/current-user";
+import { getSettings, requireUser } from "@/lib/auth/current-user";
 import * as q from "@/lib/db/queries";
+import { today } from "@/lib/scheduler/clock";
+import { scheduleNextTask } from "@/lib/scheduler/schedule";
 import { redirect } from "@/i18n/navigation";
 
 export type FriendFormState = { error?: string };
@@ -64,6 +66,12 @@ export async function createFriend(
   const input = parseFriendForm(formData);
   if (!input) return { error: "invalid" };
   const friend = q.createFriend(user.id, input);
+  // Give an autoscheduled friend their first suggestion right away instead of
+  // waiting for the nightly sweep. Base = today (no interactions yet).
+  if (friend.autoschedule) {
+    const settings = await getSettings(user.id);
+    scheduleNextTask(user.id, friend.id, today(settings.timezone));
+  }
   revalidate();
   redirect({ href: `/friends/${friend.id}`, locale: await getLocale() });
   return {};

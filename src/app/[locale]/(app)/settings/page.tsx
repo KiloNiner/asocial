@@ -4,6 +4,7 @@ import {
   ProfileForm,
   SchedulingForm,
 } from "@/components/settings/SettingsForms";
+import { BackupCard } from "@/components/settings/BackupCard";
 import { ThemeSelector } from "@/components/settings/ThemeSelector";
 import { TypesManager } from "@/components/settings/TypesManager";
 import { getSettings, requireUser } from "@/lib/auth/current-user";
@@ -75,6 +76,8 @@ export default async function SettingsPage() {
         <h2 className="text-lg font-medium">{t("settings.typesTitle")}</h2>
         <TypesManager types={types} userPrefs={userPrefs} />
       </section>
+
+      <BackupCard />
     </div>
   );
 }

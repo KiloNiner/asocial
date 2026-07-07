@@ -247,5 +247,18 @@
       "tokyo-night": "Tokyo Night",
       "rose-pine": "Rosé Pine"
     }
+  },
+  "backup": {
+    "title": "QIt & chegh",
+    "intro": "ghomHommey, juppu', qonta' je JSON teywI'Daq yISaw, pagh teywI'vo' yIchegh.",
+    "export": "QIt yISuq",
+    "importTitle": "QIt yIchegh",
+    "file": "QIt teywI' (.json)",
+    "import": "yIchegh",
+    "replaceWarning": "cheghtaHvIS Hoch DaH ghomHommeylIj, juppu'lI', qonta' je teywI' nIH lonlu'. loStaHbogh wIvmey chup. Daruch'a'?",
+    "imported": "{friends} juppu', {circles} ghomHommey, {interactions} qonta' je chegh.",
+    "errors": {
+      "invalidFile": "asocial QIt teywI' lughbe'law'."
+    }
   }
 }
