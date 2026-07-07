@@ -7,11 +7,13 @@ import {
   LogInteractionForm,
 } from "@/components/journal/Journal";
 import { PrefEditor, type PrefRow } from "@/components/prefs/PrefEditor";
+import { ManualTaskForm, TaskCard } from "@/components/tasks/TaskCard";
 import { buttonGhostClass, cardClass } from "@/components/ui/classes";
 import { getSettings, requireUser } from "@/lib/auth/current-user";
 import * as q from "@/lib/db/queries";
 import { effectiveInterval, governingCircle } from "@/lib/scheduler/interval";
 import { today } from "@/lib/scheduler/clock";
+import { pendingTask } from "@/lib/scheduler/schedule";
 import { Link } from "@/i18n/navigation";
 
 export default async function FriendDetailPage({
@@ -108,6 +110,48 @@ export default async function FriendDetailPage({
           {friend.notes}
         </p>
       ) : null}
+
+      {(() => {
+        const currentDate = today(settings.timezone);
+        const taskTypeInfo = types.map((type) => ({
+          id: type.id,
+          name: type.name,
+          emoji: type.emoji,
+        }));
+        const contactTask = pendingTask(user.id, friend.id, "contact");
+        const birthdayTask = pendingTask(user.id, friend.id, "birthday");
+        return (
+          <section className="flex flex-col gap-3">
+            <h2 className="text-lg font-medium">{t("tasks.nextUp")}</h2>
+            {birthdayTask ? (
+              <TaskCard
+                key={birthdayTask.id}
+                task={birthdayTask}
+                types={taskTypeInfo}
+                today={currentDate}
+              />
+            ) : null}
+            {contactTask ? (
+              <TaskCard
+                key={contactTask.id}
+                task={contactTask}
+                types={taskTypeInfo.filter(
+                  (type) => type.id !== "congratulate",
+                )}
+                today={currentDate}
+              />
+            ) : !friend.archived ? (
+              <ManualTaskForm
+                friendId={friend.id}
+                types={taskTypeInfo.filter(
+                  (type) => type.id !== "congratulate",
+                )}
+                today={currentDate}
+              />
+            ) : null}
+          </section>
+        );
+      })()}
 
       <LogInteractionForm
         friendId={friend.id}

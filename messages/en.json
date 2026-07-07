@@ -152,5 +152,33 @@
     "archive": "Archive",
     "restore": "Restore",
     "archivedTag": "archived"
+  },
+  "tasks": {
+    "suggestion": "{type}",
+    "birthdaySuggestion": "Birthday! {type}",
+    "state": {
+      "upcoming": "opens {date}",
+      "open": "window open since {date}",
+      "stillOpen": "still open (since {date})"
+    },
+    "done": "Did it",
+    "snooze": "Snooze",
+    "snoozeDays": "+{n} days",
+    "skip": "Skip this time",
+    "reschedule": "Move",
+    "newDate": "New date",
+    "cancel": "Cancel",
+    "whatHappened": "What happened",
+    "when": "When",
+    "noteLabel": "What did you talk about?",
+    "logAndDone": "Log & done",
+    "planTitle": "Plan the next contact",
+    "plan": "Plan it",
+    "surpriseMe": "Surprise me",
+    "nextUp": "Next up",
+    "errors": {
+      "invalid": "Please check the form and try again.",
+      "gone": "This suggestion was already resolved."
+    }
   }
 }

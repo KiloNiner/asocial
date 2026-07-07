@@ -152,5 +152,33 @@
     "archive": "Arkivér",
     "restore": "Gendan",
     "archivedTag": "arkiveret"
+  },
+  "tasks": {
+    "suggestion": "{type}",
+    "birthdaySuggestion": "Fødselsdag! {type}",
+    "state": {
+      "upcoming": "åbner {date}",
+      "open": "vindue åbent siden {date}",
+      "stillOpen": "stadig åbent (siden {date})"
+    },
+    "done": "Gjort",
+    "snooze": "Udsæt",
+    "snoozeDays": "+{n} dage",
+    "skip": "Spring over denne gang",
+    "reschedule": "Flyt",
+    "newDate": "Ny dato",
+    "cancel": "Annullér",
+    "whatHappened": "Hvad skete der",
+    "when": "Hvornår",
+    "noteLabel": "Hvad talte I om?",
+    "logAndDone": "Log & færdig",
+    "planTitle": "Planlæg næste kontakt",
+    "plan": "Planlæg",
+    "surpriseMe": "Overrask mig",
+    "nextUp": "Næste",
+    "errors": {
+      "invalid": "Tjek venligst formularen og prøv igen.",
+      "gone": "Dette forslag er allerede afsluttet."
+    }
   }
 }
