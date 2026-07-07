@@ -1,0 +1,18 @@
+{
+  "app": {
+    "name": "asocial",
+    "tagline": "Gentle training wheels for keeping your friendships alive"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "calendar": "Calendar",
+    "friends": "Friends",
+    "circles": "Circles",
+    "settings": "Settings",
+    "invites": "Invites",
+    "logout": "Log out"
+  },
+  "home": {
+    "welcome": "Welcome to asocial"
+  }
+}

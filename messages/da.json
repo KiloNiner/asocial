@@ -1,0 +1,18 @@
+{
+  "app": {
+    "name": "asocial",
+    "tagline": "Blide støttehjul til at holde dine venskaber i live"
+  },
+  "nav": {
+    "dashboard": "Overblik",
+    "calendar": "Kalender",
+    "friends": "Venner",
+    "circles": "Cirkler",
+    "settings": "Indstillinger",
+    "invites": "Invitationer",
+    "logout": "Log ud"
+  },
+  "home": {
+    "welcome": "Velkommen til asocial"
+  }
+}
