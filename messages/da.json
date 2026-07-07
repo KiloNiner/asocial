@@ -180,5 +180,17 @@
       "invalid": "Tjek venligst formularen og prøv igen.",
       "gone": "Dette forslag er allerede afsluttet."
     }
+  },
+  "dashboard": {
+    "title": "Overblik",
+    "intro": "Dine handlingsvinduer — farvede bånd viser, hvornår du bør række ud til hvem. Klik på et bånd for at handle.",
+    "empty": "Intet planlagt endnu. Tilføj venner og cirkler, så foreslår asocial, hvornår du skal række ud.",
+    "legendUpcoming": "kommende",
+    "legendOpen": "åbent — handl nu",
+    "legendStillOpen": "stadig åbent",
+    "legendBirthday": "fødselsdag"
+  },
+  "calendar": {
+    "today": "I dag"
   }
 }

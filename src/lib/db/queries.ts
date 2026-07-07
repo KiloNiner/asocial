@@ -4,7 +4,7 @@
  * scheduler) instead of importing `db` directly, so per-user isolation stays
  * grep-ably enforced in one place.
  */
-import { and, asc, desc, eq, inArray, isNull, max, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, inArray, isNotNull, isNull, max, or, sql } from "drizzle-orm";
 import { db } from "@/db";
 import {
   circleContactPrefs,
@@ -492,4 +492,133 @@ export function deleteInteraction(userId: string, interactionId: string): void {
       ),
     )
     .run();
+}
+
+// ---------- views (dashboard board + calendar) ----------
+
+export type BoardRow = {
+  friend: Friend;
+  /** Color of the governing (most frequent) circle, if any. */
+  color: string | null;
+  contactTask: Task | null;
+  birthdayTask: Task | null;
+};
+
+/** One row per friend with at least one pending task, plus circle color. */
+export function boardRows(userId: string): BoardRow[] {
+  const pending = db
+    .select()
+    .from(tasks)
+    .where(and(eq(tasks.userId, userId), eq(tasks.status, "pending")))
+    .orderBy(asc(tasks.dueDate))
+    .all();
+  if (pending.length === 0) return [];
+
+  const byFriend = new Map<string, { contact?: Task; birthday?: Task }>();
+  for (const task of pending) {
+    const entry = byFriend.get(task.friendId) ?? {};
+    if (task.kind === "contact" && !entry.contact) entry.contact = task;
+    if (task.kind === "birthday" && !entry.birthday) entry.birthday = task;
+    byFriend.set(task.friendId, entry);
+  }
+
+  const friendRows = db
+    .select()
+    .from(friends)
+    .where(
+      and(
+        eq(friends.userId, userId),
+        eq(friends.archived, false),
+        inArray(friends.id, [...byFriend.keys()]),
+      ),
+    )
+    .all();
+
+  const circleRows = db
+    .select({ friendId: friendCircles.friendId, circle: circles })
+    .from(friendCircles)
+    .innerJoin(circles, eq(friendCircles.circleId, circles.id))
+    .where(inArray(friendCircles.friendId, [...byFriend.keys()]))
+    .all();
+  const circlesByFriend = new Map<string, Circle[]>();
+  for (const row of circleRows) {
+    const list = circlesByFriend.get(row.friendId) ?? [];
+    list.push(row.circle);
+    circlesByFriend.set(row.friendId, list);
+  }
+
+  const rows: BoardRow[] = friendRows.map((friend) => {
+    const friendCirclesList = circlesByFriend.get(friend.id) ?? [];
+    const governing =
+      friendCirclesList.length > 0
+        ? friendCirclesList.reduce((a, b) =>
+            b.intervalDays < a.intervalDays ? b : a,
+          )
+        : null;
+    const entry = byFriend.get(friend.id)!;
+    return {
+      friend,
+      color: governing?.color ?? null,
+      contactTask: entry.contact ?? null,
+      birthdayTask: entry.birthday ?? null,
+    };
+  });
+
+  // Urgency order: earliest actionable date first.
+  const urgency = (row: BoardRow): string => {
+    const dates = [row.contactTask?.dueDate, row.birthdayTask?.dueDate].filter(
+      (d): d is string => !!d,
+    );
+    return dates.sort()[0] ?? "9999-12-31";
+  };
+  return rows.sort((a, b) => urgency(a).localeCompare(urgency(b)));
+}
+
+export type BirthdayEntry = {
+  friendId: string;
+  name: string;
+  birthDay: number;
+  birthMonth: number;
+  birthYear: number | null;
+};
+
+/** All active friends with a birthday set (for calendar cake chips). */
+export function listBirthdays(userId: string): BirthdayEntry[] {
+  return db
+    .select({
+      friendId: friends.id,
+      name: friends.name,
+      birthDay: friends.birthDay,
+      birthMonth: friends.birthMonth,
+      birthYear: friends.birthYear,
+    })
+    .from(friends)
+    .where(
+      and(
+        eq(friends.userId, userId),
+        eq(friends.archived, false),
+        isNotNull(friends.birthDay),
+        isNotNull(friends.birthMonth),
+      ),
+    )
+    .all() as BirthdayEntry[];
+}
+
+/** Pending tasks joined with friend names (calendar chips). */
+export function listPendingTasksWithNames(
+  userId: string,
+): { task: Task; friendName: string; color: string | null }[] {
+  const rows = db
+    .select({ task: tasks, friendName: friends.name })
+    .from(tasks)
+    .innerJoin(friends, eq(tasks.friendId, friends.id))
+    .where(and(eq(tasks.userId, userId), eq(tasks.status, "pending")))
+    .orderBy(asc(tasks.dueDate))
+    .all();
+  const board = boardRows(userId);
+  const colorByFriend = new Map(board.map((r) => [r.friend.id, r.color]));
+  return rows.map((row) => ({
+    ...row,
+    color: colorByFriend.get(row.task.friendId) ?? null,
+  }));
 }

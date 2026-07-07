@@ -180,5 +180,17 @@
       "invalid": "Please check the form and try again.",
       "gone": "This suggestion was already resolved."
     }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "intro": "Your action windows — colored bands show when to reach out to whom. Click a band to act on it.",
+    "empty": "Nothing scheduled yet. Add friends and circles, and asocial will suggest when to reach out.",
+    "legendUpcoming": "upcoming",
+    "legendOpen": "open — act now",
+    "legendStillOpen": "still open",
+    "legendBirthday": "birthday"
+  },
+  "calendar": {
+    "today": "Today"
   }
 }
