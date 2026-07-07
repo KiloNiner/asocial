@@ -52,13 +52,13 @@ export function FriendForm({
       <fieldset className="flex flex-col gap-1 text-sm">
         <legend className="mb-1">{t("friends.circlesLabel")}</legend>
         {allCircles.length === 0 ? (
-          <p className="text-xs text-stone-500">{t("friends.noCircles")}</p>
+          <p className="text-xs text-muted">{t("friends.noCircles")}</p>
         ) : (
           <div className="flex flex-wrap gap-2">
             {allCircles.map((circle) => (
               <label
                 key={circle.id}
-                className="flex cursor-pointer items-center gap-1.5 rounded-full border border-stone-300 px-3 py-1.5 text-sm has-checked:border-stone-800 has-checked:bg-stone-100"
+                className="flex cursor-pointer items-center gap-1.5 rounded-full border border-line px-3 py-1.5 text-sm has-checked:border-sel has-checked:bg-faint"
               >
                 <input
                   type="checkbox"
@@ -72,7 +72,7 @@ export function FriendForm({
                   style={{ backgroundColor: circle.color }}
                 />
                 {circle.name}
-                <span className="text-xs text-stone-400">
+                <span className="text-xs text-subtle">
                   {circle.intervalDays}d
                 </span>
               </label>
@@ -91,7 +91,7 @@ export function FriendForm({
           defaultValue={friend?.intervalOverrideDays ?? ""}
           className={inputClass}
         />
-        <span className="text-xs text-stone-500">
+        <span className="text-xs text-muted">
           {t("friends.intervalOverrideHint")}
         </span>
       </label>
@@ -99,7 +99,7 @@ export function FriendForm({
       <fieldset className="flex flex-col gap-1 text-sm">
         <legend className="mb-1">{t("friends.birthday")}</legend>
         <div className="flex gap-2">
-          <label className="flex flex-col gap-0.5 text-xs text-stone-600">
+          <label className="flex flex-col gap-0.5 text-xs text-muted">
             {t("friends.birthdayDay")}
             <input
               name="birthDay"
@@ -110,7 +110,7 @@ export function FriendForm({
               className={`${inputClass} w-20`}
             />
           </label>
-          <label className="flex flex-col gap-0.5 text-xs text-stone-600">
+          <label className="flex flex-col gap-0.5 text-xs text-muted">
             {t("friends.birthdayMonth")}
             <select
               name="birthMonth"
@@ -127,7 +127,7 @@ export function FriendForm({
               ))}
             </select>
           </label>
-          <label className="flex flex-col gap-0.5 text-xs text-stone-600">
+          <label className="flex flex-col gap-0.5 text-xs text-muted">
             {t("friends.birthdayYear", { optional: t("common.optional") })}
             <input
               name="birthYear"
@@ -158,7 +158,7 @@ export function FriendForm({
           type="checkbox"
           name="autoschedule"
           defaultChecked={friend?.autoschedule ?? true}
-          className="h-4 w-4 accent-teal-700"
+          className="h-4 w-4 accent-accent"
         />
         {t("friends.autoschedule")}
       </label>

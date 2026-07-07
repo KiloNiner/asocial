@@ -1,26 +1,217 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/*
+ * Semantic color tokens. Components use these roles (bg-surface, text-ink,
+ * bg-accent, …) instead of hardcoded palette colors, so a theme is just a
+ * set of --t-* values. Circle colors (user data) and emoji are exempt.
+ */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-surface: var(--t-surface);
+  --color-panel: var(--t-panel);
+  --color-ink: var(--t-ink);
+  --color-muted: var(--t-muted);
+  --color-subtle: var(--t-subtle);
+  --color-line: var(--t-line);
+  --color-sel: var(--t-sel);
+  --color-faint: var(--t-faint);
+  --color-field: var(--t-field);
+  --color-field-border: var(--t-field-border);
+  --color-accent: var(--t-accent);
+  --color-accent-strong: var(--t-accent-strong);
+  --color-accent-soft: var(--t-accent-soft);
+  --color-accent-ink: var(--t-accent-ink);
+  --color-on-accent: var(--t-on-accent);
+  --color-warn: var(--t-warn);
+  --color-warn-soft: var(--t-warn-soft);
+  --color-birthday: var(--t-birthday);
+  --color-birthday-soft: var(--t-birthday-soft);
+  --color-danger: var(--t-danger);
+  --color-dot: var(--t-dot);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
+/* --- Light: Paper (default / current look) --- */
+:root,
+[data-theme="paper"] {
+  --t-surface: #fafaf9;
+  --t-panel: #ffffff;
+  --t-ink: #1c1917;
+  --t-muted: #78716c;
+  --t-subtle: #a8a29e;
+  --t-line: #e7e5e4;
+  --t-sel: #292524;
+  --t-faint: #f5f5f4;
+  --t-field: #ffffff;
+  --t-field-border: #d6d3d1;
+  --t-accent: #0f766e;
+  --t-accent-strong: #115e59;
+  --t-accent-soft: #f0fdfa;
+  --t-accent-ink: #134e4a;
+  --t-on-accent: #ffffff;
+  --t-warn: #92400e;
+  --t-warn-soft: #fffbeb;
+  --t-birthday: #9d174d;
+  --t-birthday-soft: #fdf2f8;
+  --t-danger: #b91c1c;
+  --t-dot: #a8a29e;
+}
+
+/* --- Light: Catppuccin Latte --- */
+[data-theme="latte"] {
+  --t-surface: #e6e9ef;
+  --t-panel: #eff1f5;
+  --t-ink: #4c4f69;
+  --t-muted: #6c6f85;
+  --t-subtle: #8c8fa1;
+  --t-line: #ccd0da;
+  --t-sel: #4c4f69;
+  --t-faint: #dce0e8;
+  --t-field: #ffffff;
+  --t-field-border: #acb0be;
+  --t-accent: #179299;
+  --t-accent-strong: #10767c;
+  --t-accent-soft: #d3e6e7;
+  --t-accent-ink: #0f6d73;
+  --t-on-accent: #eff1f5;
+  --t-warn: #a06d13;
+  --t-warn-soft: #f2e7cf;
+  --t-birthday: #b83aa0;
+  --t-birthday-soft: #f2e0ee;
+  --t-danger: #d20f39;
+  --t-dot: #8c8fa1;
+}
+
+/* --- Light: Rosé Pine Dawn --- */
+[data-theme="dawn"] {
+  --t-surface: #faf4ed;
+  --t-panel: #fffaf3;
+  --t-ink: #575279;
+  --t-muted: #797593;
+  --t-subtle: #9893a5;
+  --t-line: #dfdad9;
+  --t-sel: #575279;
+  --t-faint: #f2e9e1;
+  --t-field: #fffefb;
+  --t-field-border: #cecacd;
+  --t-accent: #286983;
+  --t-accent-strong: #1f5268;
+  --t-accent-soft: #dbe4e8;
+  --t-accent-ink: #1f5268;
+  --t-on-accent: #fffaf3;
+  --t-warn: #8a5a12;
+  --t-warn-soft: #f3e7d2;
+  --t-birthday: #b4637a;
+  --t-birthday-soft: #f0e0e4;
+  --t-danger: #a3324a;
+  --t-dot: #9893a5;
+}
+
+/* --- Dark: Catppuccin Mocha --- */
+[data-theme="mocha"] {
+  --t-surface: #1e1e2e;
+  --t-panel: #28283c;
+  --t-ink: #cdd6f4;
+  --t-muted: #a6adc8;
+  --t-subtle: #7f849c;
+  --t-line: #313244;
+  --t-sel: #cdd6f4;
+  --t-faint: #313244;
+  --t-field: #181825;
+  --t-field-border: #45475a;
+  --t-accent: #94e2d5;
+  --t-accent-strong: #7fd0c3;
+  --t-accent-soft: #223f3d;
+  --t-accent-ink: #94e2d5;
+  --t-on-accent: #1e1e2e;
+  --t-warn: #f9e2af;
+  --t-warn-soft: #3a3620;
+  --t-birthday: #f5c2e7;
+  --t-birthday-soft: #3a2a38;
+  --t-danger: #f38ba8;
+  --t-dot: #7f849c;
+}
+
+/* --- Dark: Tokyo Night --- */
+[data-theme="tokyo-night"] {
+  --t-surface: #1a1b26;
+  --t-panel: #1f2335;
+  --t-ink: #c0caf5;
+  --t-muted: #a9b1d6;
+  --t-subtle: #565f89;
+  --t-line: #292e42;
+  --t-sel: #c0caf5;
+  --t-faint: #292e42;
+  --t-field: #16161e;
+  --t-field-border: #414868;
+  --t-accent: #7aa2f7;
+  --t-accent-strong: #6a92e7;
+  --t-accent-soft: #24304d;
+  --t-accent-ink: #7aa2f7;
+  --t-on-accent: #1a1b26;
+  --t-warn: #e0af68;
+  --t-warn-soft: #332e1f;
+  --t-birthday: #bb9af7;
+  --t-birthday-soft: #2b2540;
+  --t-danger: #f7768e;
+  --t-dot: #565f89;
+}
+
+/* --- Dark: Rosé Pine --- */
+[data-theme="rose-pine"] {
+  --t-surface: #191724;
+  --t-panel: #1f1d2e;
+  --t-ink: #e0def4;
+  --t-muted: #908caa;
+  --t-subtle: #6e6a86;
+  --t-line: #403d52;
+  --t-sel: #e0def4;
+  --t-faint: #26233a;
+  --t-field: #191724;
+  --t-field-border: #524f67;
+  --t-accent: #9ccfd8;
+  --t-accent-strong: #8bbcc5;
+  --t-accent-soft: #1d3a3f;
+  --t-accent-ink: #9ccfd8;
+  --t-on-accent: #191724;
+  --t-warn: #f6c177;
+  --t-warn-soft: #38301f;
+  --t-birthday: #ebbcba;
+  --t-birthday-soft: #33262c;
+  --t-danger: #eb6f92;
+  --t-dot: #6e6a86;
+}
+
+/* Auto mode: no data-theme attribute -> follow the OS preference,
+   pairing Paper (light) with Mocha (dark). */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not([data-theme]) {
+    --t-surface: #1e1e2e;
+    --t-panel: #28283c;
+    --t-ink: #cdd6f4;
+    --t-muted: #a6adc8;
+    --t-subtle: #7f849c;
+    --t-line: #313244;
+    --t-sel: #cdd6f4;
+    --t-faint: #313244;
+    --t-field: #181825;
+    --t-field-border: #45475a;
+    --t-accent: #94e2d5;
+    --t-accent-strong: #7fd0c3;
+    --t-accent-soft: #223f3d;
+    --t-accent-ink: #94e2d5;
+    --t-on-accent: #1e1e2e;
+    --t-warn: #f9e2af;
+    --t-warn-soft: #3a3620;
+    --t-birthday: #f5c2e7;
+    --t-birthday-soft: #3a2a38;
+    --t-danger: #f38ba8;
+    --t-dot: #7f849c;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background: var(--t-surface);
+  color: var(--t-ink);
   font-family: Arial, Helvetica, sans-serif;
 }

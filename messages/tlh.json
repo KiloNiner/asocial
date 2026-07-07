@@ -1,0 +1,251 @@
+{
+  "app": {
+    "name": "asocial",
+    "tagline": "juppu'lIj yISaH 'e' Datu'meH QaH mIw"
+  },
+  "nav": {
+    "dashboard": "chovnatlh",
+    "calendar": "jaj chovnatlh",
+    "friends": "juppu'",
+    "circles": "ghomHom",
+    "settings": "DuHmey",
+    "invites": "rI'meH nav",
+    "logout": "yImej"
+  },
+  "home": {
+    "welcome": "asocial: yItlhej"
+  },
+  "common": {
+    "save": "yISaw",
+    "cancel": "yIqIl",
+    "edit": "yIchoH",
+    "delete": "yIteq",
+    "create": "yIchen",
+    "back": "yIchegh",
+    "days": "jajmey",
+    "everyNDays": "{n} jaj Hoch",
+    "optional": "DuH neH",
+    "none": "pagh",
+    "actions": "vangmeH",
+    "errors": {
+      "invalid": "nav yIS; yInID pab.",
+      "duplicateName": "pong lo'lu'ta'."
+    }
+  },
+  "auth": {
+    "email": "QIn Sum",
+    "password": "mu' pegh",
+    "displayName": "ponglIj",
+    "login": "yI'el",
+    "loginTitle": "asocial: yI'el",
+    "register": "De' yISaw",
+    "registerTitle": "De'lIj yISaw",
+    "bootstrapHint": "lo'wI' wa'DIch SoH — che'wI' Datlhap.",
+    "inviteNeededHint": "rI'meH nav poQ De'; che'wI' voHDaq yISuq.",
+    "noAccountYet": "wa'DIch yISuchpu'? che'wI' De' yISaw",
+    "haveAccount": "De' Daghaj'a'? yI'el",
+    "errors": {
+      "invalid": "nav yIS; yInID pab.",
+      "invalidCredentials": "QIn Sum ghap mu' pegh lugh be'.",
+      "emailTaken": "QIn Sum lo'lu'ta' De' tu'lu'.",
+      "inviteInvalid": "rI'meH nav ram, lo'lu'ta' ghap chov."
+    }
+  },
+  "invites": {
+    "title": "rI'meH navmey",
+    "emailOptional": "QIn Sum (DuH neH)",
+    "create": "rI'meH nav yIchen",
+    "copyHint": "DaH nav yIvel — wa'logh neH 'anglu':",
+    "listTitle": "nobta' rI'meH navmey",
+    "empty": "pagh rI'meH nav nobta'.",
+    "revoke": "yIteq",
+    "status": {
+      "open": "poSmoH",
+      "used": "lo'lu'ta'",
+      "expired": "chovta'"
+    },
+    "anyEmail": "QIn Sum ngoDHa'",
+    "expires": "chov {date}"
+  },
+  "circles": {
+    "title": "ghomHommey",
+    "intro": "juppu'lI' ghom ghomHommey 'ej rap poH cha'. law' ghomHom tlhejtaHvIS jup, pIm law' rap poH ghomHom.",
+    "name": "pong",
+    "color": "rItlh",
+    "interval": "rap poH",
+    "members": "{n, plural, other {# juppu'}}",
+    "createTitle": "ghomHom chu'",
+    "empty": "pagh ghomHom. juppu'lI' poH DanobmeH wa' yIchen.",
+    "deleteConfirm": "ghomHom yIteq'a'? juppu'chaj pollu'; latlh ghomHom ghap rap poH DuHmey Sang.",
+    "typePrefs": "vangmeH parmaqmey",
+    "typePrefsHint": "ghomHomvamDaq wIvmey ngoQ. chIm = tlhap, 0 = not wIv.",
+    "examples": "jugh: jup Sum 14, DuSaQ qan 60"
+  },
+  "friends": {
+    "title": "juppu'",
+    "add": "jup yIchel",
+    "search": "yInej…",
+    "empty": "pagh jup. nuvpu' DapolmeH neHbogh yIchel.",
+    "emptySearch": "vay' rapHa' nejwI'.",
+    "lastContact": "rIntaHghach Qorwagh",
+    "nextContact": "veb Qorwagh",
+    "never": "not",
+    "logContact": "Qorwagh yIqon",
+    "newTitle": "jup yIchel",
+    "editTitle": "jup yIchoH",
+    "name": "pong",
+    "notes": "ghItlhmey",
+    "notesHint": "qawmeH potlhbogh — nghatlh, puqpu', mu'mey buSHa'bogh…",
+    "circlesLabel": "ghomHommey",
+    "noCircles": "pagh ghomHom — poH pab lo'meH wa'DIch 'op yIchen.",
+    "intervalOverride": "jup rap poH",
+    "intervalOverrideHint": "jupvamvaD ghomHom poH Sang. ghomHom yItlha'meH yIchImmoH.",
+    "intervalSource": {
+      "override": "{n} jaj Hoch (jup)",
+      "circle": "{n} jaj Hoch ({circle} vo')",
+      "default": "{n} jaj Hoch (motlh)"
+    },
+    "autoschedule": "reH Qorwagh yIwIv",
+    "birthday": "boghlu'pu'bogh jaj",
+    "birthdayDay": "jaj",
+    "birthdayMonth": "jar",
+    "birthdayYear": "DIS ({optional})",
+    "age": "{age} DIS ghaj",
+    "archive": "yIpol",
+    "unarchive": "yIchegh",
+    "archived": "pollu'ta'",
+    "archiveConfirm": "jup yIpol'a'? loStaHbogh wIvmey qIllu'. qonta' pollu' 'ej reH yIchegh.",
+    "showArchived": "polta' yI'ang",
+    "typePrefs": "vangmeH parmaqmey",
+    "typePrefsHint": "jupvamvaD wIvmey ngoQ. chIm = tlhap, 0 = not wIv."
+  },
+  "journal": {
+    "title": "qonta'",
+    "empty": "pagh Qorwagh qonlu'ta'.",
+    "logTitle": "Qorwagh yIqon",
+    "what": "nuq",
+    "when": "ghorgh",
+    "note": "nuq boja'?",
+    "save": "yIqon",
+    "deleteConfirm": "qonta'vam yIteq'a'?"
+  },
+  "contactTypes": {
+    "message": "QIn yIngeH",
+    "call": "yIrI'",
+    "coffee": "qa'vIn tlhIvatlh",
+    "activity": "vay' yItlhej",
+    "visit_them": "yISuch",
+    "host_visit": "yInob'egh juH",
+    "congratulate": "quvmoHmeH bommey yISo'"
+  },
+  "settings": {
+    "title": "DuHmey",
+    "typesTitle": "Qorwagh Segh",
+    "typesIntro": "chay' Qorwagh wIv asocial. 0 wIvvaD not wIv; law' wIv pIn.",
+    "typeWeight": "wIv",
+    "typeWeightHint": "chIm = motlh ({n})",
+    "builtin": "chenmoHlu'pu'bogh",
+    "custom": "SoHvaD",
+    "addType": "Segh yIchel",
+    "typeName": "pong",
+    "typeEmoji": "nagh beQ",
+    "archive": "yIpol",
+    "restore": "yIchegh",
+    "archivedTag": "polta'"
+  },
+  "tasks": {
+    "suggestion": "{type}",
+    "birthdaySuggestion": "boghlu'pu'bogh jaj! {type}",
+    "state": {
+      "upcoming": "poSmoH {date}",
+      "open": "{date} vo' poSmoHtaH",
+      "stillOpen": "poSmoHtaHtaH ({date} vo')"
+    },
+    "done": "vItaHpu'",
+    "snooze": "yIloS",
+    "snoozeDays": "+{n} jajmey",
+    "skip": "DaHjaj yIySay'Ha'",
+    "reschedule": "yIvIH",
+    "newDate": "jaj chu'",
+    "cancel": "yIqIl",
+    "whatHappened": "nuq qaSpu'",
+    "when": "ghorgh",
+    "noteLabel": "nuq boja'?",
+    "logAndDone": "qon 'ej rIn",
+    "planTitle": "veb Qorwagh yInab",
+    "plan": "yInab",
+    "surpriseMe": "choqIHmoH",
+    "nextUp": "veb",
+    "errors": {
+      "invalid": "nav yIS; yInID pab.",
+      "gone": "wIvvam rInpu'."
+    }
+  },
+  "dashboard": {
+    "title": "chovnatlh",
+    "intro": "vangmeH poSmey — 'Iw naghmey 'anglu': ghorgh 'Iv DaghomnIS. vang 'e' DawIvmeH nagh yISaH.",
+    "empty": "pagh nablu'. juppu' ghomHommey je yIchel, vaj ghorgh DaghomnIS 'oH wIv asocial.",
+    "legendUpcoming": "SumtaH",
+    "legendOpen": "poSmoH — DaH yIvang",
+    "legendStillOpen": "poSmoHtaHtaH",
+    "legendBirthday": "boghlu'pu'bogh jaj"
+  },
+  "calendar": {
+    "today": "DaHjaj"
+  },
+  "digest": {
+    "title": "{n, plural, other {# juppu'}} DaghomnIS",
+    "line": "{type} — {name}",
+    "lineBirthday": "{name} boghlu'pu'bogh jaj 'oH — {type}",
+    "tomorrow": "wa'leS",
+    "openApp": "asocial yIpoSmoH"
+  },
+  "notifications": {
+    "title": "ghummey",
+    "intro": "DaHjaj rep DawIvbogh, boSlu'pu'bogh Qorwagh nItebHa' — poSmoHtaHchugh vay' neH, 'ej loStaHbogh wIv wejDIch jaj Hoch neH.",
+    "pushoverTitle": "Pushover",
+    "pushoverToken": "API nItlh",
+    "pushoverUserKey": "lo'wI' ngaQHa'moHwI'",
+    "emailTitle": "QIn Sum boS",
+    "emailAddress": "Sum (chIm = De' QIn Sum)",
+    "enabled": "chu'lu'",
+    "saveChannel": "yISaw",
+    "sendTest": "toD yIngeH",
+    "testOk": "toD ngeHlu'ta'!",
+    "logTitle": "ngeHlu'pu'bogh",
+    "logEmpty": "pagh ngeHlu'.",
+    "saved": "Sawta'.",
+    "errors": {
+      "invalid": "nav yIS; yInID pab.",
+      "invalidTimezone": "poH Sep Sovbe'lu'.",
+      "pushoverConfigMissing": "API nItlh lo'wI' ngaQHa'moHwI' je poQ Pushover.",
+      "channelNotConfigured": "wa'DIch tlhoy' DuHmey yISaw."
+    }
+  },
+  "profile": {
+    "title": "De'",
+    "language": "Hol",
+    "timezone": "poH Sep"
+  },
+  "scheduling": {
+    "title": "nabmeH",
+    "windowDays": "vangmeH poH (jajmey)",
+    "jitterPct": "mISmoH (± %)",
+    "defaultInterval": "motlh poH (jajmey)",
+    "digestHour": "boS rep (0–23)"
+  },
+  "appearance": {
+    "title": "'ang'eghghach",
+    "auto": "reH (pat wIv)",
+    "light": "wovbogh",
+    "dark": "Hurghbogh",
+    "themes": {
+      "paper": "nav",
+      "latte": "Latte",
+      "dawn": "Rosé Pine Dawn",
+      "mocha": "Mocha",
+      "tokyo-night": "Tokyo Night",
+      "rose-pine": "Rosé Pine"
+    }
+  }
+}

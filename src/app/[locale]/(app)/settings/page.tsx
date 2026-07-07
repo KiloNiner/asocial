@@ -4,9 +4,11 @@ import {
   ProfileForm,
   SchedulingForm,
 } from "@/components/settings/SettingsForms";
+import { ThemeSelector } from "@/components/settings/ThemeSelector";
 import { TypesManager } from "@/components/settings/TypesManager";
 import { getSettings, requireUser } from "@/lib/auth/current-user";
 import * as q from "@/lib/db/queries";
+import { isThemeChoice, type ThemeChoice } from "@/lib/themes";
 
 export default async function SettingsPage() {
   const user = await requireUser();
@@ -24,6 +26,13 @@ export default async function SettingsPage() {
       <h1 className="text-2xl font-semibold">{t("settings.title")}</h1>
 
       <ProfileForm user={user} settings={settings} />
+      <ThemeSelector
+        current={
+          isThemeChoice(settings.theme)
+            ? (settings.theme as ThemeChoice)
+            : "auto"
+        }
+      />
       <SchedulingForm settings={settings} />
 
       <section className="flex flex-col gap-3">
@@ -32,17 +41,17 @@ export default async function SettingsPage() {
           pushover={channels.get("pushover") ?? null}
           email={channels.get("email") ?? null}
         />
-        <h3 className="text-sm font-medium text-stone-600">
+        <h3 className="text-sm font-medium text-muted">
           {t("notifications.logTitle")}
         </h3>
         {log.length === 0 ? (
-          <p className="text-sm text-stone-500">{t("notifications.logEmpty")}</p>
+          <p className="text-sm text-muted">{t("notifications.logEmpty")}</p>
         ) : (
-          <ul className="divide-y divide-stone-100 rounded-md border border-stone-200 bg-white text-sm">
+          <ul className="divide-y divide-line rounded-md border border-line bg-panel text-sm">
             {log.map((entry) => (
               <li key={entry.id} className="flex items-center gap-3 px-4 py-2">
                 <span className="w-20 font-medium">{entry.channel}</span>
-                <span className="text-stone-500">
+                <span className="text-muted">
                   {format.dateTime(new Date(entry.sentAt), {
                     dateStyle: "medium",
                     timeStyle: "short",
@@ -50,7 +59,7 @@ export default async function SettingsPage() {
                 </span>
                 <span
                   className={`ml-auto ${
-                    entry.status === "sent" ? "text-teal-700" : "text-amber-700"
+                    entry.status === "sent" ? "text-accent" : "text-warn"
                   }`}
                   title={entry.error ?? undefined}
                 >

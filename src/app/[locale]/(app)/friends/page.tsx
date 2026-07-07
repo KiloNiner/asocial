@@ -37,20 +37,20 @@ export default async function FriendsPage({
           placeholder={t("friends.search")}
           className={`${inputClass} w-56`}
         />
-        <label className="flex items-center gap-1.5 text-sm text-stone-600">
+        <label className="flex items-center gap-1.5 text-sm text-muted">
           <input
             type="checkbox"
             name="archived"
             value="1"
             defaultChecked={showArchived}
-            className="h-4 w-4 accent-teal-700"
+            className="h-4 w-4 accent-accent"
           />
           {t("friends.showArchived")}
         </label>
       </form>
 
       {entries.length === 0 ? (
-        <p className="text-sm text-stone-500">
+        <p className="text-sm text-muted">
           {all.length === 0 ? t("friends.empty") : t("friends.emptySearch")}
         </p>
       ) : (
@@ -59,13 +59,13 @@ export default async function FriendsPage({
             <li key={friend.id}>
               <Link
                 href={`/friends/${friend.id}`}
-                className={`${cardClass} flex flex-wrap items-center gap-3 hover:border-stone-300`}
+                className={`${cardClass} flex flex-wrap items-center gap-3 hover:border-line`}
               >
                 <div className="flex min-w-40 flex-col">
                   <span className="font-medium">
                     {friend.name}
                     {friend.archived ? (
-                      <span className="ml-2 rounded bg-stone-100 px-1.5 py-0.5 text-xs text-stone-500">
+                      <span className="ml-2 rounded bg-faint px-1.5 py-0.5 text-xs text-muted">
                         {t("friends.archived")}
                       </span>
                     ) : null}
@@ -81,7 +81,7 @@ export default async function FriendsPage({
                     ))}
                   </span>
                 </div>
-                <div className="ml-auto flex flex-col items-end text-sm text-stone-500">
+                <div className="ml-auto flex flex-col items-end text-sm text-muted">
                   <span>
                     {t("friends.lastContact")}:{" "}
                     {lastContact

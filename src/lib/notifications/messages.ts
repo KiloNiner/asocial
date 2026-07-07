@@ -1,10 +1,12 @@
 import { createTranslator } from "next-intl";
 import en from "../../../messages/en.json";
 import da from "../../../messages/da.json";
+import sv from "../../../messages/sv.json";
+import tlh from "../../../messages/tlh.json";
 import type { UserSettings } from "@/db/schema";
 import type { Digest } from "./digest";
 
-const messagesByLocale = { en, da } as const;
+const messagesByLocale = { en, da, sv, tlh } as const;
 
 /** Translator usable outside a request scope (cron-driven sends). */
 export function digestTranslator(locale: UserSettings["locale"]) {

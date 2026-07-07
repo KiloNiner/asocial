@@ -233,5 +233,19 @@
     "jitterPct": "Randomness (± %)",
     "defaultInterval": "Default interval (days)",
     "digestHour": "Digest hour (0–23)"
+  },
+  "appearance": {
+    "title": "Appearance",
+    "auto": "Auto (follow system)",
+    "light": "Light",
+    "dark": "Dark",
+    "themes": {
+      "paper": "Paper",
+      "latte": "Latte",
+      "dawn": "Rosé Pine Dawn",
+      "mocha": "Mocha",
+      "tokyo-night": "Tokyo Night",
+      "rose-pine": "Rosé Pine"
+    }
   }
 }

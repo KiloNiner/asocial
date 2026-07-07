@@ -35,7 +35,7 @@ function ColorPicker({
           type="button"
           onClick={() => setSelected(color)}
           className={`h-7 w-7 rounded-full border-2 ${
-            selected === color ? "border-stone-800" : "border-transparent"
+            selected === color ? "border-sel" : "border-transparent"
           }`}
           style={{ backgroundColor: color }}
           aria-label={color}
@@ -89,7 +89,7 @@ export function CircleCreateForm() {
   return (
     <form action={action} className={`${cardClass} flex flex-col gap-3`}>
       <h2 className="text-lg font-medium">{t("circles.createTitle")}</h2>
-      <p className="text-xs text-stone-500">{t("circles.examples")}</p>
+      <p className="text-xs text-muted">{t("circles.examples")}</p>
       {state.error ? (
         <p className={errorClass}>{t(`common.errors.${state.error}`)}</p>
       ) : null}
@@ -131,7 +131,7 @@ export function CircleCard({
           style={{ backgroundColor: circle.color }}
         />
         <span className="font-medium">{circle.name}</span>
-        <span className="ml-auto text-sm text-stone-500">
+        <span className="ml-auto text-sm text-muted">
           {t("common.everyNDays", { n: circle.intervalDays })} ·{" "}
           {t("circles.members", { n: memberCount })}
         </span>
@@ -179,7 +179,7 @@ export function CircleCard({
                 void deleteCircle(circle.id);
               }
             }}
-            className={`${buttonGhostClass} text-red-700`}
+            className={`${buttonGhostClass} text-danger`}
           >
             {t("common.delete")}
           </button>

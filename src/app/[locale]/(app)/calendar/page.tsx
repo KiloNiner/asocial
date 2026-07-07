@@ -136,8 +136,8 @@ export default async function CalendarPage({
       </div>
 
       <div className="overflow-x-auto">
-        <div className="min-w-[640px] rounded-xl border border-stone-200 bg-white">
-          <div className="grid grid-cols-7 border-b border-stone-200 text-center text-xs font-medium text-stone-500">
+        <div className="min-w-[640px] rounded-xl border border-line bg-panel">
+          <div className="grid grid-cols-7 border-b border-line text-center text-xs font-medium text-muted">
             {weekdays.map((weekday) => (
               <span key={weekday} className="py-2 capitalize">
                 {weekday}
@@ -148,17 +148,17 @@ export default async function CalendarPage({
             {cells.map((cell, i) => (
               <div
                 key={cell.date ?? `empty-${i}`}
-                className={`min-h-24 border-b border-r border-stone-100 p-1.5 ${
-                  cell.date === currentDate ? "bg-teal-50/60" : ""
-                } ${i % 7 >= 5 ? "bg-stone-50/60" : ""}`}
+                className={`min-h-24 border-b border-r border-line p-1.5 ${
+                  cell.date === currentDate ? "bg-accent-soft/60" : ""
+                } ${i % 7 >= 5 ? "bg-surface/60" : ""}`}
               >
                 {cell.day ? (
                   <>
                     <span
                       className={`text-xs ${
                         cell.date === currentDate
-                          ? "rounded-full bg-teal-700 px-1.5 py-0.5 font-semibold text-white"
-                          : "text-stone-400"
+                          ? "rounded-full bg-accent px-1.5 py-0.5 font-semibold text-on-accent"
+                          : "text-subtle"
                       }`}
                     >
                       {cell.day}
@@ -170,10 +170,10 @@ export default async function CalendarPage({
                           href={`/friends/${chip.friendId}`}
                           className={`truncate rounded px-1 py-0.5 text-[11px] leading-tight hover:opacity-80 ${
                             chip.kind === "overdue"
-                              ? "bg-amber-50 text-amber-800"
+                              ? "bg-warn-soft text-warn"
                               : chip.kind === "birthday"
-                                ? "bg-pink-50 text-pink-800"
-                                : "bg-stone-100 text-stone-700"
+                                ? "bg-birthday-soft text-birthday"
+                                : "bg-faint text-ink"
                           }`}
                         >
                           {chip.color ? (

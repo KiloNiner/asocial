@@ -1,0 +1,251 @@
+{
+  "app": {
+    "name": "asocial",
+    "tagline": "Milda stödhjul för att hålla dina vänskaper vid liv"
+  },
+  "nav": {
+    "dashboard": "Översikt",
+    "calendar": "Kalender",
+    "friends": "Vänner",
+    "circles": "Cirklar",
+    "settings": "Inställningar",
+    "invites": "Inbjudningar",
+    "logout": "Logga ut"
+  },
+  "home": {
+    "welcome": "Välkommen till asocial"
+  },
+  "common": {
+    "save": "Spara",
+    "cancel": "Avbryt",
+    "edit": "Redigera",
+    "delete": "Ta bort",
+    "create": "Skapa",
+    "back": "Tillbaka",
+    "days": "dagar",
+    "everyNDays": "ungefär var {n}:e dag",
+    "optional": "valfritt",
+    "none": "ingen",
+    "actions": "Åtgärder",
+    "errors": {
+      "invalid": "Kontrollera formuläret och försök igen.",
+      "duplicateName": "Namnet används redan."
+    }
+  },
+  "auth": {
+    "email": "E-post",
+    "password": "Lösenord",
+    "displayName": "Ditt namn",
+    "login": "Logga in",
+    "loginTitle": "Logga in på asocial",
+    "register": "Skapa konto",
+    "registerTitle": "Skapa ditt konto",
+    "bootstrapHint": "Du är den första användaren — det här kontot blir administratör.",
+    "inviteNeededHint": "Registrering kräver en inbjudningslänk från en administratör.",
+    "noAccountYet": "Första gången här? Skapa administratörskontot",
+    "haveAccount": "Har du redan ett konto? Logga in",
+    "errors": {
+      "invalid": "Kontrollera formuläret och försök igen.",
+      "invalidCredentials": "Fel e-post eller lösenord.",
+      "emailTaken": "Det finns redan ett konto med den här e-postadressen.",
+      "inviteInvalid": "Inbjudningslänken är ogiltig, använd eller har gått ut."
+    }
+  },
+  "invites": {
+    "title": "Inbjudningar",
+    "emailOptional": "E-post (valfritt)",
+    "create": "Skapa inbjudan",
+    "copyHint": "Kopiera länken nu — den visas bara en gång:",
+    "listTitle": "Utfärdade inbjudningar",
+    "empty": "Inga inbjudningar utfärdade ännu.",
+    "revoke": "Återkalla",
+    "status": {
+      "open": "Öppen",
+      "used": "Använd",
+      "expired": "Utgången"
+    },
+    "anyEmail": "valfri e-post",
+    "expires": "Går ut {date}"
+  },
+  "circles": {
+    "title": "Cirklar",
+    "intro": "Cirklar grupperar dina vänner och sätter deras kontaktrytm. En vän i flera cirklar följer den mest frekventa.",
+    "name": "Namn",
+    "color": "Färg",
+    "interval": "Kontaktintervall",
+    "members": "{n, plural, =0 {inga vänner} one {# vän} other {# vänner}}",
+    "createTitle": "Ny cirkel",
+    "empty": "Inga cirklar ännu. Skapa en för att ge dina vänner en rytm.",
+    "deleteConfirm": "Ta bort cirkeln? Vännerna i den behålls; de faller tillbaka på andra cirklar eller ditt standardintervall.",
+    "typePrefs": "Aktivitetspreferenser",
+    "typePrefsHint": "Vikter för förslag i den här cirkeln. Tomt = ärvt, 0 = föreslå aldrig.",
+    "examples": "t.ex. Nära vänner 14, Gamla klasskamrater 60"
+  },
+  "friends": {
+    "title": "Vänner",
+    "add": "Lägg till vän",
+    "search": "Sök…",
+    "empty": "Inga vänner ännu. Lägg till de människor du vill hålla kvar.",
+    "emptySearch": "Ingen matchar din sökning.",
+    "lastContact": "Senaste kontakt",
+    "nextContact": "Nästa kontakt",
+    "never": "aldrig",
+    "logContact": "Logga kontakt",
+    "newTitle": "Lägg till en vän",
+    "editTitle": "Redigera vän",
+    "name": "Namn",
+    "notes": "Anteckningar",
+    "notesHint": "Allt som är värt att minnas — partner, barn, ämnen att undvika…",
+    "circlesLabel": "Cirklar",
+    "noCircles": "Inga cirklar ännu — skapa några först för automatiska rytmer.",
+    "intervalOverride": "Personligt kontaktintervall",
+    "intervalOverrideHint": "Åsidosätter cirkelrytmer för den här vännen. Lämna tomt för att följa cirklarna.",
+    "intervalSource": {
+      "override": "ungefär var {n}:e dag (personligt)",
+      "circle": "ungefär var {n}:e dag (från {circle})",
+      "default": "ungefär var {n}:e dag (din standard)"
+    },
+    "autoschedule": "Föreslå kontakt automatiskt",
+    "birthday": "Födelsedag",
+    "birthdayDay": "Dag",
+    "birthdayMonth": "Månad",
+    "birthdayYear": "År ({optional})",
+    "age": "fyller {age}",
+    "archive": "Arkivera",
+    "unarchive": "Återställ",
+    "archived": "Arkiverad",
+    "archiveConfirm": "Arkivera den här vännen? Väntande förslag avbryts. Journalen behålls och du kan alltid återställa.",
+    "showArchived": "Visa arkiverade",
+    "typePrefs": "Aktivitetspreferenser",
+    "typePrefsHint": "Hur förslag viktas för den här vännen. Tomt = ärvt, 0 = föreslå aldrig."
+  },
+  "journal": {
+    "title": "Journal",
+    "empty": "Ingen kontakt loggad ännu.",
+    "logTitle": "Logga kontakt",
+    "what": "Vad",
+    "when": "När",
+    "note": "Vad pratade ni om?",
+    "save": "Logga",
+    "deleteConfirm": "Ta bort journalposten?"
+  },
+  "contactTypes": {
+    "message": "Skicka ett meddelande",
+    "call": "Telefonsamtal",
+    "coffee": "Ta en kaffe",
+    "activity": "Gör något tillsammans",
+    "visit_them": "Besök dem",
+    "host_visit": "Bjud hem dem",
+    "congratulate": "Gratulera på födelsedagen"
+  },
+  "settings": {
+    "title": "Inställningar",
+    "typesTitle": "Interaktionstyper",
+    "typesIntro": "Hur asocial får föreslå att du hör av dig. Sätt en vikt till 0 för att aldrig få det förslaget; högre vikter kommer oftare.",
+    "typeWeight": "Vikt",
+    "typeWeightHint": "Tomt = standard ({n})",
+    "builtin": "Inbyggda",
+    "custom": "Dina egna",
+    "addType": "Lägg till din egen typ",
+    "typeName": "Namn",
+    "typeEmoji": "Emoji",
+    "archive": "Arkivera",
+    "restore": "Återställ",
+    "archivedTag": "arkiverad"
+  },
+  "tasks": {
+    "suggestion": "{type}",
+    "birthdaySuggestion": "Födelsedag! {type}",
+    "state": {
+      "upcoming": "öppnar {date}",
+      "open": "fönster öppet sedan {date}",
+      "stillOpen": "fortfarande öppet (sedan {date})"
+    },
+    "done": "Gjort",
+    "snooze": "Skjut upp",
+    "snoozeDays": "+{n} dagar",
+    "skip": "Hoppa över den här gången",
+    "reschedule": "Flytta",
+    "newDate": "Nytt datum",
+    "cancel": "Avbryt",
+    "whatHappened": "Vad hände",
+    "when": "När",
+    "noteLabel": "Vad pratade ni om?",
+    "logAndDone": "Logga & klart",
+    "planTitle": "Planera nästa kontakt",
+    "plan": "Planera",
+    "surpriseMe": "Överraska mig",
+    "nextUp": "Nästa",
+    "errors": {
+      "invalid": "Kontrollera formuläret och försök igen.",
+      "gone": "Förslaget är redan avslutat."
+    }
+  },
+  "dashboard": {
+    "title": "Översikt",
+    "intro": "Dina handlingsfönster — färgade band visar när du bör höra av dig till vem. Klicka på ett band för att agera.",
+    "empty": "Inget planerat ännu. Lägg till vänner och cirklar, så föreslår asocial när du ska höra av dig.",
+    "legendUpcoming": "kommande",
+    "legendOpen": "öppet — agera nu",
+    "legendStillOpen": "fortfarande öppet",
+    "legendBirthday": "födelsedag"
+  },
+  "calendar": {
+    "today": "Idag"
+  },
+  "digest": {
+    "title": "{n, plural, one {# vän} other {# vänner}} att höra av dig till",
+    "line": "{type} — {name}",
+    "lineBirthday": "Det är {name}s födelsedag — {type}",
+    "tomorrow": "imorgon",
+    "openApp": "Öppna asocial"
+  },
+  "notifications": {
+    "title": "Notiser",
+    "intro": "En kort daglig sammanfattning vid din valda timme — bara när något faktiskt är öppet, och hängande förslag bara var tredje dag.",
+    "pushoverTitle": "Pushover",
+    "pushoverToken": "API-token",
+    "pushoverUserKey": "Användarnyckel",
+    "emailTitle": "E-postsammanfattning",
+    "emailAddress": "Adress (tom = kontots e-post)",
+    "enabled": "Aktiverad",
+    "saveChannel": "Spara",
+    "sendTest": "Skicka test",
+    "testOk": "Test skickat!",
+    "logTitle": "Senaste utskick",
+    "logEmpty": "Inget skickat ännu.",
+    "saved": "Sparat.",
+    "errors": {
+      "invalid": "Kontrollera formuläret och försök igen.",
+      "invalidTimezone": "Okänd tidszon.",
+      "pushoverConfigMissing": "Pushover kräver både API-token och användarnyckel.",
+      "channelNotConfigured": "Spara kanalens konfiguration först."
+    }
+  },
+  "profile": {
+    "title": "Profil",
+    "language": "Språk",
+    "timezone": "Tidszon"
+  },
+  "scheduling": {
+    "title": "Planering",
+    "windowDays": "Handlingsfönster (dagar)",
+    "jitterPct": "Slumpmässighet (± %)",
+    "defaultInterval": "Standardintervall (dagar)",
+    "digestHour": "Sammanfattningstimme (0–23)"
+  },
+  "appearance": {
+    "title": "Utseende",
+    "auto": "Auto (följ systemet)",
+    "light": "Ljusa",
+    "dark": "Mörka",
+    "themes": {
+      "paper": "Papper",
+      "latte": "Latte",
+      "dawn": "Rosé Pine Dawn",
+      "mocha": "Mocha",
+      "tokyo-night": "Tokyo Night",
+      "rose-pine": "Rosé Pine"
+    }
+  }
+}

@@ -14,7 +14,7 @@ export default async function LoginPage() {
       {bootstrap ? (
         <Link
           href="/register"
-          className="text-sm text-teal-700 hover:underline"
+          className="text-sm text-accent hover:underline"
         >
           {t("noAccountYet")}
         </Link>

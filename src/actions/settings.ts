@@ -2,6 +2,7 @@
 
 import { eq, and, desc } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 import { z } from "zod";
 import { db } from "@/db";
 import {
@@ -16,6 +17,7 @@ import {
 import { composeDigest } from "@/lib/notifications/digest";
 import { today } from "@/lib/scheduler/clock";
 import type { ChannelId } from "@/lib/notifications/channel";
+import { THEME_COOKIE, isThemeChoice } from "@/lib/themes";
 
 export type SettingsFormState = { error?: string; ok?: boolean };
 
@@ -23,9 +25,26 @@ function revalidate() {
   revalidatePath("/[locale]/settings", "page");
 }
 
+/** Persist the theme to the user's settings and mirror it into a cookie
+ *  (1 year) so logged-out pages render in the same theme. */
+export async function updateTheme(choice: string): Promise<void> {
+  const user = await requireUser();
+  if (!isThemeChoice(choice)) return;
+  db.update(userSettings)
+    .set({ theme: choice })
+    .where(eq(userSettings.userId, user.id))
+    .run();
+  (await cookies()).set(THEME_COOKIE, choice, {
+    path: "/",
+    maxAge: 60 * 60 * 24 * 365,
+    sameSite: "lax",
+  });
+  revalidatePath("/", "layout");
+}
+
 const profileSchema = z.object({
   displayName: z.string().trim().min(1).max(100),
-  locale: z.enum(["en", "da"]),
+  locale: z.enum(["en", "da", "sv", "tlh"]),
   timezone: z.string().min(1).max(60),
 });
 

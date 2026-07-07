@@ -233,5 +233,19 @@
     "jitterPct": "Tilfældighed (± %)",
     "defaultInterval": "Standardinterval (dage)",
     "digestHour": "Sammendragstime (0–23)"
+  },
+  "appearance": {
+    "title": "Udseende",
+    "auto": "Auto (følg systemet)",
+    "light": "Lyse",
+    "dark": "Mørke",
+    "themes": {
+      "paper": "Papir",
+      "latte": "Latte",
+      "dawn": "Rosé Pine Dawn",
+      "mocha": "Mocha",
+      "tokyo-night": "Tokyo Night",
+      "rose-pine": "Rosé Pine"
+    }
   }
 }

@@ -14,7 +14,7 @@ export default async function DashboardPage() {
     <div className="flex flex-col gap-4">
       <div>
         <h1 className="text-2xl font-semibold">{t("title")}</h1>
-        <p className="mt-1 text-sm text-stone-500">{t("intro")}</p>
+        <p className="mt-1 text-sm text-muted">{t("intro")}</p>
       </div>
       <ActionWindowBoard
         rows={q.boardRows(user.id)}
