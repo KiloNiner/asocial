@@ -655,3 +655,154 @@ export function listNotificationLog(
     .limit(limit)
     .all();
 }
+
+// ---------- backup / restore ----------
+
+export const BACKUP_VERSION = 1 as const;
+
+export type BackupData = {
+  version: number;
+  exportedAt: string;
+  circles: (typeof circles.$inferSelect)[];
+  friends: (typeof friends.$inferSelect)[];
+  friendCircles: (typeof friendCircles.$inferSelect)[];
+  contactTypes: (typeof contactTypes.$inferSelect)[]; // custom only
+  userContactPrefs: (typeof userContactPrefs.$inferSelect)[];
+  circleContactPrefs: (typeof circleContactPrefs.$inferSelect)[];
+  friendContactPrefs: (typeof friendContactPrefs.$inferSelect)[];
+  interactions: (typeof interactions.$inferSelect)[];
+};
+
+/** All of a user's portable data (everything except live tasks/notifications). */
+export function exportUserData(userId: string): BackupData {
+  const circleRows = db
+    .select()
+    .from(circles)
+    .where(eq(circles.userId, userId))
+    .all();
+  const friendRows = db
+    .select()
+    .from(friends)
+    .where(eq(friends.userId, userId))
+    .all();
+  const circleIds = circleRows.map((c) => c.id);
+  const friendIds = friendRows.map((f) => f.id);
+
+  return {
+    version: BACKUP_VERSION,
+    exportedAt: new Date().toISOString(),
+    circles: circleRows,
+    friends: friendRows,
+    friendCircles:
+      friendIds.length === 0
+        ? []
+        : db
+            .select()
+            .from(friendCircles)
+            .where(inArray(friendCircles.friendId, friendIds))
+            .all(),
+    contactTypes: db
+      .select()
+      .from(contactTypes)
+      .where(eq(contactTypes.userId, userId)) // custom types only
+      .all(),
+    userContactPrefs: db
+      .select()
+      .from(userContactPrefs)
+      .where(eq(userContactPrefs.userId, userId))
+      .all(),
+    circleContactPrefs:
+      circleIds.length === 0
+        ? []
+        : db
+            .select()
+            .from(circleContactPrefs)
+            .where(inArray(circleContactPrefs.circleId, circleIds))
+            .all(),
+    friendContactPrefs:
+      friendIds.length === 0
+        ? []
+        : db
+            .select()
+            .from(friendContactPrefs)
+            .where(inArray(friendContactPrefs.friendId, friendIds))
+            .all(),
+    interactions: db
+      .select()
+      .from(interactions)
+      .where(eq(interactions.userId, userId))
+      .all(),
+  };
+}
+
+export type ImportCounts = {
+  circles: number;
+  friends: number;
+  interactions: number;
+  contactTypes: number;
+};
+
+/**
+ * Replace-all restore: wipe the user's portable data, then insert from the
+ * backup, forcing ownership to userId and preserving record IDs. Tasks are not
+ * restored (regenerate them via sweepUserContactTasks afterwards).
+ */
+export function importUserData(userId: string, data: BackupData): ImportCounts {
+  return db.transaction((tx) => {
+    // Delete order: rows/tables that cascade from friends & circles go first
+    // implicitly via ON DELETE CASCADE (foreign_keys = ON).
+    tx.delete(interactions).where(eq(interactions.userId, userId)).run();
+    tx.delete(tasks).where(eq(tasks.userId, userId)).run();
+    tx.delete(friends).where(eq(friends.userId, userId)).run();
+    tx.delete(circles).where(eq(circles.userId, userId)).run();
+    tx.delete(userContactPrefs)
+      .where(eq(userContactPrefs.userId, userId))
+      .run();
+    tx.delete(contactTypes).where(eq(contactTypes.userId, userId)).run();
+
+    if (data.contactTypes.length > 0) {
+      tx.insert(contactTypes)
+        .values(data.contactTypes.map((row) => ({ ...row, userId })))
+        .run();
+    }
+    if (data.circles.length > 0) {
+      tx.insert(circles)
+        .values(data.circles.map((row) => ({ ...row, userId })))
+        .run();
+    }
+    if (data.friends.length > 0) {
+      tx.insert(friends)
+        .values(data.friends.map((row) => ({ ...row, userId })))
+        .run();
+    }
+    if (data.friendCircles.length > 0) {
+      tx.insert(friendCircles).values(data.friendCircles).run();
+    }
+    if (data.userContactPrefs.length > 0) {
+      tx.insert(userContactPrefs)
+        .values(data.userContactPrefs.map((row) => ({ ...row, userId })))
+        .run();
+    }
+    if (data.circleContactPrefs.length > 0) {
+      tx.insert(circleContactPrefs).values(data.circleContactPrefs).run();
+    }
+    if (data.friendContactPrefs.length > 0) {
+      tx.insert(friendContactPrefs).values(data.friendContactPrefs).run();
+    }
+    if (data.interactions.length > 0) {
+      // taskId references live tasks that are not restored.
+      tx.insert(interactions)
+        .values(
+          data.interactions.map((row) => ({ ...row, userId, taskId: null })),
+        )
+        .run();
+    }
+
+    return {
+      circles: data.circles.length,
+      friends: data.friends.length,
+      interactions: data.interactions.length,
+      contactTypes: data.contactTypes.length,
+    };
+  });
+}

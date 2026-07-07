@@ -247,5 +247,18 @@
       "tokyo-night": "Tokyo Night",
       "rose-pine": "Rosé Pine"
     }
+  },
+  "backup": {
+    "title": "Säkerhetskopiera & återställ",
+    "intro": "Ladda ner alla dina cirklar, vänner och journal som en JSON-fil, eller återställ från en.",
+    "export": "Ladda ner säkerhetskopia",
+    "importTitle": "Återställ från en säkerhetskopia",
+    "file": "Säkerhetskopiefil (.json)",
+    "import": "Återställ",
+    "replaceWarning": "Återställning ersätter ALLA dina nuvarande cirklar, vänner och journal med filens innehåll. Väntande förslag återskapas. Fortsätt?",
+    "imported": "Återställde {friends} vänner, {circles} cirklar och {interactions} journalposter.",
+    "errors": {
+      "invalidFile": "Det ser inte ut som en giltig asocial-säkerhetskopia."
+    }
   }
 }

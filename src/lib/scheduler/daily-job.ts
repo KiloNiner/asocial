@@ -75,28 +75,10 @@ export function runDailyScheduler(force = false): SchedulerStats {
       .where(and(eq(friends.userId, user.id), eq(friends.archived, false)))
       .all();
 
-    for (const friend of activeFriends) {
-      // Contact sweep
-      if (friend.autoschedule && !pendingTask(user.id, friend.id, "contact")) {
-        const lastInteraction = db
-          .select({ occurredOn: interactions.occurredOn })
-          .from(interactions)
-          .where(
-            and(
-              eq(interactions.userId, user.id),
-              eq(interactions.friendId, friend.id),
-            ),
-          )
-          .orderBy(desc(interactions.occurredOn))
-          .get();
-        const base =
-          lastInteraction?.occurredOn ??
-          new Date(friend.createdAt).toISOString().slice(0, 10);
-        if (scheduleNextTask(user.id, friend.id, base)) {
-          stats.contactTasksCreated++;
-        }
-      }
+    // Contact sweep — friends missing a pending suggestion.
+    stats.contactTasksCreated += sweepUserContactTasks(user.id);
 
+    for (const friend of activeFriends) {
       // Birthday sweep
       if (friend.birthMonth && friend.birthDay) {
         const occurrence = nextBirthday(friend.birthMonth, friend.birthDay, t);
@@ -134,6 +116,43 @@ export function runDailyScheduler(force = false): SchedulerStats {
 
   finishRun("scheduler", runDate, stats);
   return stats;
+}
+
+/**
+ * Create a first/next contact suggestion for every active autoschedule friend
+ * of a user that has no pending one. Base date = their latest interaction, else
+ * their created date. Returns the number of tasks created. Shared by the daily
+ * sweep and by data restore.
+ */
+export function sweepUserContactTasks(userId: string): number {
+  let created = 0;
+  const activeFriends = db
+    .select()
+    .from(friends)
+    .where(and(eq(friends.userId, userId), eq(friends.archived, false)))
+    .all();
+
+  for (const friend of activeFriends) {
+    if (!friend.autoschedule || pendingTask(userId, friend.id, "contact")) {
+      continue;
+    }
+    const lastInteraction = db
+      .select({ occurredOn: interactions.occurredOn })
+      .from(interactions)
+      .where(
+        and(
+          eq(interactions.userId, userId),
+          eq(interactions.friendId, friend.id),
+        ),
+      )
+      .orderBy(desc(interactions.occurredOn))
+      .get();
+    const base =
+      lastInteraction?.occurredOn ??
+      new Date(friend.createdAt).toISOString().slice(0, 10);
+    if (scheduleNextTask(userId, friend.id, base)) created++;
+  }
+  return created;
 }
 
 /** True when today's scheduler run already happened (for boot catch-up). */

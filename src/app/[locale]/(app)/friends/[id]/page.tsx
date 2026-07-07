@@ -1,17 +1,15 @@
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { setFriendPref } from "@/actions/friends";
 import { ArchiveButton } from "@/components/friends/ArchiveButton";
 import {
   JournalTimeline,
   LogInteractionForm,
 } from "@/components/journal/Journal";
-import { PrefEditor, type PrefRow } from "@/components/prefs/PrefEditor";
 import { ManualTaskForm, TaskCard } from "@/components/tasks/TaskCard";
 import { buttonGhostClass, cardClass } from "@/components/ui/classes";
 import { getSettings, requireUser } from "@/lib/auth/current-user";
 import * as q from "@/lib/db/queries";
-import { effectiveInterval, governingCircle } from "@/lib/scheduler/interval";
+import { effectiveInterval } from "@/lib/scheduler/interval";
 import { today } from "@/lib/scheduler/clock";
 import { pendingTask } from "@/lib/scheduler/schedule";
 import { Link } from "@/i18n/navigation";
@@ -41,27 +39,6 @@ export default async function FriendDetailPage({
             circle: interval.source.circle.name,
           })
         : t("friends.intervalSource.default", { n: interval.days });
-
-  // Friend-level prefs inherit from the governing circle, then user level.
-  const circlePrefs = (() => {
-    const governing = governingCircle(friend, circles);
-    return governing ? q.getCirclePrefs(user.id, governing.id) : new Map();
-  })();
-  const userPrefs = q.getUserPrefs(user.id);
-  const friendPrefs = q.getFriendPrefs(user.id, id);
-  const prefRows: PrefRow[] = journalTypes.map((type) => ({
-    type: {
-      id: type.id,
-      name: type.name,
-      emoji: type.emoji,
-      defaultWeight: type.defaultWeight,
-    },
-    weight: friendPrefs.get(type.id) ?? null,
-    inherited:
-      circlePrefs.get(type.id) ??
-      userPrefs.get(type.id) ??
-      type.defaultWeight,
-  }));
 
   return (
     <div className="flex max-w-3xl flex-col gap-6">
@@ -173,15 +150,6 @@ export default async function FriendDetailPage({
             name: type.name,
             emoji: type.emoji,
           }))}
-        />
-      </section>
-
-      <section className={`${cardClass} flex flex-col gap-2`}>
-        <h2 className="text-lg font-medium">{t("friends.typePrefs")}</h2>
-        <PrefEditor
-          rows={prefRows}
-          action={setFriendPref.bind(null, friend.id)}
-          hint={t("friends.typePrefsHint")}
         />
       </section>
     </div>

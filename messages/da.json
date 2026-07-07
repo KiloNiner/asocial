@@ -247,5 +247,18 @@
       "tokyo-night": "Tokyo Night",
       "rose-pine": "Rosé Pine"
     }
+  },
+  "backup": {
+    "title": "Sikkerhedskopi & gendan",
+    "intro": "Hent alle dine cirkler, venner og journal som en JSON-fil, eller gendan fra en.",
+    "export": "Hent sikkerhedskopi",
+    "importTitle": "Gendan fra en sikkerhedskopi",
+    "file": "Sikkerhedskopifil (.json)",
+    "import": "Gendan",
+    "replaceWarning": "Gendannelse erstatter ALLE dine nuværende cirkler, venner og journal med filens indhold. Ventende forslag genskabes. Fortsæt?",
+    "imported": "Gendannede {friends} venner, {circles} cirkler og {interactions} journalposter.",
+    "errors": {
+      "invalidFile": "Det ligner ikke en gyldig asocial-sikkerhedskopi."
+    }
   }
 }
