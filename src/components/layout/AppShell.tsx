@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { logout } from "@/actions/auth";
 import { Link } from "@/i18n/navigation";
@@ -20,7 +21,11 @@ export async function AppShell({
   return (
     <div className="flex min-h-screen flex-col md:flex-row">
       <aside className="flex w-full shrink-0 flex-col gap-4 border-b border-line bg-panel p-4 md:min-h-screen md:w-52 md:border-b-0 md:border-r">
-        <Link href="/" className="text-lg font-bold tracking-tight">
+        <Link
+          href="/"
+          className="flex items-center gap-2 text-lg font-bold tracking-tight"
+        >
+          <Image src="/mark.svg" alt="" width={22} height={22} className="shrink-0" />
           asocial
         </Link>
         <nav className="flex flex-row flex-wrap gap-1 md:flex-col">

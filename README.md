@@ -1,4 +1,4 @@
-# asocial
+<img src="public/logo.svg" alt="asocial" width="260" />
 
 **Gentle training wheels for keeping your friendships alive.**
 

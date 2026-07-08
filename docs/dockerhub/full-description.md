@@ -1,4 +1,4 @@
-# asocial
+![asocial](https://raw.githubusercontent.com/KiloNiner/asocial/main/public/logo.svg)
 
 **Gentle training wheels for keeping your friendships alive.**
 
