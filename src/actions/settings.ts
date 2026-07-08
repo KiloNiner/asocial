@@ -18,6 +18,7 @@ import { composeDigest } from "@/lib/notifications/digest";
 import { today } from "@/lib/scheduler/clock";
 import type { ChannelId } from "@/lib/notifications/channel";
 import { THEME_COOKIE, isThemeChoice } from "@/lib/themes";
+import { redirect } from "@/i18n/navigation";
 
 export type SettingsFormState = { error?: string; ok?: boolean };
 
@@ -62,6 +63,9 @@ export async function updateProfile(
     return { error: "invalidTimezone" };
   }
 
+  const settings = await getSettings(user.id);
+  const localeChanged = settings.locale !== parsed.data.locale;
+
   db.update(users)
     .set({ displayName: parsed.data.displayName })
     .where(eq(users.id, user.id))
@@ -70,6 +74,13 @@ export async function updateProfile(
     .set({ locale: parsed.data.locale, timezone: parsed.data.timezone })
     .where(eq(userSettings.userId, user.id))
     .run();
+
+  if (localeChanged) {
+    // Navigate to the new locale's URL prefix — this app routes by URL
+    // segment, not cookie, so the DB value alone wouldn't move the user.
+    redirect({ href: "/settings", locale: parsed.data.locale });
+  }
+
   revalidate();
   return { ok: true };
 }

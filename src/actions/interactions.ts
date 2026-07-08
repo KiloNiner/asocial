@@ -64,6 +64,17 @@ export async function logInteraction(
       if (friend.autoschedule) {
         scheduleNextTask(user.id, friend.id, parsed.data.occurredOn);
       }
+    } else {
+      // Contact happened well before the pending nudge's window — the old
+      // due date is stale. Resolve it without linking (it wasn't what
+      // satisfied it) and recompute the cadence from the real contact date.
+      db.update(tasks)
+        .set({ status: "skipped", completedAt: Date.now() })
+        .where(and(eq(tasks.id, open.id), eq(tasks.userId, user.id)))
+        .run();
+      if (friend.autoschedule) {
+        scheduleNextTask(user.id, friend.id, parsed.data.occurredOn);
+      }
     }
   } else if (friend.autoschedule) {
     scheduleNextTask(user.id, friend.id, parsed.data.occurredOn);

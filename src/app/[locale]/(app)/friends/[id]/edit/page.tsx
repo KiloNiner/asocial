@@ -3,7 +3,6 @@ import { getTranslations } from "next-intl/server";
 import { setFriendPref } from "@/actions/friends";
 import { FriendForm } from "@/components/friends/FriendForm";
 import { PrefEditor, type PrefRow } from "@/components/prefs/PrefEditor";
-import { cardClass } from "@/components/ui/classes";
 import { requireUser } from "@/lib/auth/current-user";
 import * as q from "@/lib/db/queries";
 import { governingCircle } from "@/lib/scheduler/interval";
@@ -50,16 +49,19 @@ export default async function EditFriendPage({
         friend={friend}
         allCircles={q.listCircles(user.id)}
         memberCircleIds={memberCircleIds}
+        activityPrefs={
+          <div className="flex flex-col gap-2 border-t border-line pt-4">
+            <h2 className="text-sm font-medium text-muted">
+              {t("typePrefs")}
+            </h2>
+            <PrefEditor
+              rows={prefRows}
+              action={setFriendPref.bind(null, friend.id)}
+              hint={t("typePrefsHint")}
+            />
+          </div>
+        }
       />
-
-      <section className={`${cardClass} flex flex-col gap-2`}>
-        <h2 className="text-lg font-medium">{t("typePrefs")}</h2>
-        <PrefEditor
-          rows={prefRows}
-          action={setFriendPref.bind(null, friend.id)}
-          hint={t("typePrefsHint")}
-        />
-      </section>
     </div>
   );
 }

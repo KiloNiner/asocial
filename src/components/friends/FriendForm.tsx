@@ -19,10 +19,12 @@ export function FriendForm({
   friend,
   allCircles,
   memberCircleIds,
+  activityPrefs,
 }: Readonly<{
   friend?: Friend;
   allCircles: Circle[];
   memberCircleIds?: string[];
+  activityPrefs?: React.ReactNode;
 }>) {
   const t = useTranslations();
   const action = friend ? updateFriend.bind(null, friend.id) : createFriend;
@@ -152,6 +154,8 @@ export function FriendForm({
           className={inputClass}
         />
       </label>
+
+      {activityPrefs}
 
       <label className="flex items-center gap-2 text-sm">
         <input
