@@ -1,6 +1,7 @@
 "use server";
 
 import { count, eq } from "drizzle-orm";
+import { headers } from "next/headers";
 import { getLocale } from "next-intl/server";
 import { z } from "zod";
 import { db } from "@/db";
@@ -14,6 +15,23 @@ import { createSession, destroySession } from "@/lib/auth/session";
 import { redirect } from "@/i18n/navigation";
 
 export type AuthFormState = { error?: string };
+
+/** Zero the last IPv4 octet / collapse IPv6 to its /64 — enough to spot
+ *  abuse patterns from a subnet without logging a re-identifiable address. */
+function maskIp(ip: string): string {
+  if (ip.includes(":")) {
+    return `${ip.split(":").slice(0, 4).join(":")}::`;
+  }
+  const parts = ip.split(".");
+  return parts.length === 4 ? `${parts.slice(0, 3).join(".")}.0` : ip;
+}
+
+async function clientIp(): Promise<string> {
+  const h = await headers();
+  const forwarded = h.get("x-forwarded-for");
+  const ip = forwarded?.split(",")[0]?.trim() || h.get("x-real-ip") || "unknown";
+  return ip === "unknown" ? ip : maskIp(ip);
+}
 
 const registerSchema = z.object({
   email: z.email().transform((v) => v.toLowerCase().trim()),
@@ -87,8 +105,15 @@ export async function login(
   formData: FormData,
 ): Promise<AuthFormState> {
   const locale = await getLocale();
+  const ip = await clientIp();
   const parsed = loginSchema.safeParse(Object.fromEntries(formData));
-  if (!parsed.success) return { error: "invalidCredentials" };
+  if (!parsed.success) {
+    console.warn(
+      "[auth] login failed:",
+      JSON.stringify({ reason: "invalidInput", ip }),
+    );
+    return { error: "invalidCredentials" };
+  }
 
   const user = db
     .select()
@@ -101,8 +126,18 @@ export async function login(
       "$argon2id$v=19$m=19456,t=2,p=1$AAAAAAAAAAAAAAAAAAAAAA$AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
     parsed.data.password,
   );
-  if (!user || !ok) return { error: "invalidCredentials" };
+  if (!user || !ok) {
+    console.warn(
+      "[auth] login failed:",
+      JSON.stringify({ reason: "invalidCredentials", email: parsed.data.email, ip }),
+    );
+    return { error: "invalidCredentials" };
+  }
 
+  console.log(
+    "[auth] login succeeded:",
+    JSON.stringify({ userId: user.id, ip }),
+  );
   await createSession(user.id);
   redirect({ href: "/", locale });
   return {};
