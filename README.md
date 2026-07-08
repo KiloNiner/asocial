@@ -40,7 +40,23 @@ like you're acting off a script.
   tasks re-appear only every third day (anti-nag rule).
 - **Multi-user** — invite-only registration (first user becomes admin) with
   strict per-user data isolation.
-- **i18n** — English and Danish, Monday week start, 24h time.
+- **Themes** — six hand-picked light/dark themes plus Auto (follows your
+  system).
+- **i18n** — English, Danish, Swedish and Klingon (tlhIngan Hol), Monday week
+  start, 24h time.
+
+## Screenshots
+
+| | |
+|---|---|
+| **Action-window board** — one row per friend, colored bands show when to act | **Calendar** — classic month view, Monday-first |
+| ![Action-window board](docs/screenshots/dashboard-board.png) | ![Calendar](docs/screenshots/calendar.png) |
+| **Friends** — last/next contact at a glance | **Friend detail** — the "next up" suggestion, quick logging, and journal |
+| ![Friends list](docs/screenshots/friends-list.png) | ![Friend detail](docs/screenshots/friend-detail.png) |
+| **Editing a friend** — per-friend activity weights alongside the rest of their settings | **Circles** — group rhythms and per-circle activity weights |
+| ![Friend edit](docs/screenshots/friend-edit.png) | ![Circles](docs/screenshots/circles.png) |
+| **Six themes + Auto** | **Dark theme (Tokyo Night)** — the same board, restyled |
+| ![Settings — theme selector](docs/screenshots/settings-theme.png) | ![Dashboard in a dark theme](docs/screenshots/dashboard-dark.png) |
 
 ## Quick start (development)
 
@@ -124,5 +140,5 @@ scheduler run. Unit tests: `npm test`.
 ## Stack
 
 Next.js (App Router) · TypeScript · SQLite via Drizzle ORM · Tailwind CSS ·
-next-intl (en/da) · Croner for in-process cron · argon2id auth with opaque
-session tokens. Single container, no external services required.
+next-intl (en/da/sv/tlh) · Croner for in-process cron · argon2id auth with
+opaque session tokens. Single container, no external services required.
