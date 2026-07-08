@@ -150,6 +150,12 @@ export async function runDigestDispatch(force = false): Promise<DispatchStats> {
         status = "failed";
         error = err instanceof Error ? err.message : String(err);
         stats.failed++;
+        // No recipient details (address/token) — just enough to diagnose
+        // which channel/user is misconfigured without logging secrets.
+        console.error(
+          "[digest] send failed:",
+          JSON.stringify({ userId: user.id, channel: row.channel, error }),
+        );
       }
       db.insert(notificationLog)
         .values({

@@ -7,6 +7,14 @@ export async function register() {
     return;
   }
 
+  console.log(
+    "[boot] starting:",
+    JSON.stringify({
+      nodeEnv: process.env.NODE_ENV,
+      timezone: process.env.TZ ?? "Europe/Copenhagen",
+    }),
+  );
+
   const { runMigrations } = await import("./db/migrate");
   runMigrations();
   console.log("[boot] migrations applied");

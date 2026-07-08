@@ -17,32 +17,54 @@ export function startCronJobs(): void {
   const timezone = process.env.TZ ?? "Europe/Copenhagen";
 
   new Cron("30 4 * * *", { timezone, name: "scheduler" }, () => {
+    const startedAt = Date.now();
     try {
       const stats = runDailyScheduler();
-      console.log("[cron] scheduler:", JSON.stringify(stats));
+      console.log(
+        "[cron] scheduler run complete:",
+        JSON.stringify({ ...stats, durationMs: Date.now() - startedAt }),
+      );
     } catch (err) {
-      console.error("[cron] scheduler failed:", err);
+      console.error(
+        "[cron] scheduler run failed:",
+        JSON.stringify({ durationMs: Date.now() - startedAt }),
+        err,
+      );
     }
   });
 
   new Cron("5 * * * *", { timezone, name: "digest" }, async () => {
+    const startedAt = Date.now();
     try {
       const stats = await runDigestDispatch();
-      if (!stats.skipped && (stats.sent || stats.failed)) {
-        console.log("[cron] digest:", JSON.stringify(stats));
-      }
+      console.log(
+        "[cron] digest run complete:",
+        JSON.stringify({ ...stats, durationMs: Date.now() - startedAt }),
+      );
     } catch (err) {
-      console.error("[cron] digest failed:", err);
+      console.error(
+        "[cron] digest run failed:",
+        JSON.stringify({ durationMs: Date.now() - startedAt }),
+        err,
+      );
     }
   });
 
   // Boot catch-up: a container that was off at 04:30 still schedules today.
   if (!schedulerRanToday()) {
+    const startedAt = Date.now();
     try {
       const stats = runDailyScheduler();
-      console.log("[cron] boot catch-up scheduler:", JSON.stringify(stats));
+      console.log(
+        "[cron] boot catch-up scheduler run complete:",
+        JSON.stringify({ ...stats, durationMs: Date.now() - startedAt }),
+      );
     } catch (err) {
-      console.error("[cron] boot catch-up failed:", err);
+      console.error(
+        "[cron] boot catch-up scheduler run failed:",
+        JSON.stringify({ durationMs: Date.now() - startedAt }),
+        err,
+      );
     }
   }
 }

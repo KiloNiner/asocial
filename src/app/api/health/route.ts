@@ -16,7 +16,8 @@ export async function GET() {
       db: "ok",
       lastSchedulerRun: lastRun ?? null,
     });
-  } catch {
+  } catch (err) {
+    console.error("[health] db check failed:", err);
     return NextResponse.json({ status: "error", db: "error" }, { status: 500 });
   }
 }
