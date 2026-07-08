@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { db } from "@/db";
 import { tasks } from "@/db/schema";
-import { getSettings, requireUser } from "@/lib/auth/current-user";
+import { getCurrentUser, getSettings } from "@/lib/auth/current-user";
 import * as q from "@/lib/db/queries";
 import { addDays } from "@/lib/scheduler/dates";
 import { effectiveInterval } from "@/lib/scheduler/interval";
@@ -33,7 +33,8 @@ export async function logInteraction(
   _prev: InteractionFormState,
   formData: FormData,
 ): Promise<InteractionFormState> {
-  const user = await requireUser();
+  const user = await getCurrentUser();
+  if (!user) return { error: "unauthorized" };
   const parsed = interactionSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { error: "invalid" };
   const friend = q.getFriend(user.id, parsed.data.friendId);
@@ -89,7 +90,8 @@ export async function updateInteraction(
   _prev: InteractionFormState,
   formData: FormData,
 ): Promise<InteractionFormState> {
-  const user = await requireUser();
+  const user = await getCurrentUser();
+  if (!user) return { error: "unauthorized" };
   const parsed = interactionSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { error: "invalid" };
   const { contactTypeId, occurredOn, note } = parsed.data;
@@ -102,7 +104,8 @@ export async function deleteInteraction(
   interactionId: string,
   friendId: string,
 ): Promise<void> {
-  const user = await requireUser();
+  const user = await getCurrentUser();
+  if (!user) return;
   q.deleteInteraction(user.id, interactionId);
   revalidate(friendId);
 }

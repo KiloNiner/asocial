@@ -29,6 +29,7 @@
     "actions": "Åtgärder",
     "errors": {
       "invalid": "Kontrollera formuläret och försök igen.",
+      "unauthorized": "Din session har gått ut. Logga in igen.",
       "duplicateName": "Namnet används redan."
     }
   },
@@ -186,6 +187,7 @@
     "nextUp": "Nästa",
     "errors": {
       "invalid": "Kontrollera formuläret och försök igen.",
+      "unauthorized": "Din session har gått ut. Logga in igen.",
       "gone": "Förslaget är redan avslutat."
     }
   },
@@ -266,7 +268,8 @@
     "replaceWarning": "Återställning ersätter ALLA dina nuvarande cirklar, vänner och journal med filens innehåll. Väntande förslag återskapas. Fortsätt?",
     "imported": "Återställde {friends} vänner, {circles} cirklar och {interactions} journalposter.",
     "errors": {
-      "invalidFile": "Det ser inte ut som en giltig asocial-säkerhetskopia."
+      "invalidFile": "Det ser inte ut som en giltig asocial-säkerhetskopia.",
+      "unauthorized": "Din session har gått ut. Logga in igen."
     }
   }
 }

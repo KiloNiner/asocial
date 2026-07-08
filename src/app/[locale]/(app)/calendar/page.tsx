@@ -1,5 +1,5 @@
 import { getLocale, getTranslations } from "next-intl/server";
-import { getSettings, requireUser } from "@/lib/auth/current-user";
+import { getSettings, requireUserOrRedirect } from "@/lib/auth/current-user";
 import * as q from "@/lib/db/queries";
 import { today } from "@/lib/scheduler/clock";
 import { ageOn } from "@/lib/scheduler/birthday";
@@ -22,7 +22,7 @@ function pad(n: number): string {
 export default async function CalendarPage({
   searchParams,
 }: Readonly<{ searchParams: Promise<{ month?: string }> }>) {
-  const user = await requireUser();
+  const user = await requireUserOrRedirect();
   const settings = await getSettings(user.id);
   const t = await getTranslations();
   const locale = await getLocale();

@@ -1,10 +1,10 @@
 import { getTranslations } from "next-intl/server";
 import { FriendForm } from "@/components/friends/FriendForm";
-import { requireUser } from "@/lib/auth/current-user";
+import { requireUserOrRedirect } from "@/lib/auth/current-user";
 import * as q from "@/lib/db/queries";
 
 export default async function NewFriendPage() {
-  const user = await requireUser();
+  const user = await requireUserOrRedirect();
   const t = await getTranslations("friends");
 
   return (

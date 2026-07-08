@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { requireUser } from "@/lib/auth/current-user";
+import { getCurrentUser } from "@/lib/auth/current-user";
 import {
   BACKUP_VERSION,
   importUserData,
@@ -35,7 +35,8 @@ export async function importBackup(
   _prev: BackupFormState,
   formData: FormData,
 ): Promise<BackupFormState> {
-  const user = await requireUser();
+  const user = await getCurrentUser();
+  if (!user) return { error: "unauthorized" };
   const file = formData.get("file");
   if (!(file instanceof File) || file.size === 0) {
     return { error: "invalidFile" };

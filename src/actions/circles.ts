@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { requireUser } from "@/lib/auth/current-user";
+import { getCurrentUser } from "@/lib/auth/current-user";
 import * as q from "@/lib/db/queries";
 
 export type CircleFormState = { error?: string };
@@ -22,7 +22,8 @@ export async function createCircle(
   _prev: CircleFormState,
   formData: FormData,
 ): Promise<CircleFormState> {
-  const user = await requireUser();
+  const user = await getCurrentUser();
+  if (!user) return { error: "unauthorized" };
   const parsed = circleSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { error: "invalid" };
   try {
@@ -39,7 +40,8 @@ export async function updateCircle(
   _prev: CircleFormState,
   formData: FormData,
 ): Promise<CircleFormState> {
-  const user = await requireUser();
+  const user = await getCurrentUser();
+  if (!user) return { error: "unauthorized" };
   const parsed = circleSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { error: "invalid" };
   try {
@@ -52,7 +54,8 @@ export async function updateCircle(
 }
 
 export async function deleteCircle(circleId: string): Promise<void> {
-  const user = await requireUser();
+  const user = await getCurrentUser();
+  if (!user) return;
   q.deleteCircle(user.id, circleId);
   revalidate();
 }
@@ -70,7 +73,8 @@ export async function setCirclePref(
   circleId: string,
   formData: FormData,
 ): Promise<void> {
-  const user = await requireUser();
+  const user = await getCurrentUser();
+  if (!user) return;
   const parsed = prefSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return;
   q.setCirclePref(

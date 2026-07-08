@@ -7,7 +7,7 @@ import {
 } from "@/components/journal/Journal";
 import { ManualTaskForm, TaskCard } from "@/components/tasks/TaskCard";
 import { buttonGhostClass, cardClass } from "@/components/ui/classes";
-import { getSettings, requireUser } from "@/lib/auth/current-user";
+import { getSettings, requireUserOrRedirect } from "@/lib/auth/current-user";
 import * as q from "@/lib/db/queries";
 import { effectiveInterval } from "@/lib/scheduler/interval";
 import { today } from "@/lib/scheduler/clock";
@@ -17,7 +17,7 @@ import { Link } from "@/i18n/navigation";
 export default async function FriendDetailPage({
   params,
 }: Readonly<{ params: Promise<{ id: string }> }>) {
-  const user = await requireUser();
+  const user = await requireUserOrRedirect();
   const { id } = await params;
   const friend = q.getFriend(user.id, id);
   if (!friend) notFound();

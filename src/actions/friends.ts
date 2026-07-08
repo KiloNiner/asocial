@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { getLocale } from "next-intl/server";
 import { z } from "zod";
-import { getSettings, requireUser } from "@/lib/auth/current-user";
+import { getCurrentUser, getSettings } from "@/lib/auth/current-user";
 import * as q from "@/lib/db/queries";
 import { today } from "@/lib/scheduler/clock";
 import { scheduleNextTask } from "@/lib/scheduler/schedule";
@@ -62,7 +62,8 @@ export async function createFriend(
   _prev: FriendFormState,
   formData: FormData,
 ): Promise<FriendFormState> {
-  const user = await requireUser();
+  const user = await getCurrentUser();
+  if (!user) return { error: "unauthorized" };
   const input = parseFriendForm(formData);
   if (!input) return { error: "invalid" };
   const friend = q.createFriend(user.id, input);
@@ -85,7 +86,8 @@ export async function updateFriend(
   _prev: FriendFormState,
   formData: FormData,
 ): Promise<FriendFormState> {
-  const user = await requireUser();
+  const user = await getCurrentUser();
+  if (!user) return { error: "unauthorized" };
   const input = parseFriendForm(formData);
   if (!input) return { error: "invalid" };
   q.updateFriend(user.id, friendId, input);
@@ -98,7 +100,8 @@ export async function setFriendArchived(
   friendId: string,
   archived: boolean,
 ): Promise<void> {
-  const user = await requireUser();
+  const user = await getCurrentUser();
+  if (!user) return;
   q.setFriendArchived(user.id, friendId, archived);
   revalidate(friendId);
 }
@@ -115,7 +118,8 @@ export async function setFriendPref(
   friendId: string,
   formData: FormData,
 ): Promise<void> {
-  const user = await requireUser();
+  const user = await getCurrentUser();
+  if (!user) return;
   const parsed = prefSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return;
   q.setFriendPref(

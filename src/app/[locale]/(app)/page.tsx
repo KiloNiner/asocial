@@ -1,11 +1,11 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { ActionWindowBoard } from "@/components/board/ActionWindowBoard";
-import { getSettings, requireUser } from "@/lib/auth/current-user";
+import { getSettings, requireUserOrRedirect } from "@/lib/auth/current-user";
 import * as q from "@/lib/db/queries";
 import { today } from "@/lib/scheduler/clock";
 
 export default async function DashboardPage() {
-  const user = await requireUser();
+  const user = await requireUserOrRedirect();
   const settings = await getSettings(user.id);
   const t = await getTranslations("dashboard");
   const locale = await getLocale();

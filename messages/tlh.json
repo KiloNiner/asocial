@@ -29,6 +29,7 @@
     "actions": "vangmeH",
     "errors": {
       "invalid": "nav yIS; yInID pab.",
+      "unauthorized": "poH chovta' — yI'el.",
       "duplicateName": "pong lo'lu'ta'."
     }
   },
@@ -186,6 +187,7 @@
     "nextUp": "veb",
     "errors": {
       "invalid": "nav yIS; yInID pab.",
+      "unauthorized": "poH chovta' — yI'el.",
       "gone": "wIvvam rInpu'."
     }
   },
@@ -266,7 +268,8 @@
     "replaceWarning": "cheghtaHvIS Hoch DaH ghomHommeylIj, juppu'lI', qonta' je teywI' nIH lonlu'. loStaHbogh wIvmey chup. Daruch'a'?",
     "imported": "{friends} juppu', {circles} ghomHommey, {interactions} qonta' je chegh.",
     "errors": {
-      "invalidFile": "asocial QIt teywI' lughbe'law'."
+      "invalidFile": "asocial QIt teywI' lughbe'law'.",
+      "unauthorized": "poH chovta' — yI'el."
     }
   }
 }

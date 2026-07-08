@@ -29,6 +29,7 @@
     "actions": "Actions",
     "errors": {
       "invalid": "Please check the form and try again.",
+      "unauthorized": "Your session has expired. Please log in again.",
       "duplicateName": "That name is already in use."
     }
   },
@@ -186,6 +187,7 @@
     "nextUp": "Next up",
     "errors": {
       "invalid": "Please check the form and try again.",
+      "unauthorized": "Your session has expired. Please log in again.",
       "gone": "This suggestion was already resolved."
     }
   },
@@ -266,7 +268,8 @@
     "replaceWarning": "Restoring replaces ALL your current circles, friends and journal with the file's contents. Pending suggestions will be regenerated. Continue?",
     "imported": "Restored {friends} friends, {circles} circles and {interactions} journal entries.",
     "errors": {
-      "invalidFile": "That doesn't look like a valid asocial backup file."
+      "invalidFile": "That doesn't look like a valid asocial backup file.",
+      "unauthorized": "Your session has expired. Please log in again."
     }
   }
 }

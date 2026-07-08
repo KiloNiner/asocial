@@ -29,6 +29,7 @@
     "actions": "Handlinger",
     "errors": {
       "invalid": "Tjek venligst formularen og prøv igen.",
+      "unauthorized": "Din session er udløbet. Log ind igen.",
       "duplicateName": "Navnet er allerede i brug."
     }
   },
@@ -186,6 +187,7 @@
     "nextUp": "Næste",
     "errors": {
       "invalid": "Tjek venligst formularen og prøv igen.",
+      "unauthorized": "Din session er udløbet. Log ind igen.",
       "gone": "Dette forslag er allerede afsluttet."
     }
   },
@@ -266,7 +268,8 @@
     "replaceWarning": "Gendannelse erstatter ALLE dine nuværende cirkler, venner og journal med filens indhold. Ventende forslag genskabes. Fortsæt?",
     "imported": "Gendannede {friends} venner, {circles} cirkler og {interactions} journalposter.",
     "errors": {
-      "invalidFile": "Det ligner ikke en gyldig asocial-sikkerhedskopi."
+      "invalidFile": "Det ligner ikke en gyldig asocial-sikkerhedskopi.",
+      "unauthorized": "Din session er udløbet. Log ind igen."
     }
   }
 }

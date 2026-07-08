@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { db } from "@/db";
 import { tasks, type Task } from "@/db/schema";
-import { getSettings, requireUser } from "@/lib/auth/current-user";
+import { getCurrentUser, getSettings } from "@/lib/auth/current-user";
 import * as q from "@/lib/db/queries";
 import { today } from "@/lib/scheduler/clock";
 import { addDays } from "@/lib/scheduler/dates";
@@ -50,7 +50,8 @@ export async function completeTask(
   _prev: TaskFormState,
   formData: FormData,
 ): Promise<TaskFormState> {
-  const user = await requireUser();
+  const user = await getCurrentUser();
+  if (!user) return { error: "unauthorized" };
   const parsed = completeSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { error: "invalid" };
 
@@ -85,7 +86,8 @@ export async function completeTask(
 
 /** Snooze: move the window without guilt; the task stays pending. */
 export async function snoozeTask(taskId: string, days: number): Promise<void> {
-  const user = await requireUser();
+  const user = await getCurrentUser();
+  if (!user) return;
   const task = getTask(user.id, taskId);
   if (!task || task.status !== "pending") return;
   const settings = await getSettings(user.id);
@@ -103,7 +105,8 @@ export async function snoozeTask(taskId: string, days: number): Promise<void> {
 
 /** Skip: resolve without contact; autoschedule restarts a full interval. */
 export async function skipTask(taskId: string): Promise<void> {
-  const user = await requireUser();
+  const user = await getCurrentUser();
+  if (!user) return;
   const task = getTask(user.id, taskId);
   if (!task || task.status !== "pending") return;
 
@@ -133,7 +136,8 @@ export async function createManualTask(
   _prev: TaskFormState,
   formData: FormData,
 ): Promise<TaskFormState> {
-  const user = await requireUser();
+  const user = await getCurrentUser();
+  if (!user) return { error: "unauthorized" };
   const parsed = manualSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { error: "invalid" };
   const { friendId, dueDate, contactTypeId } = parsed.data;
@@ -178,7 +182,8 @@ export async function rescheduleTask(
   taskId: string,
   dueDate: string,
 ): Promise<void> {
-  const user = await requireUser();
+  const user = await getCurrentUser();
+  if (!user) return;
   if (!/^\d{4}-\d{2}-\d{2}$/.test(dueDate)) return;
   const task = getTask(user.id, taskId);
   if (!task || task.status !== "pending") return;

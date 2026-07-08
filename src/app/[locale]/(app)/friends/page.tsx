@@ -1,5 +1,5 @@
 import { getFormatter, getTranslations } from "next-intl/server";
-import { requireUser, getSettings } from "@/lib/auth/current-user";
+import { requireUserOrRedirect, getSettings } from "@/lib/auth/current-user";
 import * as q from "@/lib/db/queries";
 import { Link } from "@/i18n/navigation";
 import { buttonClass, cardClass, inputClass } from "@/components/ui/classes";
@@ -7,7 +7,7 @@ import { buttonClass, cardClass, inputClass } from "@/components/ui/classes";
 export default async function FriendsPage({
   searchParams,
 }: Readonly<{ searchParams: Promise<{ q?: string; archived?: string }> }>) {
-  const user = await requireUser();
+  const user = await requireUserOrRedirect();
   await getSettings(user.id);
   const t = await getTranslations();
   const format = await getFormatter();

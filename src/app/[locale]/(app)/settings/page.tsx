@@ -7,12 +7,12 @@ import {
 import { BackupCard } from "@/components/settings/BackupCard";
 import { ThemeSelector } from "@/components/settings/ThemeSelector";
 import { TypesManager } from "@/components/settings/TypesManager";
-import { getSettings, requireUser } from "@/lib/auth/current-user";
+import { getSettings, requireUserOrRedirect } from "@/lib/auth/current-user";
 import * as q from "@/lib/db/queries";
 import { isThemeChoice, type ThemeChoice } from "@/lib/themes";
 
 export default async function SettingsPage() {
-  const user = await requireUser();
+  const user = await requireUserOrRedirect();
   const settings = await getSettings(user.id);
   const t = await getTranslations();
   const format = await getFormatter();

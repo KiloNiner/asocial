@@ -4,11 +4,11 @@ import {
   CircleCreateForm,
 } from "@/components/circles/CircleManager";
 import type { PrefRow } from "@/components/prefs/PrefEditor";
-import { requireUser } from "@/lib/auth/current-user";
+import { requireUserOrRedirect } from "@/lib/auth/current-user";
 import * as q from "@/lib/db/queries";
 
 export default async function CirclesPage() {
-  const user = await requireUser();
+  const user = await requireUserOrRedirect();
   const t = await getTranslations("circles");
 
   const circleList = q.listCircles(user.id);

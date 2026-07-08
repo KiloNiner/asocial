@@ -10,7 +10,7 @@ import {
   userSettings,
   users,
 } from "@/db/schema";
-import { getSettings, requireUser } from "@/lib/auth/current-user";
+import { getCurrentUser, getSettings } from "@/lib/auth/current-user";
 import {
   channelRegistry,
 } from "@/lib/notifications/dispatch";
@@ -29,7 +29,8 @@ function revalidate() {
 /** Persist the theme to the user's settings and mirror it into a cookie
  *  (1 year) so logged-out pages render in the same theme. */
 export async function updateTheme(choice: string): Promise<void> {
-  const user = await requireUser();
+  const user = await getCurrentUser();
+  if (!user) return;
   if (!isThemeChoice(choice)) return;
   db.update(userSettings)
     .set({ theme: choice })
@@ -53,7 +54,8 @@ export async function updateProfile(
   _prev: SettingsFormState,
   formData: FormData,
 ): Promise<SettingsFormState> {
-  const user = await requireUser();
+  const user = await getCurrentUser();
+  if (!user) return { error: "unauthorized" };
   const parsed = profileSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { error: "invalid" };
   try {
@@ -96,7 +98,8 @@ export async function updateSchedulingSettings(
   _prev: SettingsFormState,
   formData: FormData,
 ): Promise<SettingsFormState> {
-  const user = await requireUser();
+  const user = await getCurrentUser();
+  if (!user) return { error: "unauthorized" };
   const parsed = schedulingSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { error: "invalid" };
   db.update(userSettings)
@@ -125,7 +128,8 @@ export async function upsertNotificationChannel(
   _prev: SettingsFormState,
   formData: FormData,
 ): Promise<SettingsFormState> {
-  const user = await requireUser();
+  const user = await getCurrentUser();
+  if (!user) return { error: "unauthorized" };
   const parsed = channelSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { error: "invalid" };
   const { channel, enabled, ...config } = parsed.data;
@@ -155,7 +159,8 @@ export async function upsertNotificationChannel(
 export async function sendTestNotification(
   channelId: ChannelId,
 ): Promise<SettingsFormState> {
-  const user = await requireUser();
+  const user = await getCurrentUser();
+  if (!user) return { error: "unauthorized" };
   const settings = await getSettings(user.id);
   const row = db
     .select()

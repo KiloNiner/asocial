@@ -4,7 +4,7 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 import { db } from "@/db";
 import { users } from "@/db/schema";
-import { requireAdmin } from "@/lib/auth/current-user";
+import { getCurrentUser } from "@/lib/auth/current-user";
 import { hashPassword } from "@/lib/auth/password";
 import {
   createPasswordResetToken,
@@ -20,7 +20,8 @@ export type CreateResetState = { resetUrl?: string; error?: string };
 export async function createPasswordReset(
   userId: string,
 ): Promise<CreateResetState> {
-  const admin = await requireAdmin();
+  const admin = await getCurrentUser();
+  if (!admin || admin.role !== "admin") return { error: "unauthorized" };
   const target = db
     .select({ id: users.id })
     .from(users)

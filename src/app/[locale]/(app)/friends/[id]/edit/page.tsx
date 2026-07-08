@@ -3,14 +3,14 @@ import { getTranslations } from "next-intl/server";
 import { setFriendPref } from "@/actions/friends";
 import { FriendForm } from "@/components/friends/FriendForm";
 import { PrefEditor, type PrefRow } from "@/components/prefs/PrefEditor";
-import { requireUser } from "@/lib/auth/current-user";
+import { requireUserOrRedirect } from "@/lib/auth/current-user";
 import * as q from "@/lib/db/queries";
 import { governingCircle } from "@/lib/scheduler/interval";
 
 export default async function EditFriendPage({
   params,
 }: Readonly<{ params: Promise<{ id: string }> }>) {
-  const user = await requireUser();
+  const user = await requireUserOrRedirect();
   const { id } = await params;
   const friend = q.getFriend(user.id, id);
   if (!friend) notFound();
