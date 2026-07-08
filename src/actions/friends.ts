@@ -67,10 +67,13 @@ export async function createFriend(
   if (!input) return { error: "invalid" };
   const friend = q.createFriend(user.id, input);
   // Give an autoscheduled friend their first suggestion right away instead of
-  // waiting for the nightly sweep. Base = today (no interactions yet).
+  // waiting for the nightly sweep — and land it soon (within the action
+  // window), since a newly added friend is someone to reach out to now.
   if (friend.autoschedule) {
     const settings = await getSettings(user.id);
-    scheduleNextTask(user.id, friend.id, today(settings.timezone));
+    scheduleNextTask(user.id, friend.id, today(settings.timezone), {
+      firstContact: true,
+    });
   }
   revalidate();
   redirect({ href: `/friends/${friend.id}`, locale: await getLocale() });

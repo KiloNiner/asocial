@@ -10,6 +10,15 @@ import { invites, users } from "@/db/schema";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { redirect } from "@/i18n/navigation";
 
+// Module-scope so the current-time read isn't inside the component body.
+function inviteStatus(
+  usedBy: string | null,
+  expiresAt: number,
+): "used" | "expired" | "open" {
+  if (usedBy) return "used";
+  return expiresAt <= Date.now() ? "expired" : "open";
+}
+
 export default async function InvitesPage() {
   const user = await getCurrentUser();
   if (!user || user.role !== "admin") {
@@ -29,8 +38,6 @@ export default async function InvitesPage() {
     .orderBy(desc(invites.createdAt))
     .all();
 
-  const now = Date.now();
-
   return (
     <div className="flex max-w-2xl flex-col gap-6">
       <h1 className="text-2xl font-semibold">{t("title")}</h1>
@@ -42,11 +49,7 @@ export default async function InvitesPage() {
         ) : (
           <ul className="divide-y divide-line rounded-md border border-line bg-panel">
             {rows.map(({ invite, usedByName }) => {
-              const status = invite.usedBy
-                ? "used"
-                : invite.expiresAt <= now
-                  ? "expired"
-                  : "open";
+              const status = inviteStatus(invite.usedBy, invite.expiresAt);
               return (
                 <li
                   key={invite.id}

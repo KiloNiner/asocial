@@ -17,7 +17,7 @@ export function nextBirthday(
   const fromYear = Number(from.slice(0, 4));
 
   for (let year = fromYear; ; year++) {
-    let month = birthMonth;
+    const month = birthMonth;
     let day = birthDay;
     if (month === 2 && day === 29 && !isLeapYear(new Date(year, 0, 1))) {
       day = 28;

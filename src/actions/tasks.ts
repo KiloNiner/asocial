@@ -160,7 +160,9 @@ export async function createManualTask(
       .run();
   } else {
     // No type chosen: let the picker suggest one, then pin the chosen date.
-    const created = scheduleNextTask(user.id, friendId, dueDate, "manual");
+    const created = scheduleNextTask(user.id, friendId, dueDate, {
+      origin: "manual",
+    });
     if (!created) return { error: "invalid" };
     db.update(tasks)
       .set({ dueDate })

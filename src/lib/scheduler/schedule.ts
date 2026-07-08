@@ -2,7 +2,6 @@ import { and, desc, eq } from "drizzle-orm";
 import { db } from "@/db";
 import {
   circles,
-  contactTypes,
   friendCircles,
   friends,
   interactions,
@@ -75,14 +74,23 @@ function lastTypeId(userId: string, friendId: string): string | null {
  * Schedule the next contact task for a friend: jittered interval from
  * baseDate, clamped so it never spawns already overdue, with a weighted
  * random activity suggestion. No-op if a pending contact task exists.
+ *
+ * `firstContact` (for a just-added friend) lands the suggestion soon — within
+ * the action window rather than a full interval out — so a new friend is
+ * something to act on now, not a marker a month away. It never lands later
+ * than the normal cadence would.
  */
 export function scheduleNextTask(
   userId: string,
   friendId: string,
   baseDate: LocalDate,
-  origin: "auto" | "manual" = "auto",
-  rng: Rng = Math.random,
+  opts: {
+    origin?: "auto" | "manual";
+    firstContact?: boolean;
+    rng?: Rng;
+  } = {},
 ): Task | null {
+  const { origin = "auto", firstContact = false, rng = Math.random } = opts;
   if (pendingTask(userId, friendId, "contact")) return null;
 
   const friend = db
@@ -108,7 +116,10 @@ export function scheduleNextTask(
     .map((r) => r.circle);
 
   const interval = effectiveInterval(friend, friendCircleRows, settings);
-  const gap = jitteredInterval(interval.days, settings.jitterPct, rng);
+  const normalGap = jitteredInterval(interval.days, settings.jitterPct, rng);
+  const gap = firstContact
+    ? uniformInt(1, Math.min(settings.actionWindowDays, normalGap), rng)
+    : normalGap;
   const t = today(settings.timezone);
   let due = addDays(baseDate, gap);
   if (due <= t) {

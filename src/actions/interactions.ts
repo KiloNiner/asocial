@@ -81,8 +81,8 @@ export async function updateInteraction(
   const user = await requireUser();
   const parsed = interactionSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { error: "invalid" };
-  const { friendId: _ignored, ...data } = parsed.data;
-  q.updateInteraction(user.id, interactionId, data);
+  const { contactTypeId, occurredOn, note } = parsed.data;
+  q.updateInteraction(user.id, interactionId, { contactTypeId, occurredOn, note });
   revalidate(parsed.data.friendId);
   return {};
 }
