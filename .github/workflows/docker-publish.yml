@@ -12,6 +12,11 @@ on:
     tags:
       - "v*.*.*"
   workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to tag the image (e.g. 1.0.0) — also updates :latest. Leave blank for a sha-only dev build."
+        required: false
+        type: string
 
 env:
   IMAGE_NAME: kiloniner/asocial
@@ -49,13 +54,15 @@ jobs:
         with:
           images: ${{ env.IMAGE_NAME }}
           tags: |
-            # v1.2.3 -> 1.2.3 and 1.2
+            # git tag v1.2.3 -> 1.2.3 and 1.2
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-            # :latest only for real version tags, never for manual runs
             type=raw,value=latest,enable=${{ github.ref_type == 'tag' }}
-            # manual runs still get a traceable tag
-            type=sha,enable=${{ github.event_name == 'workflow_dispatch' }}
+            # manual run WITH a version input -> that version + :latest
+            type=raw,value=${{ inputs.version }},enable=${{ github.event_name == 'workflow_dispatch' && inputs.version != '' }}
+            type=raw,value=latest,enable=${{ github.event_name == 'workflow_dispatch' && inputs.version != '' }}
+            # manual run WITHOUT a version -> traceable sha tag only
+            type=sha,enable=${{ github.event_name == 'workflow_dispatch' && inputs.version == '' }}
 
       - name: Build and push
         uses: docker/build-push-action@v6
