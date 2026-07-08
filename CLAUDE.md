@@ -34,6 +34,8 @@ Gotchas that have bitten this project:
 - **Stale CSS after editing `globals.css` or the theme tokens**: `rm -rf .next` and restart the dev server, or the browser serves the old compiled CSS.
 - **Never delete `dev.db` while the dev server is running** — it holds the old inode and writes silently vanish. Stop the server first (`pkill -f "next dev"`), then reseed.
 - Background the dev server with the harness background mechanism, not shell `&` (which gets interrupted here).
+- **Turbopack dev route-discovery glitch**: right after `rm -rf .next` + a fresh `next dev`, the *first* request to a nested dynamic route (e.g. `friends/[id]/edit`) can 404 even though the file is correct. Retrying, or `touch`-ing the route file, resolves it — not a real bug.
+- **For screenshots or anything visual you'll show off**: use a production server (`npm run build && npm run start`), not `next dev` — dev mode overlays the Next.js DevTools badge on every page. Also explicitly pick a theme via the Settings UI first rather than relying on the default `auto` theme — it didn't reliably follow Playwright's `colorScheme` emulation in this environment.
 
 ## Architecture
 
@@ -49,16 +51,22 @@ Everything else is CRUD around it. It is deliberately split into **pure function
 Calendar-level dates are **strings** (`YYYY-MM-DD`) manipulated by `dates.ts` (`addDays`/`daysBetween`) to stay DST-immune. Timestamps are epoch-ms integers.
 
 ### Per-user data isolation (`src/lib/db/queries.ts`)
-This is a hard convention: **all reads/writes for user data go through `queries.ts`**, every function takes `userId` and filters by it. UI code and server actions must not import `db` directly — only `queries.ts` and the scheduler do. Keeping `db.select`/`db.insert` out of components/actions is what makes the isolation grep-auditable. Follow this when adding features.
+This is a hard convention: **all reads/writes for user data go through `queries.ts`**, every function takes `userId` and filters by it. UI code and server actions should not import `db` directly — only `queries.ts` and the scheduler do. Keeping `db.select`/`db.insert` out of components/actions is what makes the isolation grep-auditable. Follow this when adding features. In practice a handful of actions (`settings.ts`, `tasks.ts`, `interactions.ts`) and the invites admin page still call `db` directly — always scoped by `userId` or an ownership check first, so isolation isn't actually broken, but new code should go through `queries.ts` rather than add to that list.
 
 ### Mutations = server actions; reads = RSC
-All writes are `"use server"` actions in `src/actions/*` (zod-validated). There are only two route handlers: `POST /api/cron/run?job=scheduler|digest[&force=1]` (guarded by `x-cron-token: $CRON_SECRET`, for manual/test triggering) and `GET /api/health`. Reads happen in server components via `queries.ts`.
+All writes are `"use server"` actions in `src/actions/*` (zod-validated). Three route handlers exist: `POST /api/cron/run?job=scheduler|digest[&force=1]` (guarded by `x-cron-token: $CRON_SECRET`, for manual/test triggering), `GET /api/health`, and `GET /api/backup` (session-guarded, streams the current user's JSON export). Reads happen in server components via `queries.ts`.
 
 ### Background jobs run in-process (`src/instrumentation.ts` → `src/lib/cron.ts`)
 `instrumentation.ts` runs DB migrations at boot, then Croner registers the daily scheduler (04:30) and hourly digest dispatch (`:05`) inside the `next start` process — so they fire without web traffic. A **boot catch-up** runs the scheduler immediately if it hasn't run today (survives a container that was off at 04:30). Migrations are applied here, not by a separate entrypoint.
 
 ### Notifications (`src/lib/notifications/`)
 A channel registry (`dispatch.ts`) with pluggable `NotificationChannel` implementations (`channels/pushover.ts`, `channels/email.ts`). `digest.ts` is pure (unit-tested): it decides what goes in a digest, including the **anti-nag rule** — a lingering task re-appears only every 3rd day. Dedupe is per user/channel/local-day via `notification_log`. Cron-driven sends translate outside request scope via `digestTranslator` in `messages.ts`.
+
+### Backup & restore (`src/lib/db/queries.ts`, `src/actions/backup.ts`)
+`exportUserData`/`importUserData` cover circles, friends, journal, custom contact types and activity preferences — **not** `tasks` (regenerated) or account/session/notification data. Restore is replace-all in a transaction, preserving IDs, then calls `sweepUserContactTasks` (also used by the daily job) to regenerate pending suggestions.
+
+### Operational logging
+Console logging follows a `[tag] message: JSON` convention (`[boot]`, `[cron]`, `[cron:manual]`, `[digest]`, `[auth]`, `[health]`) so `docker logs` shows scheduled-job completions (with stats + duration), notification send failures, and login attempts without querying the DB. Login logging masks the client IP (last IPv4 octet zeroed / IPv6 collapsed to `/64`) before it's ever logged — keep that when touching `src/actions/auth.ts`.
 
 ### Auth (`src/lib/auth/`)
 Roll-your-own: argon2id passwords, opaque session token in an httpOnly cookie with only `sha256(token)` stored in DB. Invite-only — the first registered user becomes admin (`isBootstrap()`), everyone else needs a one-time invite. `getCurrentUser()` / `requireUser()` / `requireAdmin()` are the entry points; the `(app)` route-group layout guards authenticated pages.
@@ -76,4 +84,4 @@ Edit `src/db/schema.ts`, then `npm run db:generate`. SQLite enum changes (Drizzl
 No red "overdue" states, ever. Lingering tasks soften to amber (`warn`), snoozing is unlimited, skipping just restarts the rhythm, and the digest anti-nag rule avoids daily repetition. Preserve this when touching task states or notification copy.
 
 ## Git
-Development happens on branch `claude/new-web-app-r6vse0`. Commit messages in this repo are milestone-scoped with a body explaining the change.
+Commits land directly on `main`; commit messages are milestone-scoped with a body explaining the change. Releases are tagged `vX.Y.Z` with a matching `CHANGELOG.md` entry and a `package.json`/`package-lock.json` version bump.
