@@ -1,5 +1,18 @@
 # Changelog
 
+## v1.2.0
+
+### Added
+- Admin-driven password reset: an admin can mint a one-time reset link for
+  any user from the invites admin page and relay it out of band — no SMTP
+  required. Redeeming it signs the account out everywhere.
+- A proper brand identity: favicon/PWA icon set, and the asocial mark now
+  appears in the sidebar and on the login, register and reset-password
+  pages (readable in both light and dark themes).
+
+### Platform
+- The README now includes a screenshot gallery of the app's major views.
+
 ## v1.1.0
 
 ### Fixed
