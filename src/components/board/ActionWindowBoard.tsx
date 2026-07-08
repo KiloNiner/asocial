@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { BoardRow, type BandSpec } from "./BoardRow";
+import { BoardRow, type BandSpec, type BeyondSpec } from "./BoardRow";
 import type { BoardRow as BoardRowData } from "@/lib/db/queries";
 import type { ContactType } from "@/db/schema";
 import { addDays, daysBetween } from "@/lib/scheduler/dates";
@@ -37,6 +37,7 @@ export async function ActionWindowBoard({
 }>) {
   const t = await getTranslations("dashboard");
   const rangeStart = addDays(today, -DAYS_BEFORE);
+  const rangeEnd = addDays(rangeStart, COLUMNS - 1);
   const dayFmt = new Intl.DateTimeFormat(locale, { day: "numeric" });
   const weekdayFmt = new Intl.DateTimeFormat(locale, { weekday: "narrow" });
   const monthFmt = new Intl.DateTimeFormat(locale, {
@@ -125,28 +126,39 @@ export async function ActionWindowBoard({
           <div className="relative">
             {rows.map((row) => {
               let band: BandSpec | null = null;
+              let beyond: BeyondSpec | null = null;
               if (row.contactTask) {
                 const task = row.contactTask;
-                // A pending task from the past keeps its window anchored on
-                // its due date but is clamped into the visible range.
-                const startCol = colFor(task.dueDate, rangeStart);
-                const endDate = addDays(task.dueDate, task.windowDays - 1);
-                const visibleStart = startCol ?? 2;
-                const endColRaw = colFor(
-                  endDate < rangeStart ? today : endDate,
-                  rangeStart,
-                );
-                const endCol = Math.max(
-                  endColRaw ?? COLUMNS + 1,
-                  visibleStart,
-                );
-                band = {
-                  task,
-                  startCol: visibleStart,
-                  endCol: Math.min(endCol, COLUMNS + 1),
-                  state: windowState(task.dueDate, task.windowDays, today),
-                  clippedStart: startCol === null,
-                };
+                const windowEnd = addDays(task.dueDate, task.windowDays - 1);
+                if (windowEnd < rangeStart || task.dueDate > rangeEnd) {
+                  // The whole window falls outside the visible range (usually
+                  // further out than the board reaches) — mark the date instead
+                  // of drawing a band across the whole row.
+                  beyond = {
+                    task,
+                    label: monthFmt.format(
+                      new Date(`${task.dueDate}T12:00:00`),
+                    ),
+                    future: task.dueDate > rangeEnd,
+                  };
+                } else {
+                  const startOffset = Math.max(
+                    0,
+                    daysBetween(rangeStart, task.dueDate),
+                  );
+                  const endOffset = Math.min(
+                    COLUMNS - 1,
+                    daysBetween(rangeStart, windowEnd),
+                  );
+                  band = {
+                    task,
+                    startCol: startOffset + 2,
+                    endCol: endOffset + 2,
+                    state: windowState(task.dueDate, task.windowDays, today),
+                    clippedStart: task.dueDate < rangeStart,
+                    clippedEnd: windowEnd > rangeEnd,
+                  };
+                }
               }
               const birthdayCol = row.birthdayTask
                 ? colFor(row.birthdayTask.dueDate, rangeStart)
@@ -163,6 +175,7 @@ export async function ActionWindowBoard({
                   color={row.color ?? "#a8a29e"}
                   emoji={suggested?.emoji ?? (row.birthdayTask ? "🎂" : "")}
                   band={band}
+                  beyond={beyond}
                   birthdayCol={birthdayCol}
                   birthdayTask={row.birthdayTask}
                   types={typeInfo}
