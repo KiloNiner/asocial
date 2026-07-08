@@ -1,5 +1,31 @@
 # Changelog
 
+## v1.1.0
+
+### Fixed
+- The action-window board no longer draws a full-width highlight band for
+  tasks due far in the future.
+- Changing your language in Settings now actually navigates to the new
+  locale instead of silently staying on the old one.
+- Logging a contact well before a pending nudge's window now resolves the
+  stale task and reschedules from the real contact date, instead of leaving
+  it stuck on the old due date.
+- A friend's first auto-scheduled suggestion now lands within the action
+  window instead of a full interval away.
+
+### Changed
+- Activity preferences on the friend edit page now sit above the "suggest
+  contact automatically" checkbox instead of in a separate section below
+  the form.
+
+### Platform
+- Structured logging for scheduled jobs (scheduler, digest, boot catch-up),
+  the manual cron trigger, notification sends, and login attempts (success
+  and failure, with a masked client IP) — visible via `docker logs`.
+- Docker base image bumped to `node:26-bookworm-slim`, with OS packages
+  updated during build.
+- CI: manual Docker Hub publish now accepts a version input.
+
 ## v1.0.0
 
 First complete release of **asocial** — a self-hosted, multi-user web app that
