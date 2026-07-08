@@ -1,13 +1,13 @@
 # ---- deps: install node_modules (build tools for better-sqlite3) ----
-FROM node:22-bookworm-slim AS deps
+FROM node:26-bookworm-slim AS deps
 WORKDIR /app
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
     python3 make g++ && rm -rf /var/lib/apt/lists/*
 COPY package.json package-lock.json ./
 RUN npm ci
 
 # ---- build: compile the standalone Next.js server ----
-FROM node:22-bookworm-slim AS build
+FROM node:26-bookworm-slim AS build
 WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1
 COPY --from=deps /app/node_modules ./node_modules
@@ -15,8 +15,10 @@ COPY . .
 RUN npm run build
 
 # ---- runner: minimal production image ----
-FROM node:22-bookworm-slim AS runner
+FROM node:26-bookworm-slim AS runner
 WORKDIR /app
+# Apply the latest OS security patches on top of the base image (runs as root).
+RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
     DATABASE_PATH=/data/asocial.db \
