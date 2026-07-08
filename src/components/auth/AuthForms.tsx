@@ -3,6 +3,11 @@
 import { useActionState } from "react";
 import { useTranslations } from "next-intl";
 import { login, register, type AuthFormState } from "@/actions/auth";
+import {
+  completePasswordReset,
+  type CompleteResetState,
+} from "@/actions/password-resets";
+import { Link } from "@/i18n/navigation";
 
 const inputClass =
   "w-full rounded-md border border-field-border bg-field px-3 py-2 text-sm " +
@@ -89,6 +94,45 @@ export function RegisterForm({
       </label>
       <button type="submit" disabled={pending} className={buttonClass}>
         {t("register")}
+      </button>
+    </form>
+  );
+}
+
+export function ResetPasswordForm({ token }: Readonly<{ token: string }>) {
+  const t = useTranslations("auth");
+  const [state, action, pending] = useActionState<
+    CompleteResetState,
+    FormData
+  >(completePasswordReset, {});
+
+  if (state.ok) {
+    return (
+      <div className="flex flex-col gap-2">
+        <p className="text-sm text-accent">{t("resetDone")}</p>
+        <Link href="/login" className="text-sm text-accent hover:underline">
+          {t("haveAccount")}
+        </Link>
+      </div>
+    );
+  }
+
+  return (
+    <form action={action} className="flex flex-col gap-3">
+      <ErrorNote error={state.error} />
+      <input type="hidden" name="token" value={token} />
+      <label className="flex flex-col gap-1 text-sm">
+        {t("newPassword")}
+        <input
+          name="password"
+          type="password"
+          required
+          minLength={10}
+          className={inputClass}
+        />
+      </label>
+      <button type="submit" disabled={pending} className={buttonClass}>
+        {t("resetSubmit")}
       </button>
     </form>
   );

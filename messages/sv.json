@@ -44,21 +44,29 @@
     "inviteNeededHint": "Registrering kräver en inbjudningslänk från en administratör.",
     "noAccountYet": "Första gången här? Skapa administratörskontot",
     "haveAccount": "Har du redan ett konto? Logga in",
+    "resetTitle": "Ange ett nytt lösenord",
+    "newPassword": "Nytt lösenord",
+    "resetSubmit": "Ange nytt lösenord",
+    "resetDone": "Lösenordet har uppdaterats — logga in med ditt nya lösenord.",
     "errors": {
       "invalid": "Kontrollera formuläret och försök igen.",
       "invalidCredentials": "Fel e-post eller lösenord.",
       "emailTaken": "Det finns redan ett konto med den här e-postadressen.",
-      "inviteInvalid": "Inbjudningslänken är ogiltig, använd eller har gått ut."
+      "inviteInvalid": "Inbjudningslänken är ogiltig, använd eller har gått ut.",
+      "resetInvalid": "Återställningslänken är ogiltig, använd eller har gått ut."
     }
   },
   "invites": {
     "title": "Inbjudningar",
+    "usersTitle": "Användare",
     "emailOptional": "E-post (valfritt)",
     "create": "Skapa inbjudan",
     "copyHint": "Kopiera länken nu — den visas bara en gång:",
     "listTitle": "Utfärdade inbjudningar",
     "empty": "Inga inbjudningar utfärdade ännu.",
     "revoke": "Återkalla",
+    "resetPassword": "Återställ lösenord",
+    "resetLinkHint": "Dela den här länken med dem nu — den visas bara en gång:",
     "status": {
       "open": "Öppen",
       "used": "Använd",

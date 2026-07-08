@@ -69,3 +69,9 @@ export async function destroySession(): Promise<void> {
   }
   cookieStore.delete(SESSION_COOKIE);
 }
+
+/** Signs a user out everywhere — used after a password change/reset so a
+ *  leaked old session can't survive it. */
+export function destroySessionsForUser(userId: string): void {
+  db.delete(sessions).where(eq(sessions.userId, userId)).run();
+}

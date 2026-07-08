@@ -69,6 +69,20 @@ export const invites = sqliteTable("invites", {
   usedAt: integer("used_at"),
 });
 
+export const passwordResets = sqliteTable("password_resets", {
+  id: id(),
+  tokenHash: text("token_hash").notNull().unique(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  createdBy: text("created_by")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  createdAt: createdAt(),
+  expiresAt: integer("expires_at").notNull(),
+  usedAt: integer("used_at"),
+});
+
 export const circles = sqliteTable(
   "circles",
   {

@@ -1,8 +1,9 @@
-import { desc, eq } from "drizzle-orm";
+import { asc, desc, eq } from "drizzle-orm";
 import { getFormatter, getLocale, getTranslations } from "next-intl/server";
 import { revokeInvite } from "@/actions/invites";
 import {
   InviteCreateForm,
+  ResetPasswordButton,
   RevokeButton,
 } from "@/components/invites/InviteManager";
 import { db } from "@/db";
@@ -37,10 +38,41 @@ export default async function InvitesPage() {
     .leftJoin(users, eq(invites.usedBy, users.id))
     .orderBy(desc(invites.createdAt))
     .all();
+  const allUsers = db
+    .select({
+      id: users.id,
+      displayName: users.displayName,
+      email: users.email,
+      role: users.role,
+    })
+    .from(users)
+    .orderBy(asc(users.displayName))
+    .all();
 
   return (
     <div className="flex max-w-2xl flex-col gap-6">
       <h1 className="text-2xl font-semibold">{t("title")}</h1>
+
+      <section className="flex flex-col gap-2">
+        <h2 className="text-lg font-medium">{t("usersTitle")}</h2>
+        <ul className="divide-y divide-line rounded-md border border-line bg-panel">
+          {allUsers.map((u) => (
+            <li
+              key={u.id}
+              className="flex items-center justify-between gap-2 px-4 py-2 text-sm"
+            >
+              <div className="flex flex-col">
+                <span>{u.displayName}</span>
+                <span className="text-xs text-muted">
+                  {u.email} · {u.role}
+                </span>
+              </div>
+              <ResetPasswordButton userId={u.id} />
+            </li>
+          ))}
+        </ul>
+      </section>
+
       <InviteCreateForm />
       <section className="flex flex-col gap-2">
         <h2 className="text-lg font-medium">{t("listTitle")}</h2>

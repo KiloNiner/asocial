@@ -44,21 +44,29 @@
     "inviteNeededHint": "Registrering kræver et invitationslink fra en administrator.",
     "noAccountYet": "Første gang her? Opret administratorkontoen",
     "haveAccount": "Har du allerede en konto? Log ind",
+    "resetTitle": "Angiv en ny adgangskode",
+    "newPassword": "Ny adgangskode",
+    "resetSubmit": "Angiv ny adgangskode",
+    "resetDone": "Adgangskode opdateret — log ind med din nye adgangskode.",
     "errors": {
       "invalid": "Tjek venligst formularen og prøv igen.",
       "invalidCredentials": "Forkert e-mail eller adgangskode.",
       "emailTaken": "Der findes allerede en konto med denne e-mail.",
-      "inviteInvalid": "Dette invitationslink er ugyldigt, brugt eller udløbet."
+      "inviteInvalid": "Dette invitationslink er ugyldigt, brugt eller udløbet.",
+      "resetInvalid": "Dette nulstillingslink er ugyldigt, brugt eller udløbet."
     }
   },
   "invites": {
     "title": "Invitationer",
+    "usersTitle": "Brugere",
     "emailOptional": "E-mail (valgfri)",
     "create": "Opret invitation",
     "copyHint": "Kopiér dette link nu — det vises kun én gang:",
     "listTitle": "Udstedte invitationer",
     "empty": "Ingen invitationer udstedt endnu.",
     "revoke": "Tilbagekald",
+    "resetPassword": "Nulstil adgangskode",
+    "resetLinkHint": "Del dette link med dem nu — det vises kun én gang:",
     "status": {
       "open": "Åben",
       "used": "Brugt",

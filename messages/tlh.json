@@ -44,21 +44,29 @@
     "inviteNeededHint": "rI'meH nav poQ De'; che'wI' voHDaq yISuq.",
     "noAccountYet": "wa'DIch yISuchpu'? che'wI' De' yISaw",
     "haveAccount": "De' Daghaj'a'? yI'el",
+    "resetTitle": "mu' pegh chu' yIchu'",
+    "newPassword": "mu' pegh chu'",
+    "resetSubmit": "mu' pegh chu' yIchu'",
+    "resetDone": "mu' pegh chu' choHta' — DaH yI'el.",
     "errors": {
       "invalid": "nav yIS; yInID pab.",
       "invalidCredentials": "QIn Sum ghap mu' pegh lugh be'.",
       "emailTaken": "QIn Sum lo'lu'ta' De' tu'lu'.",
-      "inviteInvalid": "rI'meH nav ram, lo'lu'ta' ghap chov."
+      "inviteInvalid": "rI'meH nav ram, lo'lu'ta' ghap chov.",
+      "resetInvalid": "chu' nav ram, lo'lu'ta' ghap chov."
     }
   },
   "invites": {
     "title": "rI'meH navmey",
+    "usersTitle": "lo'wI'pu'",
     "emailOptional": "QIn Sum (DuH neH)",
     "create": "rI'meH nav yIchen",
     "copyHint": "DaH nav yIvel — wa'logh neH 'anglu':",
     "listTitle": "nobta' rI'meH navmey",
     "empty": "pagh rI'meH nav nobta'.",
     "revoke": "yIteq",
+    "resetPassword": "mu' pegh chu' yIchu'",
+    "resetLinkHint": "DaH nav yIvel 'ej lo'wI'vaD yInob — wa'logh neH 'anglu':",
     "status": {
       "open": "poSmoH",
       "used": "lo'lu'ta'",

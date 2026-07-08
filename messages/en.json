@@ -44,21 +44,29 @@
     "inviteNeededHint": "Registration requires an invite link from an administrator.",
     "noAccountYet": "First time here? Create the admin account",
     "haveAccount": "Already have an account? Log in",
+    "resetTitle": "Set a new password",
+    "newPassword": "New password",
+    "resetSubmit": "Set new password",
+    "resetDone": "Password updated — log in with your new password.",
     "errors": {
       "invalid": "Please check the form and try again.",
       "invalidCredentials": "Wrong email or password.",
       "emailTaken": "An account with this email already exists.",
-      "inviteInvalid": "This invite link is invalid, used or expired."
+      "inviteInvalid": "This invite link is invalid, used or expired.",
+      "resetInvalid": "This reset link is invalid, used or expired."
     }
   },
   "invites": {
     "title": "Invites",
+    "usersTitle": "Users",
     "emailOptional": "Email (optional)",
     "create": "Create invite",
     "copyHint": "Copy this link now — it is shown only once:",
     "listTitle": "Issued invites",
     "empty": "No invites issued yet.",
     "revoke": "Revoke",
+    "resetPassword": "Reset password",
+    "resetLinkHint": "Share this link with them now — it is shown only once:",
     "status": {
       "open": "Open",
       "used": "Used",
