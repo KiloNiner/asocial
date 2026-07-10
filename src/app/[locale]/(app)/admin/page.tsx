@@ -109,9 +109,11 @@ export default async function AdminPage() {
                           : ""}
                       </span>
                     </div>
-                    {status === "open" ? (
-                      <RevokeButton inviteId={invite.id} onRevoke={revokeInvite} />
-                    ) : null}
+                    <RevokeButton
+                      inviteId={invite.id}
+                      onRevoke={revokeInvite}
+                      label={status === "open" ? undefined : tInvites("remove")}
+                    />
                   </li>
                 );
               })}

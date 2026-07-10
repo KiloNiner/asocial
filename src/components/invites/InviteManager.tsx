@@ -87,9 +87,12 @@ export function ResetPasswordButton({
 export function RevokeButton({
   inviteId,
   onRevoke,
+  label,
 }: Readonly<{
   inviteId: string;
   onRevoke: (id: string) => Promise<void>;
+  /** Defaults to "Revoke"; pass e.g. the "remove" copy for used/expired rows. */
+  label?: string;
 }>) {
   const t = useTranslations("invites");
   return (
@@ -98,7 +101,7 @@ export function RevokeButton({
       onClick={() => onRevoke(inviteId)}
       className="text-sm text-muted hover:text-danger hover:underline"
     >
-      {t("revoke")}
+      {label ?? t("revoke")}
     </button>
   );
 }

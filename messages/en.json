@@ -72,6 +72,7 @@
     "listTitle": "Issued invites",
     "empty": "No invites issued yet.",
     "revoke": "Revoke",
+    "remove": "Remove",
     "status": {
       "open": "Open",
       "used": "Used",

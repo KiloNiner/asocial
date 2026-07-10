@@ -72,6 +72,7 @@
     "listTitle": "Utfärdade inbjudningar",
     "empty": "Inga inbjudningar utfärdade ännu.",
     "revoke": "Återkalla",
+    "remove": "Ta bort",
     "status": {
       "open": "Öppen",
       "used": "Använd",
