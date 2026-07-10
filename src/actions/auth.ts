@@ -55,6 +55,7 @@ export async function register(
   formData: FormData,
 ): Promise<AuthFormState> {
   const locale = await getLocale();
+  const ip = await clientIp();
   const parsed = registerSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) {
     return { error: "invalid" };
@@ -96,6 +97,12 @@ export async function register(
     return user.id;
   });
 
+  // Registration logs the user straight in (same as login), so it needs
+  // its own success line rather than relying on a separate login attempt.
+  console.log(
+    "[auth] registration succeeded:",
+    JSON.stringify({ userId, role: bootstrap ? "admin" : "user", ip }),
+  );
   await createSession(userId);
   redirect({ href: "/", locale });
   return {};
