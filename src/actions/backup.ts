@@ -15,8 +15,10 @@ export type BackupFormState = {
   imported?: { circles: number; friends: number; interactions: number };
 };
 
-// Rows are inserted as-is (ownership is forced server-side), so the schema
-// only needs to assert the shape is a well-formed backup, not police columns.
+// The schema only needs to assert the shape is a well-formed backup, not
+// police column values — importUserData() forces ownership on every row and
+// drops any friendCircles/circleContactPrefs/friendContactPrefs/interactions
+// row that references a friendId/circleId not owned by this user.
 const row = z.record(z.string(), z.unknown());
 const backupSchema = z.object({
   version: z.literal(BACKUP_VERSION),

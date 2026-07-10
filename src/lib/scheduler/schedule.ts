@@ -111,7 +111,9 @@ export function scheduleNextTask(
     .select({ circle: circles })
     .from(friendCircles)
     .innerJoin(circles, eq(friendCircles.circleId, circles.id))
-    .where(eq(friendCircles.friendId, friendId))
+    .where(
+      and(eq(friendCircles.friendId, friendId), eq(circles.userId, userId)),
+    )
     .all()
     .map((r) => r.circle);
 

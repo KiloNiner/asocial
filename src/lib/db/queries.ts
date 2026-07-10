@@ -52,7 +52,13 @@ export function circleMemberCounts(userId: string): Map<string, number> {
     .from(friendCircles)
     .innerJoin(circles, eq(friendCircles.circleId, circles.id))
     .innerJoin(friends, eq(friendCircles.friendId, friends.id))
-    .where(and(eq(circles.userId, userId), eq(friends.archived, false)))
+    .where(
+      and(
+        eq(circles.userId, userId),
+        eq(friends.userId, userId),
+        eq(friends.archived, false),
+      ),
+    )
     .groupBy(friendCircles.circleId)
     .all();
   return new Map(rows.map((r) => [r.circleId, r.n]));
@@ -247,11 +253,16 @@ export function listFriends(
   if (friendRows.length === 0) return [];
   const ids = friendRows.map((f) => f.id);
 
+  // Every join below is scoped by friendId IN (this user's own friends), but
+  // that alone doesn't guarantee the *other* side of the join (circle,
+  // interaction, task) is also owned by this user — a stray cross-tenant
+  // friend_circles/interactions row (e.g. from a tampered backup restore)
+  // could otherwise surface another user's data here. Filter explicitly.
   const circleRows = db
     .select({ friendId: friendCircles.friendId, circle: circles })
     .from(friendCircles)
     .innerJoin(circles, eq(friendCircles.circleId, circles.id))
-    .where(inArray(friendCircles.friendId, ids))
+    .where(and(inArray(friendCircles.friendId, ids), eq(circles.userId, userId)))
     .orderBy(asc(circles.sortOrder))
     .all();
 
@@ -261,14 +272,22 @@ export function listFriends(
       last: max(interactions.occurredOn),
     })
     .from(interactions)
-    .where(inArray(interactions.friendId, ids))
+    .where(
+      and(inArray(interactions.friendId, ids), eq(interactions.userId, userId)),
+    )
     .groupBy(interactions.friendId)
     .all();
 
   const pendingTasks = db
     .select()
     .from(tasks)
-    .where(and(inArray(tasks.friendId, ids), eq(tasks.status, "pending")))
+    .where(
+      and(
+        inArray(tasks.friendId, ids),
+        eq(tasks.userId, userId),
+        eq(tasks.status, "pending"),
+      ),
+    )
     .orderBy(asc(tasks.dueDate))
     .all();
 
@@ -540,7 +559,12 @@ export function boardRows(userId: string): BoardRow[] {
     .select({ friendId: friendCircles.friendId, circle: circles })
     .from(friendCircles)
     .innerJoin(circles, eq(friendCircles.circleId, circles.id))
-    .where(inArray(friendCircles.friendId, [...byFriend.keys()]))
+    .where(
+      and(
+        inArray(friendCircles.friendId, [...byFriend.keys()]),
+        eq(circles.userId, userId),
+      ),
+    )
     .all();
   const circlesByFriend = new Map<string, Circle[]>();
   for (const row of circleRows) {
@@ -775,33 +799,55 @@ export function importUserData(userId: string, data: BackupData): ImportCounts {
         .values(data.friends.map((row) => ({ ...row, userId })))
         .run();
     }
-    if (data.friendCircles.length > 0) {
-      tx.insert(friendCircles).values(data.friendCircles).run();
+
+    // The rows above force userId, so their ids are now provably owned by
+    // this user. The join/detail tables below carry no owner column of
+    // their own — they're only as trustworthy as the friendId/circleId they
+    // reference — so a backup file (edited by hand, or from a different
+    // account) could otherwise plant a row pairing this user's own
+    // friend/circle with someone else's real id, surfacing or corrupting
+    // that other tenant's data. Keep only rows whose ids were actually just
+    // inserted for this user.
+    const ownFriendIds = new Set(data.friends.map((row) => row.id));
+    const ownCircleIds = new Set(data.circles.map((row) => row.id));
+
+    const friendCirclesRows = data.friendCircles.filter(
+      (row) => ownFriendIds.has(row.friendId) && ownCircleIds.has(row.circleId),
+    );
+    if (friendCirclesRows.length > 0) {
+      tx.insert(friendCircles).values(friendCirclesRows).run();
     }
     if (data.userContactPrefs.length > 0) {
       tx.insert(userContactPrefs)
         .values(data.userContactPrefs.map((row) => ({ ...row, userId })))
         .run();
     }
-    if (data.circleContactPrefs.length > 0) {
-      tx.insert(circleContactPrefs).values(data.circleContactPrefs).run();
+    const circleContactPrefsRows = data.circleContactPrefs.filter((row) =>
+      ownCircleIds.has(row.circleId),
+    );
+    if (circleContactPrefsRows.length > 0) {
+      tx.insert(circleContactPrefs).values(circleContactPrefsRows).run();
     }
-    if (data.friendContactPrefs.length > 0) {
-      tx.insert(friendContactPrefs).values(data.friendContactPrefs).run();
+    const friendContactPrefsRows = data.friendContactPrefs.filter((row) =>
+      ownFriendIds.has(row.friendId),
+    );
+    if (friendContactPrefsRows.length > 0) {
+      tx.insert(friendContactPrefs).values(friendContactPrefsRows).run();
     }
-    if (data.interactions.length > 0) {
+    const interactionsRows = data.interactions.filter((row) =>
+      ownFriendIds.has(row.friendId),
+    );
+    if (interactionsRows.length > 0) {
       // taskId references live tasks that are not restored.
       tx.insert(interactions)
-        .values(
-          data.interactions.map((row) => ({ ...row, userId, taskId: null })),
-        )
+        .values(interactionsRows.map((row) => ({ ...row, userId, taskId: null })))
         .run();
     }
 
     return {
       circles: data.circles.length,
       friends: data.friends.length,
-      interactions: data.interactions.length,
+      interactions: interactionsRows.length,
       contactTypes: data.contactTypes.length,
     };
   });
