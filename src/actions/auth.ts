@@ -12,6 +12,7 @@ import {
 } from "@/lib/auth/invites";
 import { hashPassword, verifyPassword } from "@/lib/auth/password";
 import { createSession, destroySession } from "@/lib/auth/session";
+import { getSettings } from "@/lib/auth/current-user";
 import { redirect } from "@/i18n/navigation";
 
 export type AuthFormState = { error?: string };
@@ -104,7 +105,6 @@ export async function login(
   _prev: AuthFormState,
   formData: FormData,
 ): Promise<AuthFormState> {
-  const locale = await getLocale();
   const ip = await clientIp();
   const parsed = loginSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) {
@@ -139,7 +139,12 @@ export async function login(
     JSON.stringify({ userId: user.id, ip }),
   );
   await createSession(user.id);
-  redirect({ href: "/", locale });
+  // Redirect to the account's own locale, not whatever locale this browser's
+  // login page happened to render under — this app routes locale by URL
+  // segment, so a stale NEXT_LOCALE cookie on another device won't catch up
+  // to a Settings-page locale change until the user explicitly lands here.
+  const settings = await getSettings(user.id);
+  redirect({ href: "/", locale: settings.locale });
   return {};
 }
 
