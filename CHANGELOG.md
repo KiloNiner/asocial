@@ -1,5 +1,36 @@
 # Changelog
 
+## v1.3.0
+
+### Added
+- An in-app About page (`/about`) showing the running version, build
+  commit and date, and links back to the GitHub repo, changelog and
+  Docker Hub image.
+- An in-app manual on the About page covering circles, scheduling,
+  activity suggestions, the two views, the guilt-free philosophy,
+  journal, birthdays, notifications, backup/restore, themes, locales
+  and accounts — fully translated in English, Danish and Swedish
+  (Klingon keeps its usual lighter treatment).
+
+### Changed
+- The invites admin page is now a general Admin page (`/admin`, moved
+  from `/admin/invites`) with distinct "Users" and "Invites" sections,
+  reflecting that it already covered password resets alongside invites.
+
+### Fixed
+- The app icon (favicons, apple-touch-icon, Android/maskable icons) was
+  visibly off-center on iOS/Android home screens; the mark is now
+  correctly centered and every derived icon regenerated.
+- "Not logged in" during a page visit or server action is no longer
+  logged as a server error with a stack trace — auth behavior is
+  unchanged, only how routine unauthenticated access is signaled.
+
+### Platform
+- Docker images now bake in the git commit and build date (`GIT_SHA`,
+  `BUILD_DATE`), shown on the About page; local builds fall back to a
+  "development build" label.
+- Refreshed the README/docs screenshot gallery to match the current UI.
+
 ## v1.2.0
 
 ### Added
