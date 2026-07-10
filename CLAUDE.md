@@ -88,4 +88,4 @@ Edit `src/db/schema.ts`, then `npm run db:generate`. SQLite enum changes (Drizzl
 No red "overdue" states, ever. Lingering tasks soften to amber (`warn`), snoozing is unlimited, skipping just restarts the rhythm, and the digest anti-nag rule avoids daily repetition. Preserve this when touching task states or notification copy.
 
 ## Git
-Commits land directly on `main`; commit messages are milestone-scoped with a body explaining the change. Releases are tagged `vX.Y.Z` with a matching `CHANGELOG.md` entry and a `package.json`/`package-lock.json` version bump.
+Commits land directly on `main`; commit messages are milestone-scoped with a body explaining the change. Releases are tagged `vX.Y.Z` with a matching `CHANGELOG.md` entry and a `package.json`/`package-lock.json` version bump. Follow strict [semantic versioning](https://semver.org/) for the version number: PATCH for backwards-compatible bug fixes only, MINOR for backwards-compatible feature additions, MAJOR for breaking changes (schema/API/config changes that require user action). Don't default to a MINOR bump just because a release bundles several fixes.
