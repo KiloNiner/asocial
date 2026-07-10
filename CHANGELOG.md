@@ -1,5 +1,20 @@
 # Changelog
 
+## v1.3.1
+
+### Fixed
+- Any text input, select or textarea rendered at 14px, under iOS Safari's
+  16px auto-zoom-on-focus threshold. Since the login/register/reset-password
+  forms navigate away on submit instead of blurring, the zoom never reset,
+  leaving the whole app zoomed in after logging in on an iPhone/iPad. All
+  form fields now render at 16px.
+- Logging in redirected to whatever locale the login page's URL happened to
+  be in, ignoring the account's saved language. A user who changed their
+  language in Settings on one browser would still see the old language
+  after logging in on a different browser or device. Login now honors the
+  account's saved locale; manually navigating to a different locale's URL
+  afterward still works as before.
+
 ## v1.3.0
 
 ### Added
