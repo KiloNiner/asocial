@@ -9,8 +9,10 @@ import {
 } from "@/actions/password-resets";
 import { Link } from "@/i18n/navigation";
 
+// text-base, not text-sm: keeps iOS Safari from auto-zooming on focus (see
+// components/ui/classes.ts for why that zoom never resets on redirect).
 const inputClass =
-  "w-full rounded-md border border-field-border bg-field px-3 py-2 text-sm " +
+  "w-full rounded-md border border-field-border bg-field px-3 py-2 text-base " +
   "focus:outline-none focus:ring-2 focus:ring-accent";
 
 const buttonClass =

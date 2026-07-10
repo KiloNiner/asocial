@@ -1,5 +1,8 @@
+// text-base (16px), not text-sm: below 16px iOS Safari auto-zooms on focus
+// and — since navigating away doesn't blur the field first — never zooms
+// back out, leaving the whole page zoomed in after e.g. a login redirect.
 export const inputClass =
-  "rounded-md border border-field-border bg-field px-3 py-2 text-sm " +
+  "rounded-md border border-field-border bg-field px-3 py-2 text-base " +
   "focus:outline-none focus:ring-2 focus:ring-accent";
 
 export const buttonClass =
