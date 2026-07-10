@@ -1,5 +1,29 @@
 # Changelog
 
+## v1.4.0
+
+### Security
+- Fixed a cross-tenant data exposure bug in backup restore: a crafted
+  backup file could pair your own friend or circle with another
+  account's real friend/circle id (if you had somehow obtained one),
+  surfacing that account's circle name and color on your own friends
+  list, or corrupting which circle governs their contact schedule.
+  Restore now verifies every cross-reference in the uploaded file
+  actually belongs to the importing account before inserting it, with
+  the same ownership check added to several read paths as defense in
+  depth.
+
+### Added
+- Admins can now remove used or expired invites from the Admin page —
+  previously only open, unredeemed invites had a way to be cleared,
+  so the list only ever grew.
+
+### Platform
+- Registration — including accepting an invite — now logs a
+  `[auth] registration succeeded` line (with role and masked IP),
+  matching the existing login success/failure logging. Previously this
+  was the only auth event invisible in `docker logs`.
+
 ## v1.3.1
 
 ### Fixed
