@@ -9,7 +9,8 @@
     "friends": "juppu'",
     "circles": "ghomHom",
     "settings": "DuHmey",
-    "invites": "rI'meH nav",
+    "admin": "che'wI'",
+    "about": "De'",
     "logout": "yImej"
   },
   "home": {
@@ -57,17 +58,20 @@
       "resetInvalid": "chu' nav ram, lo'lu'ta' ghap chov."
     }
   },
-  "invites": {
-    "title": "rI'meH navmey",
+  "admin": {
+    "title": "che'wI'",
     "usersTitle": "lo'wI'pu'",
+    "invitesTitle": "rI'meH navmey",
+    "resetPassword": "mu' pegh chu' yIchu'",
+    "resetLinkHint": "DaH nav yIvel 'ej lo'wI'vaD yInob — wa'logh neH 'anglu':"
+  },
+  "invites": {
     "emailOptional": "QIn Sum (DuH neH)",
     "create": "rI'meH nav yIchen",
     "copyHint": "DaH nav yIvel — wa'logh neH 'anglu':",
     "listTitle": "nobta' rI'meH navmey",
     "empty": "pagh rI'meH nav nobta'.",
     "revoke": "yIteq",
-    "resetPassword": "mu' pegh chu' yIchu'",
-    "resetLinkHint": "DaH nav yIvel 'ej lo'wI'vaD yInob — wa'logh neH 'anglu':",
     "status": {
       "open": "poSmoH",
       "used": "lo'lu'ta'",
@@ -270,6 +274,69 @@
     "errors": {
       "invalidFile": "asocial QIt teywI' lughbe'law'.",
       "unauthorized": "poH chovta' — yI'el."
+    }
+  },
+  "about": {
+    "title": "De'",
+    "version": "asocial v{version}",
+    "commit": "chenmoHta' {sha}",
+    "buildDate": "chenmoHpu' {date}",
+    "devBuild": "chenmoHmeH ram — De'Hey tu'lu'be'.",
+    "links": {
+      "github": "GitHub Daq lut",
+      "changelog": "choHtaHghach tetlh",
+      "dockerhub": "Docker Hub veb"
+    },
+    "manualTitle": "asocial vum chay'",
+    "manual": {
+      "circles": {
+        "title": "ghomHom",
+        "body": "Hol latlh yIlaD."
+      },
+      "scheduling": {
+        "title": "poH wIv",
+        "body": "Hol latlh yIlaD."
+      },
+      "activities": {
+        "title": "vum",
+        "body": "Hol latlh yIlaD."
+      },
+      "views": {
+        "title": "legh",
+        "body": "Hol latlh yIlaD."
+      },
+      "guiltFree": {
+        "title": "roj",
+        "body": "Hol latlh yIlaD."
+      },
+      "journal": {
+        "title": "ghItlh",
+        "body": "Hol latlh yIlaD."
+      },
+      "birthdays": {
+        "title": "qoS",
+        "body": "Hol latlh yIlaD."
+      },
+      "notifications": {
+        "title": "QIn",
+        "body": "Hol latlh yIlaD."
+      },
+      "backup": {
+        "title": "pol",
+        "body": "Hol latlh yIlaD."
+      },
+      "themes": {
+        "title": "boch",
+        "body": "Hol latlh yIlaD."
+      },
+      "locales": {
+        "title": "Hol",
+        "body": "Hol latlh yIlaD."
+      },
+      "accounts": {
+        "title": "lo'wI'",
+        "body": "Hol latlh yIlaD."
+      }
     }
   }
 }

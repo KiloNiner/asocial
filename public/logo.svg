@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 100">
-  <circle cx="44" cy="58" r="25" fill="none" stroke="#D9A441" stroke-width="16"></circle>
-  <rect x="61" y="25" width="16" height="66" rx="8" fill="#D9A441"></rect>
+  <circle cx="44" cy="50" r="25" fill="none" stroke="#D9A441" stroke-width="16"></circle>
+  <rect x="61" y="17" width="16" height="66" rx="8" fill="#D9A441"></rect>
   <text x="102" y="70" font-family="&#39;Nunito Sans&#39;, &#39;Segoe UI&#39;, Helvetica, Arial, sans-serif" font-weight="800" font-size="52" letter-spacing="-0.5" fill="#2A241D">asocial</text>
 </svg>

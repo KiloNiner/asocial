@@ -10,6 +10,7 @@ const navItems = [
   { href: "/friends", key: "friends" },
   { href: "/circles", key: "circles" },
   { href: "/settings", key: "settings" },
+  { href: "/about", key: "about" },
 ] as const;
 
 export async function AppShell({
@@ -40,10 +41,10 @@ export async function AppShell({
           ))}
           {user.role === "admin" ? (
             <Link
-              href="/admin/invites"
+              href="/admin"
               className="rounded-md px-3 py-1.5 text-sm text-ink hover:bg-faint"
             >
-              {t("invites")}
+              {t("admin")}
             </Link>
           ) : null}
         </nav>

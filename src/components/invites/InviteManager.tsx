@@ -49,7 +49,7 @@ export function InviteCreateForm() {
 export function ResetPasswordButton({
   userId,
 }: Readonly<{ userId: string }>) {
-  const t = useTranslations("invites");
+  const t = useTranslations("admin");
   const [state, setState] = useState<CreateResetState>({});
   const [pending, setPending] = useState(false);
 

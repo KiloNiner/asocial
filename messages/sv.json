@@ -9,7 +9,8 @@
     "friends": "Vänner",
     "circles": "Cirklar",
     "settings": "Inställningar",
-    "invites": "Inbjudningar",
+    "admin": "Administration",
+    "about": "Om",
     "logout": "Logga ut"
   },
   "home": {
@@ -57,17 +58,20 @@
       "resetInvalid": "Återställningslänken är ogiltig, använd eller har gått ut."
     }
   },
-  "invites": {
-    "title": "Inbjudningar",
+  "admin": {
+    "title": "Administration",
     "usersTitle": "Användare",
+    "invitesTitle": "Inbjudningar",
+    "resetPassword": "Återställ lösenord",
+    "resetLinkHint": "Dela den här länken med dem nu — den visas bara en gång:"
+  },
+  "invites": {
     "emailOptional": "E-post (valfritt)",
     "create": "Skapa inbjudan",
     "copyHint": "Kopiera länken nu — den visas bara en gång:",
     "listTitle": "Utfärdade inbjudningar",
     "empty": "Inga inbjudningar utfärdade ännu.",
     "revoke": "Återkalla",
-    "resetPassword": "Återställ lösenord",
-    "resetLinkHint": "Dela den här länken med dem nu — den visas bara en gång:",
     "status": {
       "open": "Öppen",
       "used": "Använd",
@@ -270,6 +274,69 @@
     "errors": {
       "invalidFile": "Det ser inte ut som en giltig asocial-säkerhetskopia.",
       "unauthorized": "Din session har gått ut. Logga in igen."
+    }
+  },
+  "about": {
+    "title": "Om",
+    "version": "asocial v{version}",
+    "commit": "Commit {sha}",
+    "buildDate": "Byggd {date}",
+    "devBuild": "Utvecklingsbygge — ingen build-info tillgänglig.",
+    "links": {
+      "github": "Källkod på GitHub",
+      "changelog": "Ändringslogg",
+      "dockerhub": "Docker Hub-avbild"
+    },
+    "manualTitle": "Så fungerar asocial",
+    "manual": {
+      "circles": {
+        "title": "Cirklar",
+        "body": "Vänner hör till en eller flera cirklar, var och en med sin egen kontaktrytm — t.ex. “Nära vänner” varannan vecka. En vän i flera cirklar följer den mest frekventa. Du kan också sätta ett personligt intervall för en vän som helt åsidosätter deras cirklar, och vänner utan någon cirkel alls faller tillbaka på ditt standardintervall i Inställningar."
+      },
+      "scheduling": {
+        "title": "Slumpmässig schemaläggning",
+        "body": "Varje föreslaget kontaktdatum får en slumpmässig variation (±25% som standard) så att rytmen aldrig känns mekanisk. Om en vän faller mellan stolarna hopar asocial inte upp en eftersläpning — den föreslår bara försiktigt att höra av sig om några dagar."
+      },
+      "activities": {
+        "title": "Vad ni ska göra",
+        "body": "Utöver när ni ska höras föreslår asocial vad ni ska göra — ett meddelande, ett samtal, fika, en aktivitet, ett besök eller att vara värd — valt slumpmässigt med vikter du kan justera per vän, per cirkel eller globalt. Den föreslår aldrig samma typ två gånger i rad."
+      },
+      "views": {
+        "title": "Två vyer",
+        "body": "Kalendern ger en klassisk månadsvy. Översiktens tavla visar en rad per vän med ett färgat band som markerar dagarna att agera — dämpat innan det öppnar, levande medan det är öppet, och en mjuk gulbrun ton om det drar ut på tiden."
+      },
+      "guiltFree": {
+        "title": "Skuldfri design",
+        "body": "Det finns aldrig röda “försenad”-varningar. Ett förslag som drar ut på tiden blir bara mjukt gulbrunt. Skjut upp så många gånger du vill — hoppar du över ett startar rytmen bara om från idag, utan skuldkänslor och utan en svit att bryta."
+      },
+      "journal": {
+        "title": "Journal",
+        "body": "All verklig kontakt — oavsett om den följde ett förslag eller inte — kan loggas med en anteckning, vilket bygger en privat historik per vän som du kan gå tillbaka till när som helst."
+      },
+      "birthdays": {
+        "title": "Födelsedagar",
+        "body": "Lägg till en väns födelsedag (dag och månad; år är valfritt) så föreslår asocial en gratulation en vecka innan — separat från er vanliga kontaktrytm, så ett firande skjuter aldrig upp er nästa riktiga träff."
+      },
+      "notifications": {
+        "title": "Aviseringar",
+        "body": "Få en daglig sammanfattning via Pushover eller e-post vid den tid som passar dig, med bara det som faktiskt är öppet just nu. Ett förslag som drar ut på tiden tjatar inte varje dag — det dyker upp igen som mest var tredje dag."
+      },
+      "backup": {
+        "title": "Säkerhetskopiering och återställning",
+        "body": "Exportera dina vänner, cirklar, journal och egna aktivitetstyper som en JSON-fil när som helst från Inställningar, och återställ den senare — praktiskt vid flytt till en ny installation eller bara som personlig kopia."
+      },
+      "themes": {
+        "title": "Teman",
+        "body": "Välj bland sex utvalda ljusa och mörka teman, eller låt det stå på Auto så följer det ditt system."
+      },
+      "locales": {
+        "title": "Språk",
+        "body": "asocial talar engelska, danska, svenska och klingonska (tlhIngan Hol) — byt ditt när som helst i Inställningar."
+      },
+      "accounts": {
+        "title": "Konton",
+        "body": "asocial är endast via inbjudan: den första som registrerar sig blir administratör, och alla därefter behöver en inbjudningslänk från en administratör."
+      }
     }
   }
 }

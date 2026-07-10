@@ -19,11 +19,17 @@ FROM node:26-bookworm-slim AS runner
 WORKDIR /app
 # Apply the latest OS security patches on top of the base image (runs as root).
 RUN apt-get update && apt-get upgrade -y && rm -rf /var/lib/apt/lists/*
+# Baked in by CI (see .github/workflows/docker-publish.yml); "unknown" for
+# local/manual builds. Shown on the in-app About page.
+ARG GIT_SHA=unknown
+ARG BUILD_DATE=unknown
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
     DATABASE_PATH=/data/asocial.db \
     PORT=3000 \
-    HOSTNAME=0.0.0.0
+    HOSTNAME=0.0.0.0 \
+    GIT_SHA=$GIT_SHA \
+    BUILD_DATE=$BUILD_DATE
 
 COPY --from=build /app/.next/standalone ./
 COPY --from=build /app/.next/static ./.next/static

@@ -9,7 +9,8 @@
     "friends": "Friends",
     "circles": "Circles",
     "settings": "Settings",
-    "invites": "Invites",
+    "admin": "Admin",
+    "about": "About",
     "logout": "Log out"
   },
   "home": {
@@ -57,17 +58,20 @@
       "resetInvalid": "This reset link is invalid, used or expired."
     }
   },
-  "invites": {
-    "title": "Invites",
+  "admin": {
+    "title": "Admin",
     "usersTitle": "Users",
+    "invitesTitle": "Invites",
+    "resetPassword": "Reset password",
+    "resetLinkHint": "Share this link with them now — it is shown only once:"
+  },
+  "invites": {
     "emailOptional": "Email (optional)",
     "create": "Create invite",
     "copyHint": "Copy this link now — it is shown only once:",
     "listTitle": "Issued invites",
     "empty": "No invites issued yet.",
     "revoke": "Revoke",
-    "resetPassword": "Reset password",
-    "resetLinkHint": "Share this link with them now — it is shown only once:",
     "status": {
       "open": "Open",
       "used": "Used",
@@ -270,6 +274,69 @@
     "errors": {
       "invalidFile": "That doesn't look like a valid asocial backup file.",
       "unauthorized": "Your session has expired. Please log in again."
+    }
+  },
+  "about": {
+    "title": "About",
+    "version": "asocial v{version}",
+    "commit": "Commit {sha}",
+    "buildDate": "Built {date}",
+    "devBuild": "Development build — no build info available.",
+    "links": {
+      "github": "Source on GitHub",
+      "changelog": "Changelog",
+      "dockerhub": "Docker Hub image"
+    },
+    "manualTitle": "How asocial works",
+    "manual": {
+      "circles": {
+        "title": "Circles",
+        "body": "Friends belong to one or more circles, each with its own contact rhythm — “Close friends” every 2 weeks, say. A friend in several circles follows the most frequent one. You can also set a personal interval for one friend that overrides their circles entirely, and friends with no circle at all fall back to your default interval in Settings."
+      },
+      "scheduling": {
+        "title": "Randomized scheduling",
+        "body": "Every suggested contact date gets a random jitter (±25% by default) so the rhythm never feels mechanical. If a friend falls through the cracks, asocial doesn't pile up a backlog — it just gently suggests reaching out a few days from now."
+      },
+      "activities": {
+        "title": "What to do",
+        "body": "Alongside when to reach out, asocial suggests what to do — a message, a call, coffee, an activity, a visit, or hosting — picked at random with weights you can tune per friend, per circle, or globally. It never suggests the same type twice in a row."
+      },
+      "views": {
+        "title": "Two views",
+        "body": "The Calendar gives you a classic month view. The Dashboard board shows one row per friend with a colored band marking the days to act — muted before it opens, vivid while open, and a soft amber if it lingers afterwards."
+      },
+      "guiltFree": {
+        "title": "Guilt-free by design",
+        "body": "There are no red “overdue” warnings, ever. A lingering suggestion just turns a soft amber. Snooze as many times as you like — skipping one simply restarts the rhythm from today, no guilt and no streak to break."
+      },
+      "journal": {
+        "title": "Journal",
+        "body": "Every real contact — whether it followed a suggestion or not — can be logged with a note, building a private history per friend that you can look back on any time."
+      },
+      "birthdays": {
+        "title": "Birthdays",
+        "body": "Add a friend's birthday (day and month; year is optional) and asocial suggests a congratulation a week ahead — separate from your regular contact rhythm, so celebrating never postpones your next real catch-up."
+      },
+      "notifications": {
+        "title": "Notifications",
+        "body": "Get a daily digest by Pushover or email at whatever hour suits you, listing only what's actually open right now. A lingering suggestion won't nag you every day — it resurfaces at most every third day."
+      },
+      "backup": {
+        "title": "Backup & restore",
+        "body": "Export your friends, circles, journal and custom activity types as a JSON file any time from Settings, and restore it later — handy for moving to a new install or just keeping a personal copy."
+      },
+      "themes": {
+        "title": "Themes",
+        "body": "Pick from six hand-picked light and dark themes, or leave it on Auto to follow your system."
+      },
+      "locales": {
+        "title": "Languages",
+        "body": "asocial speaks English, Danish, Swedish, and Klingon (tlhIngan Hol) — change yours any time in Settings."
+      },
+      "accounts": {
+        "title": "Accounts",
+        "body": "asocial is invite-only: the first person to register becomes the administrator, and everyone after that needs an invite link from an admin."
+      }
     }
   }
 }

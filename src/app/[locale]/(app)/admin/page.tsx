@@ -20,14 +20,15 @@ function inviteStatus(
   return expiresAt <= Date.now() ? "expired" : "open";
 }
 
-export default async function InvitesPage() {
+export default async function AdminPage() {
   const user = await getCurrentUser();
   if (!user || user.role !== "admin") {
     redirect({ href: "/", locale: await getLocale() });
     return null;
   }
 
-  const t = await getTranslations("invites");
+  const t = await getTranslations("admin");
+  const tInvites = await getTranslations("invites");
   const format = await getFormatter();
   const rows = db
     .select({
@@ -73,44 +74,50 @@ export default async function InvitesPage() {
         </ul>
       </section>
 
-      <InviteCreateForm />
-      <section className="flex flex-col gap-2">
-        <h2 className="text-lg font-medium">{t("listTitle")}</h2>
-        {rows.length === 0 ? (
-          <p className="text-sm text-muted">{t("empty")}</p>
-        ) : (
-          <ul className="divide-y divide-line rounded-md border border-line bg-panel">
-            {rows.map(({ invite, usedByName }) => {
-              const status = inviteStatus(invite.usedBy, invite.expiresAt);
-              return (
-                <li
-                  key={invite.id}
-                  className="flex items-center justify-between gap-2 px-4 py-2 text-sm"
-                >
-                  <div className="flex flex-col">
-                    <span>
-                      {invite.email ?? t("anyEmail")}
-                      {usedByName ? ` → ${usedByName}` : ""}
-                    </span>
-                    <span className="text-xs text-muted">
-                      {t(`status.${status}`)}
-                      {status === "open"
-                        ? ` · ${t("expires", {
-                            date: format.dateTime(new Date(invite.expiresAt), {
-                              dateStyle: "medium",
-                            }),
-                          })}`
-                        : ""}
-                    </span>
-                  </div>
-                  {status === "open" ? (
-                    <RevokeButton inviteId={invite.id} onRevoke={revokeInvite} />
-                  ) : null}
-                </li>
-              );
-            })}
-          </ul>
-        )}
+      <section className="flex flex-col gap-3">
+        <h2 className="text-lg font-medium">{t("invitesTitle")}</h2>
+        <InviteCreateForm />
+        <div className="flex flex-col gap-2">
+          <h3 className="text-sm font-medium text-muted">
+            {tInvites("listTitle")}
+          </h3>
+          {rows.length === 0 ? (
+            <p className="text-sm text-muted">{tInvites("empty")}</p>
+          ) : (
+            <ul className="divide-y divide-line rounded-md border border-line bg-panel">
+              {rows.map(({ invite, usedByName }) => {
+                const status = inviteStatus(invite.usedBy, invite.expiresAt);
+                return (
+                  <li
+                    key={invite.id}
+                    className="flex items-center justify-between gap-2 px-4 py-2 text-sm"
+                  >
+                    <div className="flex flex-col">
+                      <span>
+                        {invite.email ?? tInvites("anyEmail")}
+                        {usedByName ? ` → ${usedByName}` : ""}
+                      </span>
+                      <span className="text-xs text-muted">
+                        {tInvites(`status.${status}`)}
+                        {status === "open"
+                          ? ` · ${tInvites("expires", {
+                              date: format.dateTime(
+                                new Date(invite.expiresAt),
+                                { dateStyle: "medium" },
+                              ),
+                            })}`
+                          : ""}
+                      </span>
+                    </div>
+                    {status === "open" ? (
+                      <RevokeButton inviteId={invite.id} onRevoke={revokeInvite} />
+                    ) : null}
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
       </section>
     </div>
   );

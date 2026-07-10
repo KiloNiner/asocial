@@ -28,7 +28,7 @@ export async function createInvite(
 
   const { token } = createInviteToken(admin.id, parsed.data.email);
   const base = process.env.APP_URL ?? "http://localhost:3000";
-  revalidatePath("/[locale]/admin/invites", "page");
+  revalidatePath("/[locale]/admin", "page");
   return { inviteUrl: `${base}/register?invite=${token}` };
 }
 
@@ -36,5 +36,5 @@ export async function revokeInvite(inviteId: string): Promise<void> {
   const admin = await getCurrentUser();
   if (!admin || admin.role !== "admin") return;
   db.delete(invites).where(eq(invites.id, inviteId)).run();
-  revalidatePath("/[locale]/admin/invites", "page");
+  revalidatePath("/[locale]/admin", "page");
 }
