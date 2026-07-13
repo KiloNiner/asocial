@@ -11,7 +11,8 @@
     "settings": "Indstillinger",
     "admin": "Administration",
     "about": "Om",
-    "logout": "Log ud"
+    "logout": "Log ud",
+    "menu": "Menu"
   },
   "home": {
     "welcome": "Velkommen til asocial"

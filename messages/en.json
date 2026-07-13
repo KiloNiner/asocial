@@ -11,7 +11,8 @@
     "settings": "Settings",
     "admin": "Admin",
     "about": "About",
-    "logout": "Log out"
+    "logout": "Log out",
+    "menu": "Menu"
   },
   "home": {
     "welcome": "Welcome to asocial"

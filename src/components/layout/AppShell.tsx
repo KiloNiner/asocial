@@ -2,6 +2,7 @@ import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { logout } from "@/actions/auth";
 import { Link } from "@/i18n/navigation";
+import { MobileNav } from "@/components/layout/MobileNav";
 import type { User } from "@/db/schema";
 
 const navItems = [
@@ -18,17 +19,36 @@ export async function AppShell({
 }: Readonly<{ user: User; children: React.ReactNode }>) {
   const t = await getTranslations("nav");
 
+  const translatedNavItems = navItems.map((item) => ({
+    href: item.href,
+    label: t(item.key),
+  }));
+  const adminItem =
+    user.role === "admin" ? { href: "/admin", label: t("admin") } : null;
+  const aboutItem = { href: "/about", label: t("about") };
+
   return (
     <div className="flex min-h-screen flex-col md:flex-row">
       <aside className="flex w-full shrink-0 flex-col gap-4 border-b border-line bg-panel p-4 md:min-h-screen md:w-52 md:border-b-0 md:border-r">
-        <Link
-          href="/"
-          className="flex items-center gap-2 text-lg font-bold tracking-tight"
-        >
-          <Image src="/mark.svg" alt="" width={22} height={22} className="shrink-0" />
-          asocial
-        </Link>
-        <nav className="flex flex-row flex-wrap gap-1 md:flex-col">
+        <div className="flex items-center gap-2">
+          <MobileNav
+            navItems={translatedNavItems}
+            adminItem={adminItem}
+            aboutItem={aboutItem}
+            displayName={user.displayName}
+            logoutAction={logout}
+            logoutLabel={t("logout")}
+            menuLabel={t("menu")}
+          />
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-lg font-bold tracking-tight"
+          >
+            <Image src="/mark.svg" alt="" width={22} height={22} className="shrink-0" />
+            asocial
+          </Link>
+        </div>
+        <nav className="hidden flex-row flex-wrap gap-1 md:flex md:flex-col">
           {navItems.map((item) => (
             <Link
               key={item.key}
@@ -53,7 +73,7 @@ export async function AppShell({
             {t("about")}
           </Link>
         </nav>
-        <div className="mt-auto flex flex-col gap-2 text-sm">
+        <div className="mt-auto hidden flex-col gap-2 text-sm md:flex">
           <span className="truncate text-muted">{user.displayName}</span>
           <form action={logout}>
             <button
