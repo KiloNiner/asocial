@@ -142,3 +142,7 @@ scheduler run. Unit tests: `npm test`.
 Next.js (App Router) · TypeScript · SQLite via Drizzle ORM · Tailwind CSS ·
 next-intl (en/da/sv/tlh) · Croner for in-process cron · argon2id auth with
 opaque session tokens. Single container, no external services required.
+
+## License
+
+[GNU AGPL-3.0-or-later](LICENSE).
