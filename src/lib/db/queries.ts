@@ -808,13 +808,22 @@ export type ImportCounts = {
 
 /**
  * Replace-all restore: wipe the user's portable data, then insert from the
- * backup, forcing ownership to userId and preserving record IDs. Tasks are not
- * restored (regenerate them via sweepUserContactTasks afterwards).
+ * backup, forcing ownership to userId. Tasks are not restored (regenerate
+ * them via sweepUserContactTasks afterwards).
  *
  * Ownership is always forced to the importing account, by design — a
  * restore always re-homes the file's data to whoever performs it, whether
  * that's the account that originally exported it, a different account on
  * this instance, or an account on a different instance entirely.
+ *
+ * ids are never trusted from the file: a client-supplied id could be
+ * low-entropy (a user hand-editing the JSON before uploading) or collide
+ * with another account's still-live row, so every circle/friend/contact
+ * type/interaction gets a fresh server-generated id here, with every
+ * reference to it remapped within the same transaction. This means restore
+ * ids change on *every* restore, including a plain self-restore of your own
+ * untouched export — any previously bookmarked /friends/<id> or
+ * /circles/<id> link won't survive a restore.
  */
 export function importUserData(userId: string, data: BackupData): ImportCounts {
   return db.transaction((tx) => {
@@ -829,64 +838,89 @@ export function importUserData(userId: string, data: BackupData): ImportCounts {
       .run();
     tx.delete(contactTypes).where(eq(contactTypes.userId, userId)).run();
 
+    // Old id -> freshly minted id, built as each table is inserted. Also
+    // doubles as the ownership filter the IDOR fix relies on: a join/detail
+    // row only survives if its reference resolves here, i.e. was actually
+    // part of this same file's own contactTypes/circles/friends — anything
+    // else (a stray reference to another account's real id) is dropped
+    // rather than remapped.
+    const typeIdMap = new Map(data.contactTypes.map((row) => [row.id, crypto.randomUUID()]));
+    const circleIdMap = new Map(data.circles.map((row) => [row.id, crypto.randomUUID()]));
+    const friendIdMap = new Map(data.friends.map((row) => [row.id, crypto.randomUUID()]));
+    // Built-in contact types (id like "message", userId NULL) are shared
+    // across all accounts and never appear in typeIdMap — pass those
+    // through unchanged rather than dropping the row.
+    const remapType = (id: string) => typeIdMap.get(id) ?? id;
+
     if (data.contactTypes.length > 0) {
       tx.insert(contactTypes)
-        .values(data.contactTypes.map((row) => ({ ...row, userId })))
+        .values(data.contactTypes.map((row) => ({ ...row, id: typeIdMap.get(row.id), userId })))
         .run();
     }
     if (data.circles.length > 0) {
       tx.insert(circles)
-        .values(data.circles.map((row) => ({ ...row, userId })))
+        .values(data.circles.map((row) => ({ ...row, id: circleIdMap.get(row.id), userId })))
         .run();
     }
     if (data.friends.length > 0) {
       tx.insert(friends)
-        .values(data.friends.map((row) => ({ ...row, userId })))
+        .values(data.friends.map((row) => ({ ...row, id: friendIdMap.get(row.id), userId })))
         .run();
     }
 
-    // The rows above force userId, so their ids are now provably owned by
-    // this user. The join/detail tables below carry no owner column of
-    // their own — they're only as trustworthy as the friendId/circleId they
-    // reference — so a backup file (edited by hand, or from a different
-    // account) could otherwise plant a row pairing this user's own
-    // friend/circle with someone else's real id, surfacing or corrupting
-    // that other tenant's data. Keep only rows whose ids were actually just
-    // inserted for this user.
-    const ownFriendIds = new Set(data.friends.map((row) => row.id));
-    const ownCircleIds = new Set(data.circles.map((row) => row.id));
-
-    const friendCirclesRows = data.friendCircles.filter(
-      (row) => ownFriendIds.has(row.friendId) && ownCircleIds.has(row.circleId),
-    );
+    const friendCirclesRows = data.friendCircles
+      .filter((row) => friendIdMap.has(row.friendId) && circleIdMap.has(row.circleId))
+      .map((row) => ({
+        friendId: friendIdMap.get(row.friendId)!,
+        circleId: circleIdMap.get(row.circleId)!,
+      }));
     if (friendCirclesRows.length > 0) {
       tx.insert(friendCircles).values(friendCirclesRows).run();
     }
     if (data.userContactPrefs.length > 0) {
       tx.insert(userContactPrefs)
-        .values(data.userContactPrefs.map((row) => ({ ...row, userId })))
+        .values(
+          data.userContactPrefs.map((row) => ({
+            ...row,
+            contactTypeId: remapType(row.contactTypeId),
+            userId,
+          })),
+        )
         .run();
     }
-    const circleContactPrefsRows = data.circleContactPrefs.filter((row) =>
-      ownCircleIds.has(row.circleId),
-    );
+    const circleContactPrefsRows = data.circleContactPrefs
+      .filter((row) => circleIdMap.has(row.circleId))
+      .map((row) => ({
+        ...row,
+        circleId: circleIdMap.get(row.circleId)!,
+        contactTypeId: remapType(row.contactTypeId),
+      }));
     if (circleContactPrefsRows.length > 0) {
       tx.insert(circleContactPrefs).values(circleContactPrefsRows).run();
     }
-    const friendContactPrefsRows = data.friendContactPrefs.filter((row) =>
-      ownFriendIds.has(row.friendId),
-    );
+    const friendContactPrefsRows = data.friendContactPrefs
+      .filter((row) => friendIdMap.has(row.friendId))
+      .map((row) => ({
+        ...row,
+        friendId: friendIdMap.get(row.friendId)!,
+        contactTypeId: remapType(row.contactTypeId),
+      }));
     if (friendContactPrefsRows.length > 0) {
       tx.insert(friendContactPrefs).values(friendContactPrefsRows).run();
     }
-    const interactionsRows = data.interactions.filter((row) =>
-      ownFriendIds.has(row.friendId),
-    );
+    const interactionsRows = data.interactions
+      .filter((row) => friendIdMap.has(row.friendId))
+      .map((row) => ({
+        ...row,
+        id: crypto.randomUUID(),
+        friendId: friendIdMap.get(row.friendId)!,
+        contactTypeId: remapType(row.contactTypeId),
+        userId,
+        // taskId references live tasks that are not restored.
+        taskId: null,
+      }));
     if (interactionsRows.length > 0) {
-      // taskId references live tasks that are not restored.
-      tx.insert(interactions)
-        .values(interactionsRows.map((row) => ({ ...row, userId, taskId: null })))
-        .run();
+      tx.insert(interactions).values(interactionsRows).run();
     }
 
     return {
