@@ -1,5 +1,30 @@
 # Changelog
 
+## v1.4.1
+
+### Security
+- Backup restore no longer trusts primary keys from the uploaded file.
+  A hand-edited backup could previously set arbitrary, low-entropy ids
+  (e.g. "1", "circle-1") as live database keys, since nothing validated
+  id format or entropy on restore. Every circle, friend, custom contact
+  type, and journal entry now gets a fresh server-generated id on every
+  restore, with every reference remapped to match.
+- Exported backup files no longer include internal userId values on
+  each record — they were already discarded on restore, so this only
+  affects what's inside the downloaded file itself.
+
+### Fixed
+- Restoring one account's backup into a different account on the same
+  instance previously failed with a database error, since ids were
+  preserved from the file and collided with the source account's
+  still-live rows. Fixed by the same change above.
+
+### Changed
+- Because ids are now regenerated on every restore, a previously
+  bookmarked or saved `/friends/<id>` or `/circles/<id>` link will no
+  longer resolve after your next restore — including a plain restore
+  of your own unmodified export. This applies going forward only.
+
 ## v1.4.0
 
 ### Security
