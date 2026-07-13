@@ -321,11 +321,11 @@
       },
       "notifications": {
         "title": "Notifications",
-        "body": "Get a daily digest by Pushover or email at whatever hour suits you, listing only what's actually open right now. A lingering suggestion won't nag you every day — it resurfaces at most every third day."
+        "body": "Get a daily digest by Pushover or email at whatever hour suits you, listing what's open right now plus a heads-up for anything due tomorrow. A lingering suggestion won't nag you every day — it resurfaces at most every third day."
       },
       "backup": {
         "title": "Backup & restore",
-        "body": "Export your friends, circles, journal and custom activity types as a JSON file any time from Settings, and restore it later — handy for moving to a new install or just keeping a personal copy."
+        "body": "Export your friends, circles, journal and custom activity types as a JSON file any time from Settings — handy for moving to a new install or just keeping a personal copy. Restoring replaces everything in your account with the file's contents, so a backup drops cleanly into any account — your own or a brand-new one. Each restore rebuilds your friends and circles with fresh internal ids, so any bookmarked links to a specific friend or circle stop working afterwards; just open them again from the app."
       },
       "themes": {
         "title": "Themes",

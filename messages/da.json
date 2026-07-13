@@ -321,11 +321,11 @@
       },
       "notifications": {
         "title": "Notifikationer",
-        "body": "Få et dagligt overblik via Pushover eller e-mail på det tidspunkt, der passer dig, med kun det, der reelt er åbent lige nu. Et forslag, der trækker ud, banker ikke på hver dag — det dukker højst op hver tredje dag."
+        "body": "Få et dagligt overblik via Pushover eller e-mail på det tidspunkt, der passer dig — med det, der er åbent lige nu, plus et vink om det, der falder i morgen. Et forslag, der trækker ud, banker ikke på hver dag — det dukker højst op hver tredje dag."
       },
       "backup": {
         "title": "Backup og gendannelse",
-        "body": "Eksportér dine venner, cirkler, journal og brugerdefinerede aktivitetstyper som en JSON-fil når som helst fra Indstillinger, og gendan den senere — praktisk ved flytning til en ny installation eller blot som personlig kopi."
+        "body": "Eksportér dine venner, cirkler, journal og brugerdefinerede aktivitetstyper som en JSON-fil når som helst fra Indstillinger — praktisk ved flytning til en ny installation eller blot som personlig kopi. En gendannelse erstatter alt i din konto med filens indhold, så en backup passer lige ind i enhver konto — din egen eller en helt ny. Hver gendannelse genopbygger dine venner og cirkler med friske interne id'er, så eventuelle bogmærkede links til en bestemt ven eller cirkel holder op med at virke bagefter; find dem bare frem igen i appen."
       },
       "themes": {
         "title": "Temaer",

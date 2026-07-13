@@ -321,11 +321,11 @@
       },
       "notifications": {
         "title": "Aviseringar",
-        "body": "Få en daglig sammanfattning via Pushover eller e-post vid den tid som passar dig, med bara det som faktiskt är öppet just nu. Ett förslag som drar ut på tiden tjatar inte varje dag — det dyker upp igen som mest var tredje dag."
+        "body": "Få en daglig sammanfattning via Pushover eller e-post vid den tid som passar dig — med det som är öppet just nu, plus en påminnelse om det som ska ske i morgon. Ett förslag som drar ut på tiden tjatar inte varje dag — det dyker upp igen som mest var tredje dag."
       },
       "backup": {
         "title": "Säkerhetskopiering och återställning",
-        "body": "Exportera dina vänner, cirklar, journal och egna aktivitetstyper som en JSON-fil när som helst från Inställningar, och återställ den senare — praktiskt vid flytt till en ny installation eller bara som personlig kopia."
+        "body": "Exportera dina vänner, cirklar, journal och egna aktivitetstyper som en JSON-fil när som helst från Inställningar — praktiskt vid flytt till en ny installation eller bara som personlig kopia. En återställning ersätter allt i ditt konto med filens innehåll, så en säkerhetskopia passar rakt in i vilket konto som helst — ditt eget eller ett helt nytt. Varje återställning bygger om dina vänner och cirklar med nya interna id:n, så eventuella bokmärkta länkar till en viss vän eller cirkel slutar fungera efteråt; öppna dem bara igen i appen."
       },
       "themes": {
         "title": "Teman",
