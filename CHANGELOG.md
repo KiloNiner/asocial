@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.5.0
+
+### Added
+- Mobile nav is now a burger menu. Previously every page link plus the
+  account row rendered inline as a top bar on small screens, growing
+  taller as more links were added. A burger button next to the logo now
+  reveals a dropdown panel with the page list, display name, and log
+  out; closes on link click, tapping outside, or Escape. Desktop's
+  sidebar is unchanged.
+
 ## v1.4.1
 
 ### Security
