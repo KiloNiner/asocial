@@ -10,7 +10,6 @@ const navItems = [
   { href: "/friends", key: "friends" },
   { href: "/circles", key: "circles" },
   { href: "/settings", key: "settings" },
-  { href: "/about", key: "about" },
 ] as const;
 
 export async function AppShell({
@@ -47,6 +46,12 @@ export async function AppShell({
               {t("admin")}
             </Link>
           ) : null}
+          <Link
+            href="/about"
+            className="rounded-md px-3 py-1.5 text-sm text-ink hover:bg-faint"
+          >
+            {t("about")}
+          </Link>
         </nav>
         <div className="mt-auto flex flex-col gap-2 text-sm">
           <span className="truncate text-muted">{user.displayName}</span>
