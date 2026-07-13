@@ -50,7 +50,6 @@ describe("backup contract", () => {
     const b = emptyBackup();
     b.circles.push({
       id: "c1",
-      userId: "u1",
       name: "Close",
       color: "#0d9488",
       intervalDays: 14,

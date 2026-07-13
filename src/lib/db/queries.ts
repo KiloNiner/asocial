@@ -687,25 +687,47 @@ export const BACKUP_VERSION = 1 as const;
 export type BackupData = {
   version: number;
   exportedAt: string;
-  circles: (typeof circles.$inferSelect)[];
-  friends: (typeof friends.$inferSelect)[];
+  circles: Omit<typeof circles.$inferSelect, "userId">[];
+  friends: Omit<typeof friends.$inferSelect, "userId">[];
   friendCircles: (typeof friendCircles.$inferSelect)[];
-  contactTypes: (typeof contactTypes.$inferSelect)[]; // custom only
-  userContactPrefs: (typeof userContactPrefs.$inferSelect)[];
+  contactTypes: Omit<typeof contactTypes.$inferSelect, "userId">[]; // custom only
+  userContactPrefs: Omit<typeof userContactPrefs.$inferSelect, "userId">[];
   circleContactPrefs: (typeof circleContactPrefs.$inferSelect)[];
   friendContactPrefs: (typeof friendContactPrefs.$inferSelect)[];
-  interactions: (typeof interactions.$inferSelect)[];
+  interactions: Omit<typeof interactions.$inferSelect, "userId">[];
 };
 
-/** All of a user's portable data (everything except live tasks/notifications). */
+/**
+ * All of a user's portable data (everything except live tasks/notifications).
+ * Deliberately omits userId from every row: it's forced to the importing
+ * account on restore regardless of what's in the file (see importUserData),
+ * so including it would just be a needless internal id in the exported JSON.
+ */
 export function exportUserData(userId: string): BackupData {
   const circleRows = db
-    .select()
+    .select({
+      id: circles.id,
+      name: circles.name,
+      color: circles.color,
+      intervalDays: circles.intervalDays,
+      sortOrder: circles.sortOrder,
+    })
     .from(circles)
     .where(eq(circles.userId, userId))
     .all();
   const friendRows = db
-    .select()
+    .select({
+      id: friends.id,
+      name: friends.name,
+      notes: friends.notes,
+      intervalOverrideDays: friends.intervalOverrideDays,
+      autoschedule: friends.autoschedule,
+      archived: friends.archived,
+      birthMonth: friends.birthMonth,
+      birthDay: friends.birthDay,
+      birthYear: friends.birthYear,
+      createdAt: friends.createdAt,
+    })
     .from(friends)
     .where(eq(friends.userId, userId))
     .all();
@@ -726,12 +748,22 @@ export function exportUserData(userId: string): BackupData {
             .where(inArray(friendCircles.friendId, friendIds))
             .all(),
     contactTypes: db
-      .select()
+      .select({
+        id: contactTypes.id,
+        name: contactTypes.name,
+        emoji: contactTypes.emoji,
+        defaultWeight: contactTypes.defaultWeight,
+        sortOrder: contactTypes.sortOrder,
+        archived: contactTypes.archived,
+      })
       .from(contactTypes)
       .where(eq(contactTypes.userId, userId)) // custom types only
       .all(),
     userContactPrefs: db
-      .select()
+      .select({
+        contactTypeId: userContactPrefs.contactTypeId,
+        weight: userContactPrefs.weight,
+      })
       .from(userContactPrefs)
       .where(eq(userContactPrefs.userId, userId))
       .all(),
@@ -752,7 +784,15 @@ export function exportUserData(userId: string): BackupData {
             .where(inArray(friendContactPrefs.friendId, friendIds))
             .all(),
     interactions: db
-      .select()
+      .select({
+        id: interactions.id,
+        friendId: interactions.friendId,
+        contactTypeId: interactions.contactTypeId,
+        occurredOn: interactions.occurredOn,
+        note: interactions.note,
+        taskId: interactions.taskId,
+        createdAt: interactions.createdAt,
+      })
       .from(interactions)
       .where(eq(interactions.userId, userId))
       .all(),
@@ -770,6 +810,11 @@ export type ImportCounts = {
  * Replace-all restore: wipe the user's portable data, then insert from the
  * backup, forcing ownership to userId and preserving record IDs. Tasks are not
  * restored (regenerate them via sweepUserContactTasks afterwards).
+ *
+ * Ownership is always forced to the importing account, by design — a
+ * restore always re-homes the file's data to whoever performs it, whether
+ * that's the account that originally exported it, a different account on
+ * this instance, or an account on a different instance entirely.
  */
 export function importUserData(userId: string, data: BackupData): ImportCounts {
   return db.transaction((tx) => {
