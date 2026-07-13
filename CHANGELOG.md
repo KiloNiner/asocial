@@ -3,12 +3,27 @@
 ## v1.5.0
 
 ### Added
+- asocial is now licensed under AGPL-3.0-or-later (`LICENSE`,
+  `package.json`, README).
+- The About page shows the project's license alongside the existing
+  version/build/source links.
 - Mobile nav is now a burger menu. Previously every page link plus the
   account row rendered inline as a top bar on small screens, growing
   taller as more links were added. A burger button next to the logo now
   reveals a dropdown panel with the page list, display name, and log
   out; closes on link click, tapping outside, or Escape. Desktop's
   sidebar is unchanged.
+
+### Fixed
+- Corrected two About-page manual entries that had drifted from actual
+  behavior: notifications also cover a heads-up for tasks due tomorrow,
+  and backup/restore now regenerates ids on every restore (so a backup
+  drops cleanly into any account, but old bookmarked friend/circle
+  links stop working after a restore).
+
+### Changed
+- Admin now appears above About in the sidebar nav (previously below
+  it).
 
 ## v1.4.1
 
