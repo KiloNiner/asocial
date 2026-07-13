@@ -286,7 +286,8 @@
     "links": {
       "github": "Kildekode på GitHub",
       "changelog": "Ændringslog",
-      "dockerhub": "Docker Hub-image"
+      "dockerhub": "Docker Hub-image",
+      "license": "Licens: {license}"
     },
     "manualTitle": "Sådan fungerer asocial",
     "manual": {

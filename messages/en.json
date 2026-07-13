@@ -286,7 +286,8 @@
     "links": {
       "github": "Source on GitHub",
       "changelog": "Changelog",
-      "dockerhub": "Docker Hub image"
+      "dockerhub": "Docker Hub image",
+      "license": "License: {license}"
     },
     "manualTitle": "How asocial works",
     "manual": {

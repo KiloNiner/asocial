@@ -75,6 +75,14 @@ export default async function AboutPage() {
           >
             {t("links.dockerhub")}
           </a>
+          <a
+            href="https://github.com/KiloNiner/asocial/blob/main/LICENSE"
+            target="_blank"
+            rel="noopener noreferrer"
+            className={linkClass}
+          >
+            {t("links.license", { license: pkg.license })}
+          </a>
         </div>
       </section>
 
