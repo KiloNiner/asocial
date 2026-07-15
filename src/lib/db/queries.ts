@@ -157,7 +157,7 @@ export function listContactTypes(
 
 export function createCustomContactType(
   userId: string,
-  data: { name: string; emoji: string; defaultWeight: number },
+  data: { name: string; emoji: string | null; defaultWeight: number },
 ): ContactType {
   const maxSort =
     db

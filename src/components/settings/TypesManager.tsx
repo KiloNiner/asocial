@@ -173,7 +173,7 @@ function CreateTypeForm() {
       ) : null}
       <label className="flex flex-col gap-1 text-xs text-muted">
         {t("typeEmoji")}
-        <input name="emoji" required maxLength={8} className={`${inputClass} w-16`} />
+        <input name="emoji" maxLength={32} className={`${inputClass} w-16`} />
       </label>
       <label className="flex flex-col gap-1 text-xs text-muted">
         {t("typeName")}

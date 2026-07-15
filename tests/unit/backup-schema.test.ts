@@ -138,4 +138,22 @@ describe("backupSchema", () => {
     longNote.interactions[0].note = "x".repeat(10001);
     expect(rejects(longNote)).toBe(true);
   });
+
+  it("accepts a contact type with no emoji (null)", () => {
+    const b = validBackup();
+    b.contactTypes[0].emoji = null;
+    expect(backupSchema.safeParse(b).success).toBe(true);
+  });
+
+  it("rejects a contact type emoji that is not a real emoji", () => {
+    const b = validBackup();
+    b.contactTypes[0].emoji = "lol";
+    expect(rejects(b)).toBe(true);
+  });
+
+  it("accepts a contact type emoji with a ZWJ/skin-tone sequence", () => {
+    const b = validBackup();
+    b.contactTypes[0].emoji = "👍🏽";
+    expect(backupSchema.safeParse(b).success).toBe(true);
+  });
 });

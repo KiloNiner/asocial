@@ -4,12 +4,20 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import * as q from "@/lib/db/queries";
+import { isSingleEmoji } from "@/lib/validation/emoji";
 
 export type ContactTypeFormState = { error?: string };
 
 const createSchema = z.object({
   name: z.string().trim().min(1).max(60),
-  emoji: z.string().trim().min(1).max(8),
+  // Blank is allowed (no icon for this activity type); non-blank must be
+  // exactly one emoji, including skin-tone/ZWJ/flag/keycap sequences.
+  emoji: z
+    .string()
+    .trim()
+    .max(32)
+    .refine((v) => v === "" || isSingleEmoji(v), { message: "invalid" })
+    .transform((v) => (v === "" ? null : v)),
   defaultWeight: z.coerce.number().int().min(0).max(100),
 });
 

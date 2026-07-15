@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isSingleEmoji } from "@/lib/validation/emoji";
 import { BACKUP_VERSION } from "./queries";
 
 /**
@@ -48,7 +49,7 @@ const friendCircleRowSchema = z.object({
 const contactTypeRowSchema = z.object({
   id: z.string().min(1),
   name: z.string().trim().min(1).max(60),
-  emoji: z.string().trim().min(1).max(8),
+  emoji: z.string().refine(isSingleEmoji).nullable(),
   defaultWeight: z.number().int().min(0).max(100),
   sortOrder: z.number().int(),
   archived: z.boolean(),
