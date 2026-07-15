@@ -1,8 +1,13 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import nodemailer, { type Transporter } from "nodemailer";
 import type { NotificationChannel } from "../channel";
 import { emailConfigSchema } from "../channel";
 import { digestLines, digestTranslator, type DigestT } from "../messages";
 import type { Digest, DigestItem } from "../digest";
+
+const LOGO_CID = "asocial-mark";
+const logoBuffer = readFileSync(join(process.cwd(), "public", "mark-email.png"));
 
 let transporter: Transporter | null = null;
 
@@ -99,7 +104,7 @@ function buildHtml(digest: Digest, t: DigestT, appUrl: string): string {
               <td class="divider" style="padding:22px 28px; border-bottom:1px solid #e7e5e4;">
                 <table role="presentation" cellpadding="0" cellspacing="0">
                   <tr>
-                    <td style="font-size:18px; line-height:1; padding-right:8px;">🌱</td>
+                    <td style="padding-right:8px;"><img src="cid:${LOGO_CID}" width="22" height="22" alt="" style="display:block; width:22px; height:22px;" /></td>
                     <td class="text-ink" style="font-size:16px; font-weight:700; color:#1c1917; letter-spacing:-0.01em;">asocial</td>
                   </tr>
                 </table>
@@ -156,6 +161,14 @@ export const emailChannel: NotificationChannel = {
       subject: t("digest.title", { n: digest.items.length }),
       text: lines.join("\n"),
       html: buildHtml(digest, t, appUrl),
+      attachments: [
+        {
+          filename: "mark.png",
+          content: logoBuffer,
+          cid: LOGO_CID,
+          contentDisposition: "inline",
+        },
+      ],
     });
   },
 };
