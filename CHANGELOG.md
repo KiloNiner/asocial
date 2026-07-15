@@ -1,5 +1,17 @@
 # Changelog
 
+## v1.6.0
+
+### Added
+- The notification digest email is now a branded HTML template instead
+  of a bare unstyled list: a header with the asocial mark, each
+  suggestion as an icon and sentence with a "tomorrow" tag where
+  relevant, and a proper button-styled link back to the app. Readable
+  in both light and dark mail clients. Plain-text and Pushover
+  messages are unaffected by this change.
+- Pushover notifications now use rich text: each suggestion line is
+  bold, with a dimmed "tomorrow" tag instead of a plain trailing dash.
+
 ## v1.5.1
 
 ### Security
