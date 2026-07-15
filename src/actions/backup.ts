@@ -1,37 +1,15 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { z } from "zod";
 import { getCurrentUser } from "@/lib/auth/current-user";
-import {
-  BACKUP_VERSION,
-  importUserData,
-  type BackupData,
-} from "@/lib/db/queries";
+import { backupSchema } from "@/lib/db/backup-schema";
+import { importUserData } from "@/lib/db/queries";
 import { sweepUserContactTasks } from "@/lib/scheduler/daily-job";
 
 export type BackupFormState = {
   error?: string;
   imported?: { circles: number; friends: number; interactions: number };
 };
-
-// The schema only needs to assert the shape is a well-formed backup, not
-// police column values — importUserData() forces ownership on every row and
-// drops any friendCircles/circleContactPrefs/friendContactPrefs/interactions
-// row that references a friendId/circleId not owned by this user.
-const row = z.record(z.string(), z.unknown());
-const backupSchema = z.object({
-  version: z.literal(BACKUP_VERSION),
-  exportedAt: z.string().optional(),
-  circles: z.array(row),
-  friends: z.array(row),
-  friendCircles: z.array(row),
-  contactTypes: z.array(row),
-  userContactPrefs: z.array(row),
-  circleContactPrefs: z.array(row),
-  friendContactPrefs: z.array(row),
-  interactions: z.array(row),
-});
 
 export async function importBackup(
   _prev: BackupFormState,
@@ -51,12 +29,18 @@ export async function importBackup(
     return { error: "invalidFile" };
   }
 
+  // Each row is validated against the same per-table bounds the create/update
+  // actions enforce (see lib/db/backup-schema.ts) — restore is not a back
+  // door around those constraints. importUserData() additionally forces
+  // ownership on every row and drops any friendCircles/circleContactPrefs/
+  // friendContactPrefs/interactions row that references a friendId/circleId
+  // not owned by this user.
   const result = backupSchema.safeParse(parsed);
   if (!result.success) {
     return { error: "invalidFile" };
   }
 
-  const counts = importUserData(user.id, result.data as unknown as BackupData);
+  const counts = importUserData(user.id, result.data);
   // Regenerate the suggestions that were intentionally left out of the backup.
   sweepUserContactTasks(user.id);
 
