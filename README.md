@@ -102,6 +102,7 @@ dispatch). Publishing requires two repo secrets: `DOCKERHUB_USERNAME` and a
 | `CRON_SECRET` | Guards the manual job trigger `POST /api/cron/run` |
 | `TZ` | Server timezone for the nightly scheduler run |
 | `SMTP_HOST/PORT/SECURE/USER/PASS/FROM` | Email digest delivery (leave `SMTP_HOST` empty to disable) |
+| `SMTP_TLS_REJECT_UNAUTHORIZED` | Set to `false` to accept a self-signed cert (e.g. a local Proton Mail Bridge or Mailhog container) while keeping STARTTLS encryption. Default: verify certs. |
 | `FAKE_TODAY` | Test-only: freeze the scheduler's notion of today (`YYYY-MM-DD`) |
 
 Pushover credentials are per-user, entered in Settings — not env vars.

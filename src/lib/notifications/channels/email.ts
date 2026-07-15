@@ -16,6 +16,13 @@ function getTransporter(): Transporter {
     auth: process.env.SMTP_USER
       ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
       : undefined,
+    // Local relays (e.g. a Proton Mail Bridge or Mailhog container) commonly
+    // present a self-signed cert; this keeps STARTTLS encryption on while
+    // skipping the certificate check for that case.
+    tls:
+      process.env.SMTP_TLS_REJECT_UNAUTHORIZED === "false"
+        ? { rejectUnauthorized: false }
+        : undefined,
   });
   return transporter;
 }
