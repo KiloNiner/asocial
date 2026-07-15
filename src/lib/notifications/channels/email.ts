@@ -3,7 +3,7 @@ import { join } from "node:path";
 import nodemailer, { type Transporter } from "nodemailer";
 import type { NotificationChannel } from "../channel";
 import { emailConfigSchema } from "../channel";
-import { digestLines, digestTranslator, type DigestT } from "../messages";
+import { digestLines, digestTranslator, escapeHtml, type DigestT } from "../messages";
 import type { Digest, DigestItem } from "../digest";
 
 const LOGO_CID = "asocial-mark";
@@ -31,15 +31,6 @@ function getTransporter(): Transporter {
         : undefined,
   });
   return transporter;
-}
-
-function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
 }
 
 function itemRow(item: DigestItem, t: DigestT): string {

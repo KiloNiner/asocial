@@ -18,6 +18,15 @@ export function digestTranslator(locale: UserSettings["locale"]) {
 
 export type DigestT = ReturnType<typeof digestTranslator>;
 
+export function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 export function digestLines(digest: Digest, t: DigestT): string[] {
   return digest.items.map((item) => {
     const line = `${item.typeEmoji} ${t(
