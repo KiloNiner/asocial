@@ -214,7 +214,8 @@
     "line": "{type} — {name}",
     "lineBirthday": "It's {name}'s birthday — {type}",
     "tomorrow": "tomorrow",
-    "openApp": "Open asocial"
+    "openApp": "Open asocial",
+    "footer": "You're getting this because notifications are enabled in your asocial settings."
   },
   "notifications": {
     "title": "Notifications",

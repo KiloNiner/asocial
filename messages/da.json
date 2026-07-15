@@ -214,7 +214,8 @@
     "line": "{type} — {name}",
     "lineBirthday": "Det er {name}s fødselsdag — {type}",
     "tomorrow": "i morgen",
-    "openApp": "Åbn asocial"
+    "openApp": "Åbn asocial",
+    "footer": "Du får denne besked, fordi notifikationer er slået til i dine asocial-indstillinger."
   },
   "notifications": {
     "title": "Notifikationer",

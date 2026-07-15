@@ -214,7 +214,8 @@
     "line": "{type} — {name}",
     "lineBirthday": "{name} boghlu'pu'bogh jaj 'oH — {type}",
     "tomorrow": "wa'leS",
-    "openApp": "asocial yIpoSmoH"
+    "openApp": "asocial yIpoSmoH",
+    "footer": "ghummey chu'lu'mo' De'vam boHev."
   },
   "notifications": {
     "title": "ghummey",
