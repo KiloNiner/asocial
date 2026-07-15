@@ -12,6 +12,12 @@
 - Pushover notifications now use rich text: each suggestion line is
   bold, with a dimmed "tomorrow" tag instead of a plain trailing dash.
 
+### Platform
+- New `SMTP_TLS_REJECT_UNAUTHORIZED` env var: set to `false` to accept
+  a self-signed cert (e.g. a local Proton Mail Bridge or Mailhog
+  container) while keeping STARTTLS encryption on. Default behavior
+  for real mail providers is unchanged.
+
 ## v1.5.1
 
 ### Security
