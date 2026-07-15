@@ -1,5 +1,21 @@
 # Changelog
 
+## v1.5.1
+
+### Security
+- Backup restore now validates every field's value, not just its shape --
+  a hand-edited backup file could previously set out-of-range values (a
+  non-hex circle color, an out-of-bounds interval/weight, an invalid
+  birthday) that the rest of the app assumes are pre-validated. Restore
+  now enforces the same per-field bounds as the normal create/update forms.
+
+### Fixed
+- Custom activity types no longer accept arbitrary text in the emoji
+  field -- it's validated as a real single emoji (skin-tone modifiers,
+  family/role ZWJ sequences, flags, and keycaps all still work) on both
+  creation and backup restore. The field can also now be left blank, for
+  an activity type with no icon.
+
 ## v1.5.0
 
 ### Added
