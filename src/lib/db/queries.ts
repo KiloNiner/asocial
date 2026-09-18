@@ -25,6 +25,7 @@ import {
   type Interaction,
   type Task,
 } from "@/db/schema";
+import { SECRET_CONFIG_KEYS } from "@/lib/notifications/channel";
 
 // ---------- circles ----------
 
@@ -690,19 +691,41 @@ export function listPendingTasksWithNames(
 
 // ---------- notifications (settings UI) ----------
 
+export type ChannelView = {
+  enabled: boolean;
+  /** Non-secret config only — see SECRET_CONFIG_KEYS. */
+  config: Record<string, string>;
+  /** Secret keys that have a stored value, so the form can say "saved". */
+  savedSecrets: string[];
+};
+
+/**
+ * Channels as the settings page may see them, with secrets stripped.
+ *
+ * This is the only read of `notification_channels` outside dispatch, and the
+ * redaction lives here rather than in the component so a future second caller
+ * cannot reintroduce the leak by forgetting to redact.
+ */
 export function getNotificationChannels(
   userId: string,
-): Map<string, { enabled: boolean; config: Record<string, string> }> {
+): Map<string, ChannelView> {
   const rows = db
     .select()
     .from(notificationChannels)
     .where(eq(notificationChannels.userId, userId))
     .all();
   return new Map(
-    rows.map((row) => [
-      row.channel,
-      { enabled: row.enabled, config: JSON.parse(row.config) },
-    ]),
+    rows.map((row) => {
+      const stored: Record<string, string> = JSON.parse(row.config);
+      const secretKeys = SECRET_CONFIG_KEYS[row.channel] ?? [];
+      const config: Record<string, string> = {};
+      const savedSecrets: string[] = [];
+      for (const [key, value] of Object.entries(stored)) {
+        if (!secretKeys.includes(key)) config[key] = value;
+        else if (value) savedSecrets.push(key);
+      }
+      return [row.channel, { enabled: row.enabled, config, savedSecrets }];
+    }),
   );
 }
 

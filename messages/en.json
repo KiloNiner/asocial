@@ -224,6 +224,7 @@
     "pushoverTitle": "Pushover",
     "pushoverToken": "API token",
     "pushoverUserKey": "User key",
+    "secretSaved": "Saved — leave blank to keep",
     "emailTitle": "Email digest",
     "emailAddress": "Address (empty = account email)",
     "enabled": "Enabled",

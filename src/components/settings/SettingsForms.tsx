@@ -11,6 +11,7 @@ import {
 } from "@/actions/settings";
 import type { User, UserSettings } from "@/db/schema";
 import type { ChannelId } from "@/lib/notifications/channel";
+import type { ChannelView } from "@/lib/db/queries";
 import {
   buttonClass,
   buttonGhostClass,
@@ -160,12 +161,21 @@ function TestButton({ channel }: Readonly<{ channel: ChannelId }>) {
   );
 }
 
+/** "Saved — leave blank to keep" once a secret exists, otherwise nothing. */
+function secretPlaceholder(
+  channel: ChannelView | null,
+  key: string,
+  t: ReturnType<typeof useTranslations<"notifications">>,
+): string {
+  return channel?.savedSecrets.includes(key) ? t("secretSaved") : "";
+}
+
 export function NotificationChannelsForm({
   pushover,
   email,
 }: Readonly<{
-  pushover: { enabled: boolean; config: Record<string, string> } | null;
-  email: { enabled: boolean; config: Record<string, string> } | null;
+  pushover: ChannelView | null;
+  email: ChannelView | null;
 }>) {
   const t = useTranslations("notifications");
   const [poState, poAction, poPending] = useActionState<
@@ -196,11 +206,15 @@ export function NotificationChannelsForm({
           />
           {t("enabled")}
         </label>
+        {/* Secrets are write-only: the server strips them, so these render
+            blank and an empty submit keeps whatever is stored. */}
         <label className={labelClass}>
           {t("pushoverToken")}
           <input
             name="token"
-            defaultValue={pushover?.config.token ?? ""}
+            type="password"
+            defaultValue=""
+            placeholder={secretPlaceholder(pushover, "token", t)}
             className={inputClass}
             autoComplete="off"
           />
@@ -209,7 +223,9 @@ export function NotificationChannelsForm({
           {t("pushoverUserKey")}
           <input
             name="userKey"
-            defaultValue={pushover?.config.userKey ?? ""}
+            type="password"
+            defaultValue=""
+            placeholder={secretPlaceholder(pushover, "userKey", t)}
             className={inputClass}
             autoComplete="off"
           />

@@ -224,6 +224,7 @@
     "pushoverTitle": "Pushover",
     "pushoverToken": "API-token",
     "pushoverUserKey": "Användarnyckel",
+    "secretSaved": "Sparad — lämna tomt för att behålla",
     "emailTitle": "E-postsammanfattning",
     "emailAddress": "Adress (tom = kontots e-post)",
     "enabled": "Aktiverad",

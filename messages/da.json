@@ -224,6 +224,7 @@
     "pushoverTitle": "Pushover",
     "pushoverToken": "API-token",
     "pushoverUserKey": "Brugernøgle",
+    "secretSaved": "Gemt — lad feltet stå tomt for at beholde",
     "emailTitle": "E-mailsammendrag",
     "emailAddress": "Adresse (tom = kontoens e-mail)",
     "enabled": "Aktiveret",
