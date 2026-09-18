@@ -155,14 +155,31 @@ export function listContactTypes(
     .all();
 }
 
+/** True when this user may reference the type: a built-in, or one of theirs. */
+export function contactTypeIsUsable(userId: string, typeId: string): boolean {
+  return !!db
+    .select({ id: contactTypes.id })
+    .from(contactTypes)
+    .where(
+      and(
+        eq(contactTypes.id, typeId),
+        or(isNull(contactTypes.userId), eq(contactTypes.userId, userId)),
+      ),
+    )
+    .get();
+}
+
 export function createCustomContactType(
   userId: string,
   data: { name: string; emoji: string | null; defaultWeight: number },
 ): ContactType {
+  // Scoped to the types this user can actually see — an unscoped max() would
+  // make one account's sort order depend on other accounts' rows.
   const maxSort =
     db
       .select({ m: max(contactTypes.sortOrder) })
       .from(contactTypes)
+      .where(or(isNull(contactTypes.userId), eq(contactTypes.userId, userId)))
       .get()?.m ?? 0;
   return db
     .insert(contactTypes)
@@ -401,9 +418,19 @@ export function setFriendArchived(
       .run();
     if (archived) {
       // Cancel pending nudges; skipped state keeps history without guilt.
+      // Scoped by userId as well as friendId: the friends update above is
+      // already ownership-filtered, so without it a caller passing someone
+      // else's friendId would leave their friend untouched but still wipe
+      // that friend's pending tasks.
       tx.update(tasks)
         .set({ status: "skipped" })
-        .where(and(eq(tasks.friendId, friendId), eq(tasks.status, "pending")))
+        .where(
+          and(
+            eq(tasks.userId, userId),
+            eq(tasks.friendId, friendId),
+            eq(tasks.status, "pending"),
+          ),
+        )
         .run();
     }
   });
@@ -525,6 +552,38 @@ export type BoardRow = {
   birthdayTask: Task | null;
 };
 
+/**
+ * Color of each friend's governing (most frequent) circle. Shared by the
+ * board and the calendar so the two stay in visual agreement.
+ */
+function governingColorByFriend(
+  userId: string,
+  friendIds: string[],
+): Map<string, string> {
+  if (friendIds.length === 0) return new Map();
+  const rows = db
+    .select({ friendId: friendCircles.friendId, circle: circles })
+    .from(friendCircles)
+    .innerJoin(circles, eq(friendCircles.circleId, circles.id))
+    .where(
+      and(inArray(friendCircles.friendId, friendIds), eq(circles.userId, userId)),
+    )
+    .all();
+
+  const byFriend = new Map<string, Circle[]>();
+  for (const row of rows) {
+    const list = byFriend.get(row.friendId) ?? [];
+    list.push(row.circle);
+    byFriend.set(row.friendId, list);
+  }
+  return new Map(
+    [...byFriend].map(([friendId, list]) => [
+      friendId,
+      list.reduce((a, b) => (b.intervalDays < a.intervalDays ? b : a)).color,
+    ]),
+  );
+}
+
 /** One row per friend with at least one pending task, plus circle color. */
 export function boardRows(userId: string): BoardRow[] {
   const pending = db
@@ -555,36 +614,13 @@ export function boardRows(userId: string): BoardRow[] {
     )
     .all();
 
-  const circleRows = db
-    .select({ friendId: friendCircles.friendId, circle: circles })
-    .from(friendCircles)
-    .innerJoin(circles, eq(friendCircles.circleId, circles.id))
-    .where(
-      and(
-        inArray(friendCircles.friendId, [...byFriend.keys()]),
-        eq(circles.userId, userId),
-      ),
-    )
-    .all();
-  const circlesByFriend = new Map<string, Circle[]>();
-  for (const row of circleRows) {
-    const list = circlesByFriend.get(row.friendId) ?? [];
-    list.push(row.circle);
-    circlesByFriend.set(row.friendId, list);
-  }
+  const colorByFriend = governingColorByFriend(userId, [...byFriend.keys()]);
 
   const rows: BoardRow[] = friendRows.map((friend) => {
-    const friendCirclesList = circlesByFriend.get(friend.id) ?? [];
-    const governing =
-      friendCirclesList.length > 0
-        ? friendCirclesList.reduce((a, b) =>
-            b.intervalDays < a.intervalDays ? b : a,
-          )
-        : null;
     const entry = byFriend.get(friend.id)!;
     return {
       friend,
-      color: governing?.color ?? null,
+      color: colorByFriend.get(friend.id) ?? null,
       contactTask: entry.contact ?? null,
       birthdayTask: entry.birthday ?? null,
     };
@@ -641,8 +677,10 @@ export function listPendingTasksWithNames(
     .where(and(eq(tasks.userId, userId), eq(tasks.status, "pending")))
     .orderBy(asc(tasks.dueDate))
     .all();
-  const board = boardRows(userId);
-  const colorByFriend = new Map(board.map((r) => [r.friend.id, r.color]));
+  const colorByFriend = governingColorByFriend(
+    userId,
+    [...new Set(rows.map((row) => row.task.friendId))],
+  );
   return rows.map((row) => ({
     ...row,
     color: colorByFriend.get(row.task.friendId) ?? null,
