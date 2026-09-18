@@ -7,6 +7,7 @@ import { getCurrentUser, getSettings } from "@/lib/auth/current-user";
 import * as q from "@/lib/db/queries";
 import { today } from "@/lib/scheduler/clock";
 import { scheduleNextTask } from "@/lib/scheduler/schedule";
+import { isValidBirthday } from "@/lib/validation/birthday";
 import { redirect } from "@/i18n/navigation";
 
 export type FriendFormState = { error?: string };
@@ -42,6 +43,12 @@ function parseFriendForm(formData: FormData) {
   // Birthday must be complete (day+month) or absent; year alone is meaningless.
   const hasBirthday = data.birthMonth !== null && data.birthDay !== null;
   if (!hasBirthday && (data.birthMonth !== null || data.birthDay !== null)) {
+    return null;
+  }
+  // ...and must be a date that exists: the month/day bounds above are
+  // independent, so they would otherwise admit Feb 30 or Apr 31, which the
+  // scheduler cannot turn into a real occurrence.
+  if (hasBirthday && !isValidBirthday(data.birthMonth!, data.birthDay!)) {
     return null;
   }
   return {
