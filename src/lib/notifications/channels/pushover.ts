@@ -43,7 +43,16 @@ export const pushoverChannel: NotificationChannel = {
         token,
         user: userKey,
         title: t("digest.title", { n: digest.items.length }),
-        message: digest.items.map((item) => pushoverLine(item, t)).join("\n"),
+        message: [
+          ...digest.items.map((item) => pushoverLine(item, t)),
+          ...(digest.hiddenCount > 0
+            ? [
+                `<font color="#999999">${escapeHtml(
+                  t("digest.more", { n: digest.hiddenCount }),
+                )}</font>`,
+              ]
+            : []),
+        ].join("\n"),
         html: 1,
         url: process.env.APP_URL ?? "",
         url_title: t("digest.openApp"),

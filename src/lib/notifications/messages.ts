@@ -28,7 +28,7 @@ export function escapeHtml(value: string): string {
 }
 
 export function digestLines(digest: Digest, t: DigestT): string[] {
-  return digest.items.map((item) => {
+  const lines = digest.items.map((item) => {
     const line = `${item.typeEmoji} ${t(
       item.kind === "birthday" ? "digest.lineBirthday" : "digest.line",
       { name: item.friendName, type: item.typeLabel },
@@ -37,4 +37,8 @@ export function digestLines(digest: Digest, t: DigestT): string[] {
       ? `${line} — ${t("digest.tomorrow")}`
       : line;
   });
+  if (digest.hiddenCount > 0) {
+    lines.push(t("digest.more", { n: digest.hiddenCount }));
+  }
+  return lines;
 }

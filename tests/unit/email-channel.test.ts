@@ -31,7 +31,7 @@ const settings: UserSettings = {
   theme: "auto",
 };
 
-const digest: Digest = { date: "2026-07-10", items: [] };
+const digest: Digest = { date: "2026-07-10", items: [], hiddenCount: 0 };
 
 async function loadEmailChannel() {
   vi.resetModules();

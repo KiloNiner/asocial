@@ -216,12 +216,13 @@
     "line": "{type} — {name}",
     "lineBirthday": "Det er {name}s fødselsdag — {type}",
     "tomorrow": "i morgen",
+    "more": "+{n} flere venter",
     "openApp": "Åbn asocial",
     "footer": "Du får denne besked, fordi notifikationer er slået til i dine asocial-indstillinger."
   },
   "notifications": {
     "title": "Notifikationer",
-    "intro": "Et kort dagligt sammendrag på dit valgte tidspunkt — kun når noget faktisk er åbent, og forslag, der trækker ud, kun hver tredje dag.",
+    "intro": "Et kort sammendrag på dit valgte tidspunkt, kun når noget faktisk er åbent. Forslag, der har ventet et stykke tid, kommer samlet igen hver tredje dag i stedet for ét ad gangen hver dag.",
     "pushoverTitle": "Pushover",
     "pushoverToken": "API-token",
     "pushoverUserKey": "Brugernøgle",
@@ -336,7 +337,7 @@
       },
       "notifications": {
         "title": "Notifikationer",
-        "body": "Få et dagligt overblik via Pushover eller e-mail på det tidspunkt, der passer dig — med det, der er åbent lige nu, plus et vink om det, der står for tur i morgen. E-mail til din kontos adresse er slået til fra den dag, du opretter dig; slå det fra eller tilføj Pushover i Indstillinger. Et forslag, der trækker ud, banker ikke på hver dag — det dukker højst op hver tredje dag."
+        "body": "Få et dagligt overblik via Pushover eller e-mail på det tidspunkt, der passer dig — med det, der er åbent lige nu, plus et vink om det, der står for tur i morgen. E-mail til din kontos adresse er slået til fra den dag, du opretter dig; slå det fra eller tilføj Pushover i Indstillinger. Forslag, der trækker ud, banker ikke på hver dag — de kommer samlet igen hver tredje dag, og ét sammendrag nævner højst fem ad gangen."
       },
       "backup": {
         "title": "Sikkerhedskopiering og gendannelse",

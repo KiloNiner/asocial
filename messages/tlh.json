@@ -216,12 +216,13 @@
     "line": "{type} — {name}",
     "lineBirthday": "{name} qoS 'oH — {type}",
     "tomorrow": "wa'leS",
+    "more": "+{n} loStaH",
     "openApp": "asocial yIpoSmoH",
     "footer": "ghummey chu'lu'mo' De'vam boHev."
   },
   "notifications": {
     "title": "ghummey",
-    "intro": "DaHjaj rep DawIvbogh, boSlu'pu'bogh Qorwagh nItebHa' — poSmoHtaHchugh vay' neH, 'ej loStaHbogh wIv wejDIch jaj Hoch neH.",
+    "intro": "rep DawIvbogh boS nItebHa' — poSmoHtaHchugh vay' neH. loStaHbogh wIvmey tay' cheghtaH wejDIch jaj Hoch.",
     "pushoverTitle": "Pushover",
     "pushoverToken": "API nItlh",
     "pushoverUserKey": "lo'wI' ngaQHa'moHwI'",

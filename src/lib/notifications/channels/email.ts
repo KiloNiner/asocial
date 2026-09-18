@@ -84,6 +84,12 @@ function buildHtml(digest: Digest, t: DigestT, appUrl: string): string {
   const openApp = escapeHtml(t("digest.openApp"));
   const footer = escapeHtml(t("digest.footer"));
   const rows = digest.items.map((item) => itemRow(item, t)).join("\n");
+  const more =
+    digest.hiddenCount > 0
+      ? `<p class="text-muted" style="margin:10px 0 0 48px; font-size:13px; color:#78716c;">${escapeHtml(
+          t("digest.more", { n: digest.hiddenCount }),
+        )}</p>`
+      : "";
 
   return `<!doctype html>
 <html>
@@ -129,6 +135,7 @@ function buildHtml(digest: Digest, t: DigestT, appUrl: string): string {
             <tr>
               <td style="padding:8px 22px 4px;">
                 ${rows}
+                ${more}
               </td>
             </tr>
             <tr>
