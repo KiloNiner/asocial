@@ -39,6 +39,9 @@ export async function logInteraction(
   if (!parsed.success) return { error: "invalid" };
   const friend = q.getFriend(user.id, parsed.data.friendId);
   if (!friend) return { error: "invalid" };
+  if (!q.contactTypeIsUsable(user.id, parsed.data.contactTypeId)) {
+    return { error: "invalid" };
+  }
 
   const interaction = q.createInteraction(user.id, parsed.data);
 
@@ -95,6 +98,7 @@ export async function updateInteraction(
   const parsed = interactionSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { error: "invalid" };
   const { contactTypeId, occurredOn, note } = parsed.data;
+  if (!q.contactTypeIsUsable(user.id, contactTypeId)) return { error: "invalid" };
   q.updateInteraction(user.id, interactionId, { contactTypeId, occurredOn, note });
   revalidate(parsed.data.friendId);
   return {};

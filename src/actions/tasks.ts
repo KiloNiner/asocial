@@ -57,6 +57,11 @@ export async function completeTask(
 
   const task = getTask(user.id, taskId);
   if (!task || task.status !== "pending") return { error: "gone" };
+  // The type comes from the form; only built-ins and this user's own custom
+  // types may be referenced.
+  if (!q.contactTypeIsUsable(user.id, parsed.data.contactTypeId)) {
+    return { error: "invalid" };
+  }
 
   const interaction = q.createInteraction(user.id, {
     friendId: task.friendId,
@@ -142,6 +147,9 @@ export async function createManualTask(
   if (!parsed.success) return { error: "invalid" };
   const { friendId, dueDate, contactTypeId } = parsed.data;
   if (!q.getFriend(user.id, friendId)) return { error: "invalid" };
+  if (contactTypeId && !q.contactTypeIsUsable(user.id, contactTypeId)) {
+    return { error: "invalid" };
+  }
 
   const settings = await getSettings(user.id);
   const existing = pendingTask(user.id, friendId, "contact");
