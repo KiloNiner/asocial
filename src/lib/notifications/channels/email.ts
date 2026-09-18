@@ -7,9 +7,26 @@ import { digestLines, digestTranslator, escapeHtml, type DigestT } from "../mess
 import type { Digest, DigestItem } from "../digest";
 
 const LOGO_CID = "asocial-mark";
-const logoBuffer = readFileSync(join(process.cwd(), "public", "mark-email.png"));
 
+// Same reasoning as the Pushover timeout: nodemailer's defaults are generous
+// enough that a black-holed SMTP host could hold the digest loop for minutes.
+const SMTP_TIMEOUT_MS = 15_000;
+
+let logoBuffer: Buffer | null = null;
 let transporter: Transporter | null = null;
+
+/**
+ * Read the inline logo on first send, not at import.
+ *
+ * At module scope this ran whenever anything imported the channel registry —
+ * including the settings page and every server action that touches it — so a
+ * missing or unreadable public/mark-email.png took down unrelated pages
+ * instead of failing the one email that needed it.
+ */
+function getLogo(): Buffer {
+  logoBuffer ??= readFileSync(join(process.cwd(), "public", "mark-email.png"));
+  return logoBuffer;
+}
 
 function getTransporter(): Transporter {
   if (!process.env.SMTP_HOST) {
@@ -22,6 +39,9 @@ function getTransporter(): Transporter {
     auth: process.env.SMTP_USER
       ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
       : undefined,
+    connectionTimeout: SMTP_TIMEOUT_MS,
+    greetingTimeout: SMTP_TIMEOUT_MS,
+    socketTimeout: SMTP_TIMEOUT_MS,
     // Local relays (e.g. a Proton Mail Bridge or Mailhog container) commonly
     // present a self-signed cert; this keeps STARTTLS encryption on while
     // skipping the certificate check for that case.
@@ -155,7 +175,7 @@ export const emailChannel: NotificationChannel = {
       attachments: [
         {
           filename: "mark.png",
-          content: logoBuffer,
+          content: getLogo(),
           cid: LOGO_CID,
           contentDisposition: "inline",
         },

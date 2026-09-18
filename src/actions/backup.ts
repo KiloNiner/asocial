@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { getCurrentUser } from "@/lib/auth/current-user";
+import { getCurrentUser, getSettings } from "@/lib/auth/current-user";
 import { backupSchema } from "@/lib/db/backup-schema";
 import { importUserData } from "@/lib/db/queries";
 import { sweepUserContactTasks } from "@/lib/scheduler/daily-job";
@@ -58,7 +58,8 @@ export async function importBackup(
     return { error: "invalidFile" };
   }
   // Regenerate the suggestions that were intentionally left out of the backup.
-  sweepUserContactTasks(user.id);
+  const settings = await getSettings(user.id);
+  sweepUserContactTasks(user.id, settings.timezone);
 
   revalidatePath("/", "layout");
   return {
