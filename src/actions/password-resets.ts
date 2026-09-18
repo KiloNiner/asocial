@@ -54,19 +54,27 @@ export async function completePasswordReset(
   const parsed = completeSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { error: "invalid" };
 
-  const reset = findRedeemableReset(parsed.data.token);
-  if (!reset) return { error: "resetInvalid" };
-
+  // Hash first, then redeem atomically: awaiting argon2 between the lookup
+  // and the mark-used let two concurrent submissions both consume a token
+  // that is meant to be single-use.
   const passwordHash = await hashPassword(parsed.data.password);
-  db.update(users)
-    .set({ passwordHash })
-    .where(eq(users.id, reset.userId))
-    .run();
-  markResetUsed(reset.id);
-  destroySessionsForUser(reset.userId);
+
+  const userId = db.transaction((tx) => {
+    const reset = findRedeemableReset(parsed.data.token, tx);
+    if (!reset) return null;
+    tx.update(users)
+      .set({ passwordHash })
+      .where(eq(users.id, reset.userId))
+      .run();
+    markResetUsed(reset.id, tx);
+    return reset.userId;
+  });
+  if (!userId) return { error: "resetInvalid" };
+
+  destroySessionsForUser(userId);
   console.log(
     "[auth] password reset completed:",
-    JSON.stringify({ userId: reset.userId }),
+    JSON.stringify({ userId }),
   );
   return { ok: true };
 }

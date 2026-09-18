@@ -17,3 +17,13 @@ const globalForDb = globalThis as unknown as {
 
 export const db = (globalForDb.__asocialDb ??= createDb());
 export { schema };
+
+/**
+ * The transaction handle passed to db.transaction(). better-sqlite3 is
+ * synchronous, so a callback containing no `await` runs to completion with no
+ * other request interleaving — which is what makes check-then-write sequences
+ * atomic. Helpers that must be callable both standalone and inside such a
+ * transaction take an `Executor`.
+ */
+export type Tx = Parameters<Parameters<typeof db.transaction>[0]>[0];
+export type Executor = typeof db | Tx;

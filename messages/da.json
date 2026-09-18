@@ -56,7 +56,8 @@
       "invalidCredentials": "Forkert e-mail eller adgangskode.",
       "emailTaken": "Der findes allerede en konto med denne e-mail.",
       "inviteInvalid": "Dette invitationslink er ugyldigt, brugt eller udløbet.",
-      "resetInvalid": "Dette nulstillingslink er ugyldigt, brugt eller udløbet."
+      "resetInvalid": "Dette nulstillingslink er ugyldigt, brugt eller udløbet.",
+      "tooManyAttempts": "For mange forsøg. Vent et par minutter, og prøv igen."
     }
   },
   "admin": {
