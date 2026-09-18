@@ -9,6 +9,15 @@ function validBackup(): Backup {
   return {
     version: BACKUP_VERSION,
     exportedAt: new Date().toISOString(),
+    settings: {
+      locale: "en",
+      timezone: "Europe/Copenhagen",
+      actionWindowDays: 7,
+      jitterPct: 25,
+      digestHour: 8,
+      defaultIntervalDays: 30,
+      theme: "paper",
+    },
     circles: [
       { id: "c1", name: "Close", color: "#0d9488", intervalDays: 14, sortOrder: 1 },
     ],
@@ -61,6 +70,91 @@ function rejects(backup: Backup): boolean {
 describe("backupSchema", () => {
   it("accepts a fully populated, valid backup with one row per table", () => {
     expect(backupSchema.safeParse(validBackup()).success).toBe(true);
+  });
+
+  it("accepts a version 1 file, which predates settings", () => {
+    const b: Record<string, unknown> = { ...validBackup(), version: 1 };
+    delete b.settings;
+    const result = backupSchema.safeParse(b);
+    expect(result.success).toBe(true);
+    expect(result.data?.settings).toBeNull();
+  });
+
+  it("rejects an unknown version", () => {
+    const b = validBackup();
+    b.version = 99 as 1 | 2;
+    expect(rejects(b)).toBe(true);
+  });
+
+  it("rejects out-of-range settings", () => {
+    const badJitter = validBackup();
+    badJitter.settings!.jitterPct = 51;
+    expect(rejects(badJitter)).toBe(true);
+
+    const badHour = validBackup();
+    badHour.settings!.digestHour = 24;
+    expect(rejects(badHour)).toBe(true);
+
+    const badTheme = validBackup();
+    badTheme.settings!.theme = "neon" as "auto";
+    expect(rejects(badTheme)).toBe(true);
+
+    const badLocale = validBackup();
+    badLocale.settings!.locale = "de" as "en";
+    expect(rejects(badLocale)).toBe(true);
+  });
+
+  // Each of the next three used to pass validation, reach the DB, and abort
+  // the restore transaction on a raw UNIQUE/PRIMARY KEY error.
+  it("rejects duplicate ids within a table", () => {
+    const dupCircle = validBackup();
+    dupCircle.circles.push({ ...dupCircle.circles[0], name: "Other" });
+    expect(rejects(dupCircle)).toBe(true);
+
+    const dupFriend = validBackup();
+    dupFriend.friends.push({ ...dupFriend.friends[0] });
+    expect(rejects(dupFriend)).toBe(true);
+
+    const dupType = validBackup();
+    dupType.contactTypes.push({ ...dupType.contactTypes[0], name: "Other" });
+    expect(rejects(dupType)).toBe(true);
+
+    const dupInteraction = validBackup();
+    dupInteraction.interactions.push({ ...dupInteraction.interactions[0] });
+    expect(rejects(dupInteraction)).toBe(true);
+  });
+
+  it("rejects two circles sharing a name", () => {
+    const b = validBackup();
+    b.circles.push({ ...b.circles[0], id: "c2" });
+    expect(rejects(b)).toBe(true);
+  });
+
+  it("rejects duplicate composite keys in the join/preference tables", () => {
+    const dupJoin = validBackup();
+    dupJoin.friendCircles.push({ ...dupJoin.friendCircles[0] });
+    expect(rejects(dupJoin)).toBe(true);
+
+    const dupUserPref = validBackup();
+    dupUserPref.userContactPrefs.push({
+      ...dupUserPref.userContactPrefs[0],
+      weight: 10,
+    });
+    expect(rejects(dupUserPref)).toBe(true);
+
+    const dupCirclePref = validBackup();
+    dupCirclePref.circleContactPrefs.push({
+      ...dupCirclePref.circleContactPrefs[0],
+      weight: 10,
+    });
+    expect(rejects(dupCirclePref)).toBe(true);
+
+    const dupFriendPref = validBackup();
+    dupFriendPref.friendContactPrefs.push({
+      ...dupFriendPref.friendContactPrefs[0],
+      weight: 10,
+    });
+    expect(rejects(dupFriendPref)).toBe(true);
   });
 
   it("rejects a non-hex circle color", () => {

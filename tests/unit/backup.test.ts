@@ -10,6 +10,7 @@ import { BACKUP_VERSION, type BackupData } from "@/lib/db/queries";
 const EXPECTED_KEYS = [
   "version",
   "exportedAt",
+  "settings",
   "circles",
   "friends",
   "friendCircles",
@@ -24,6 +25,15 @@ function emptyBackup(): BackupData {
   return {
     version: BACKUP_VERSION,
     exportedAt: new Date().toISOString(),
+    settings: {
+      locale: "en",
+      timezone: "Europe/Copenhagen",
+      actionWindowDays: 7,
+      jitterPct: 25,
+      digestHour: 8,
+      defaultIntervalDays: 30,
+      theme: "auto",
+    },
     circles: [],
     friends: [],
     friendCircles: [],
@@ -36,8 +46,8 @@ function emptyBackup(): BackupData {
 }
 
 describe("backup contract", () => {
-  it("version is 1", () => {
-    expect(BACKUP_VERSION).toBe(1);
+  it("version is 2", () => {
+    expect(BACKUP_VERSION).toBe(2);
   });
 
   it("a backup object has exactly the documented keys", () => {

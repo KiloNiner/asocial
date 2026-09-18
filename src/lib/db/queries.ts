@@ -18,6 +18,7 @@ import {
   notificationLog,
   tasks,
   userContactPrefs,
+  userSettings,
   type Circle,
   type ContactType,
   type Friend,
@@ -682,11 +683,15 @@ export function listNotificationLog(
 
 // ---------- backup / restore ----------
 
-export const BACKUP_VERSION = 1 as const;
+// 1 -> 2: added `settings`. Version 1 files are still accepted on restore
+// (see backup-schema.ts); their settings are simply absent.
+export const BACKUP_VERSION = 2 as const;
 
 export type BackupData = {
   version: number;
   exportedAt: string;
+  /** null when restoring a version 1 file, which predates this field. */
+  settings: Omit<typeof userSettings.$inferSelect, "userId"> | null;
   circles: Omit<typeof circles.$inferSelect, "userId">[];
   friends: Omit<typeof friends.$inferSelect, "userId">[];
   friendCircles: (typeof friendCircles.$inferSelect)[];
@@ -737,6 +742,20 @@ export function exportUserData(userId: string): BackupData {
   return {
     version: BACKUP_VERSION,
     exportedAt: new Date().toISOString(),
+    settings:
+      db
+        .select({
+          locale: userSettings.locale,
+          timezone: userSettings.timezone,
+          actionWindowDays: userSettings.actionWindowDays,
+          jitterPct: userSettings.jitterPct,
+          digestHour: userSettings.digestHour,
+          defaultIntervalDays: userSettings.defaultIntervalDays,
+          theme: userSettings.theme,
+        })
+        .from(userSettings)
+        .where(eq(userSettings.userId, userId))
+        .get() ?? null,
     circles: circleRows,
     friends: friendRows,
     friendCircles:
@@ -809,7 +828,8 @@ export type ImportCounts = {
 /**
  * Replace-all restore: wipe the user's portable data, then insert from the
  * backup, forcing ownership to userId. Tasks are not restored (regenerate
- * them via sweepUserContactTasks afterwards).
+ * them via sweepUserContactTasks afterwards). Settings are overwritten when
+ * the file carries them — a version 1 file doesn't, and leaves them alone.
  *
  * Ownership is always forced to the importing account, by design — a
  * restore always re-homes the file's data to whoever performs it, whether
@@ -849,8 +869,22 @@ export function importUserData(userId: string, data: BackupData): ImportCounts {
     const friendIdMap = new Map(data.friends.map((row) => [row.id, crypto.randomUUID()]));
     // Built-in contact types (id like "message", userId NULL) are shared
     // across all accounts and never appear in typeIdMap — pass those
-    // through unchanged rather than dropping the row.
-    const remapType = (id: string) => typeIdMap.get(id) ?? id;
+    // through unchanged rather than dropping the row, but only when they
+    // actually exist. An id resolving to neither a type from this file nor a
+    // real built-in (a hand-edited file, or an export from an instance that
+    // ships different built-ins) used to reach the INSERT and abort the whole
+    // restore on a foreign-key error; dropping the referencing row is the
+    // same treatment an unresolvable friendId/circleId already gets.
+    const builtInIds = new Set(
+      tx
+        .select({ id: contactTypes.id })
+        .from(contactTypes)
+        .where(isNull(contactTypes.userId))
+        .all()
+        .map((row) => row.id),
+    );
+    const remapType = (id: string): string | null =>
+      typeIdMap.get(id) ?? (builtInIds.has(id) ? id : null);
 
     if (data.contactTypes.length > 0) {
       tx.insert(contactTypes)
@@ -877,50 +911,60 @@ export function importUserData(userId: string, data: BackupData): ImportCounts {
     if (friendCirclesRows.length > 0) {
       tx.insert(friendCircles).values(friendCirclesRows).run();
     }
-    if (data.userContactPrefs.length > 0) {
-      tx.insert(userContactPrefs)
-        .values(
-          data.userContactPrefs.map((row) => ({
-            ...row,
-            contactTypeId: remapType(row.contactTypeId),
-            userId,
-          })),
-        )
-        .run();
+    const userContactPrefsRows = data.userContactPrefs.flatMap((row) => {
+      const contactTypeId = remapType(row.contactTypeId);
+      return contactTypeId === null ? [] : [{ ...row, contactTypeId, userId }];
+    });
+    if (userContactPrefsRows.length > 0) {
+      tx.insert(userContactPrefs).values(userContactPrefsRows).run();
     }
-    const circleContactPrefsRows = data.circleContactPrefs
-      .filter((row) => circleIdMap.has(row.circleId))
-      .map((row) => ({
-        ...row,
-        circleId: circleIdMap.get(row.circleId)!,
-        contactTypeId: remapType(row.contactTypeId),
-      }));
+    const circleContactPrefsRows = data.circleContactPrefs.flatMap((row) => {
+      const circleId = circleIdMap.get(row.circleId);
+      const contactTypeId = remapType(row.contactTypeId);
+      return circleId === undefined || contactTypeId === null
+        ? []
+        : [{ ...row, circleId, contactTypeId }];
+    });
     if (circleContactPrefsRows.length > 0) {
       tx.insert(circleContactPrefs).values(circleContactPrefsRows).run();
     }
-    const friendContactPrefsRows = data.friendContactPrefs
-      .filter((row) => friendIdMap.has(row.friendId))
-      .map((row) => ({
-        ...row,
-        friendId: friendIdMap.get(row.friendId)!,
-        contactTypeId: remapType(row.contactTypeId),
-      }));
+    const friendContactPrefsRows = data.friendContactPrefs.flatMap((row) => {
+      const friendId = friendIdMap.get(row.friendId);
+      const contactTypeId = remapType(row.contactTypeId);
+      return friendId === undefined || contactTypeId === null
+        ? []
+        : [{ ...row, friendId, contactTypeId }];
+    });
     if (friendContactPrefsRows.length > 0) {
       tx.insert(friendContactPrefs).values(friendContactPrefsRows).run();
     }
-    const interactionsRows = data.interactions
-      .filter((row) => friendIdMap.has(row.friendId))
-      .map((row) => ({
-        ...row,
-        id: crypto.randomUUID(),
-        friendId: friendIdMap.get(row.friendId)!,
-        contactTypeId: remapType(row.contactTypeId),
-        userId,
-        // taskId references live tasks that are not restored.
-        taskId: null,
-      }));
+    const interactionsRows = data.interactions.flatMap((row) => {
+      const friendId = friendIdMap.get(row.friendId);
+      const contactTypeId = remapType(row.contactTypeId);
+      if (friendId === undefined || contactTypeId === null) return [];
+      return [
+        {
+          ...row,
+          id: crypto.randomUUID(),
+          friendId,
+          contactTypeId,
+          userId,
+          // taskId references live tasks that are not restored.
+          taskId: null,
+        },
+      ];
+    });
     if (interactionsRows.length > 0) {
       tx.insert(interactions).values(interactionsRows).run();
+    }
+
+    // Settings are a plain overwrite: the row always exists (created with the
+    // account), and a version 1 file simply has none to apply.
+    if (data.settings) {
+      tx.update(userSettings)
+        .set(data.settings)
+        .where(eq(userSettings.userId, userId))
+        .run();
     }
 
     return {

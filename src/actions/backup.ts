@@ -40,7 +40,23 @@ export async function importBackup(
     return { error: "invalidFile" };
   }
 
-  const counts = importUserData(user.id, result.data);
+  // The schema catches every file-level problem it can see, but the insert can
+  // still fail on state only the DB knows — so a restore is never allowed to
+  // escape as an unhandled server error. It runs in a single transaction, so a
+  // failure here leaves the account's existing data intact.
+  let counts;
+  try {
+    counts = importUserData(user.id, result.data);
+  } catch (err) {
+    console.error(
+      "[backup] restore failed:",
+      JSON.stringify({
+        userId: user.id,
+        message: err instanceof Error ? err.message : String(err),
+      }),
+    );
+    return { error: "invalidFile" };
+  }
   // Regenerate the suggestions that were intentionally left out of the backup.
   sweepUserContactTasks(user.id);
 
