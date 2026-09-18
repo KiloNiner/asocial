@@ -11,6 +11,12 @@ import {
   markInviteUsed,
 } from "@/lib/auth/invites";
 import { hashPassword, verifyPassword } from "@/lib/auth/password";
+import {
+  clearAttempts,
+  isLimited,
+  LOGIN_LIMITS,
+  recordAttempt,
+} from "@/lib/auth/rate-limit";
 import { createSession, destroySession } from "@/lib/auth/session";
 import { getSettings } from "@/lib/auth/current-user";
 import { redirect } from "@/i18n/navigation";
@@ -27,11 +33,24 @@ function maskIp(ip: string): string {
   return parts.length === 4 ? `${parts.slice(0, 3).join(".")}.0` : ip;
 }
 
+/** First character plus domain — enough for an operator who knows their own
+ *  users to tell which account is being hit, without writing the address to
+ *  disk in full. Mirrors the intent of maskIp(). */
+function maskEmail(email: string): string {
+  const at = email.lastIndexOf("@");
+  if (at <= 0) return "***";
+  return `${email[0]}***${email.slice(at)}`;
+}
+
+/**
+ * The caller's IP, unmasked. Rate limiting needs the exact address (a /24 is
+ * shared by everyone behind one NAT), so masking happens at the log site
+ * rather than here — this value must never be passed to console directly.
+ */
 async function clientIp(): Promise<string> {
   const h = await headers();
   const forwarded = h.get("x-forwarded-for");
-  const ip = forwarded?.split(",")[0]?.trim() || h.get("x-real-ip") || "unknown";
-  return ip === "unknown" ? ip : maskIp(ip);
+  return forwarded?.split(",")[0]?.trim() || h.get("x-real-ip") || "unknown";
 }
 
 const registerSchema = z.object({
@@ -62,19 +81,34 @@ export async function register(
   }
   const { email, displayName, password, invite } = parsed.data;
 
-  const bootstrap = userCount() === 0;
-  let inviteId: string | null = null;
-  if (!bootstrap) {
-    inviteId = invite ? findRedeemableInvite(invite) : null;
-    if (!inviteId) return { error: "inviteInvalid" };
-  }
-
-  if (db.select().from(users).where(eq(users.email, email)).get()) {
-    return { error: "emailTaken" };
-  }
-
+  // Hash before opening the transaction: argon2 runs on the libuv threadpool,
+  // so awaiting it is a real yield point. Reading the invite / user count on
+  // one side of that await and acting on it afterwards let two concurrent
+  // registrations both redeem the same single-use invite, or both pass the
+  // "no users yet" test and both be created as admin. Everything that reads
+  // and then writes now happens inside one synchronous transaction, which
+  // better-sqlite3 runs to completion with nothing interleaved.
   const passwordHash = await hashPassword(password);
-  const userId = db.transaction((tx) => {
+
+  const initialLocale = (["en", "da", "sv", "tlh"] as const).includes(
+    locale as "en" | "da" | "sv" | "tlh",
+  )
+    ? (locale as "en" | "da" | "sv" | "tlh")
+    : "en";
+
+  const outcome = db.transaction((tx) => {
+    const bootstrap = tx.select({ n: count() }).from(users).get()?.n === 0;
+
+    let inviteId: string | null = null;
+    if (!bootstrap) {
+      inviteId = invite ? findRedeemableInvite(invite, tx) : null;
+      if (!inviteId) return { error: "inviteInvalid" as const };
+    }
+
+    if (tx.select().from(users).where(eq(users.email, email)).get()) {
+      return { error: "emailTaken" as const };
+    }
+
     const user = tx
       .insert(users)
       .values({
@@ -85,25 +119,26 @@ export async function register(
       })
       .returning({ id: users.id })
       .get();
-    const initialLocale = (["en", "da", "sv", "tlh"] as const).includes(
-      locale as "en" | "da" | "sv" | "tlh",
-    )
-      ? (locale as "en" | "da" | "sv" | "tlh")
-      : "en";
     tx.insert(userSettings)
       .values({ userId: user.id, locale: initialLocale })
       .run();
-    if (inviteId) markInviteUsed(inviteId, user.id);
-    return user.id;
+    if (inviteId) markInviteUsed(inviteId, user.id, tx);
+    return { userId: user.id, bootstrap };
   });
+
+  if ("error" in outcome) return { error: outcome.error };
 
   // Registration logs the user straight in (same as login), so it needs
   // its own success line rather than relying on a separate login attempt.
   console.log(
     "[auth] registration succeeded:",
-    JSON.stringify({ userId, role: bootstrap ? "admin" : "user", ip }),
+    JSON.stringify({
+      userId: outcome.userId,
+      role: outcome.bootstrap ? "admin" : "user",
+      ip: maskIp(ip),
+    }),
   );
-  await createSession(userId);
+  await createSession(outcome.userId);
   redirect({ href: "/", locale });
   return {};
 }
@@ -117,9 +152,28 @@ export async function login(
   if (!parsed.success) {
     console.warn(
       "[auth] login failed:",
-      JSON.stringify({ reason: "invalidInput", ip }),
+      JSON.stringify({ reason: "invalidInput", ip: maskIp(ip) }),
     );
     return { error: "invalidCredentials" };
+  }
+
+  const ipKey = `login:ip:${ip}`;
+  const accountKey = `login:account:${parsed.data.email}`;
+
+  // Checked before verifying, so a spent window costs no argon2 work.
+  if (
+    isLimited(ipKey, LOGIN_LIMITS.perIp) ||
+    isLimited(accountKey, LOGIN_LIMITS.perAccount)
+  ) {
+    console.warn(
+      "[auth] login blocked:",
+      JSON.stringify({
+        reason: "rateLimited",
+        email: maskEmail(parsed.data.email),
+        ip: maskIp(ip),
+      }),
+    );
+    return { error: "tooManyAttempts" };
   }
 
   const user = db
@@ -134,16 +188,31 @@ export async function login(
     parsed.data.password,
   );
   if (!user || !ok) {
+    const ipAllowed = recordAttempt(ipKey, LOGIN_LIMITS.perIp);
+    const accountAllowed = recordAttempt(accountKey, LOGIN_LIMITS.perAccount);
     console.warn(
       "[auth] login failed:",
-      JSON.stringify({ reason: "invalidCredentials", email: parsed.data.email, ip }),
+      JSON.stringify({
+        reason: "invalidCredentials",
+        // Masked like the IP is: enough to see which account is being hit
+        // without writing the full address to the container log.
+        email: maskEmail(parsed.data.email),
+        ip: maskIp(ip),
+      }),
     );
-    return { error: "invalidCredentials" };
+    return {
+      error: ipAllowed && accountAllowed ? "invalidCredentials" : "tooManyAttempts",
+    };
   }
+
+  // A good password forgives the account's failures, so a user who mistypes a
+  // few times and then succeeds is never locked out by their own attempts.
+  clearAttempts(ipKey);
+  clearAttempts(accountKey);
 
   console.log(
     "[auth] login succeeded:",
-    JSON.stringify({ userId: user.id, ip }),
+    JSON.stringify({ userId: user.id, ip: maskIp(ip) }),
   );
   await createSession(user.id);
   // Redirect to the account's own locale, not whatever locale this browser's

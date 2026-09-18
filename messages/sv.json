@@ -56,7 +56,8 @@
       "invalidCredentials": "Fel e-post eller lösenord.",
       "emailTaken": "Det finns redan ett konto med den här e-postadressen.",
       "inviteInvalid": "Inbjudningslänken är ogiltig, använd eller har gått ut.",
-      "resetInvalid": "Återställningslänken är ogiltig, använd eller har gått ut."
+      "resetInvalid": "Återställningslänken är ogiltig, använd eller har gått ut.",
+      "tooManyAttempts": "För många försök. Vänta några minuter och försök igen."
     }
   },
   "admin": {

@@ -56,7 +56,8 @@
       "invalidCredentials": "Wrong email or password.",
       "emailTaken": "An account with this email already exists.",
       "inviteInvalid": "This invite link is invalid, used or expired.",
-      "resetInvalid": "This reset link is invalid, used or expired."
+      "resetInvalid": "This reset link is invalid, used or expired.",
+      "tooManyAttempts": "Too many attempts. Please wait a few minutes and try again."
     }
   },
   "admin": {

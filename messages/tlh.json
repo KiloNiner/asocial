@@ -56,7 +56,8 @@
       "invalidCredentials": "QIn Sum ghap mu' pegh lugh be'.",
       "emailTaken": "QIn Sum lo'lu'ta' De' tu'lu'.",
       "inviteInvalid": "rI'meH nav ram, lo'lu'ta' ghap chov.",
-      "resetInvalid": "chu' nav ram, lo'lu'ta' ghap chov."
+      "resetInvalid": "chu' nav ram, lo'lu'ta' ghap chov.",
+      "tooManyAttempts": "qaStaHvIS nID law'. tup puS yIloS, yInID pab."
     }
   },
   "admin": {

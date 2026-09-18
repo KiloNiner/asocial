@@ -1,5 +1,5 @@
 import { and, eq, isNull } from "drizzle-orm";
-import { db } from "@/db";
+import { db, type Executor } from "@/db";
 import { passwordResets } from "@/db/schema";
 import { generateToken, hashToken } from "./tokens";
 
@@ -19,11 +19,16 @@ export function createPasswordResetToken(
   return { token, expiresAt };
 }
 
-/** Looks up an unused, unexpired reset token. Returns its id + target user, or null. */
+/**
+ * Looks up an unused, unexpired reset token. Returns its id + target user,
+ * or null. Pass the enclosing transaction when the caller goes on to redeem
+ * it, so the lookup and the mark-used cannot straddle an `await`.
+ */
 export function findRedeemableReset(
   token: string,
+  exec: Executor = db,
 ): { id: string; userId: string } | null {
-  const row = db
+  const row = exec
     .select({
       id: passwordResets.id,
       userId: passwordResets.userId,
@@ -41,8 +46,9 @@ export function findRedeemableReset(
   return { id: row.id, userId: row.userId };
 }
 
-export function markResetUsed(resetId: string): void {
-  db.update(passwordResets)
+export function markResetUsed(resetId: string, exec: Executor = db): void {
+  exec
+    .update(passwordResets)
     .set({ usedAt: Date.now() })
     .where(eq(passwordResets.id, resetId))
     .run();

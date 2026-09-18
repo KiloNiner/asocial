@@ -1,5 +1,5 @@
 import { and, eq, isNull } from "drizzle-orm";
-import { db } from "@/db";
+import { db, type Executor } from "@/db";
 import { invites } from "@/db/schema";
 import { generateToken, hashToken } from "./tokens";
 
@@ -22,9 +22,18 @@ export function createInviteToken(
   return { token, expiresAt };
 }
 
-/** Looks up an unused, unexpired invite. Returns its id, or null. */
-export function findRedeemableInvite(token: string): string | null {
-  const row = db
+/**
+ * Looks up an unused, unexpired invite. Returns its id, or null.
+ *
+ * Pass the enclosing transaction when the caller goes on to redeem it —
+ * looking up and marking used across an `await` lets two concurrent
+ * registrations redeem the same single-use invite.
+ */
+export function findRedeemableInvite(
+  token: string,
+  exec: Executor = db,
+): string | null {
+  const row = exec
     .select({ id: invites.id, expiresAt: invites.expiresAt })
     .from(invites)
     .where(and(eq(invites.tokenHash, hashToken(token)), isNull(invites.usedBy)))
@@ -33,8 +42,13 @@ export function findRedeemableInvite(token: string): string | null {
   return row.id;
 }
 
-export function markInviteUsed(inviteId: string, userId: string): void {
-  db.update(invites)
+export function markInviteUsed(
+  inviteId: string,
+  userId: string,
+  exec: Executor = db,
+): void {
+  exec
+    .update(invites)
     .set({ usedBy: userId, usedAt: Date.now() })
     .where(eq(invites.id, inviteId))
     .run();
