@@ -9,6 +9,11 @@ import {
   users,
   type Friend,
 } from "@/db/schema";
+import {
+  emptyPruneStats,
+  pruneExpiredData,
+  type PruneStats,
+} from "@/lib/db/retention";
 import { localDateOf, today, type LocalDate } from "./clock";
 import { addDays, daysBetween } from "./dates";
 import { nextBirthday } from "./birthday";
@@ -25,6 +30,7 @@ export type SchedulerStats = {
   contactTasksCreated: number;
   birthdayTasksCreated: number;
   birthdayTasksExpired: number;
+  pruned: PruneStats;
 };
 
 function serverToday(): LocalDate {
@@ -115,6 +121,7 @@ export function runDailyScheduler(force = false): SchedulerStats {
       contactTasksCreated: 0,
       birthdayTasksCreated: 0,
       birthdayTasksExpired: 0,
+      pruned: emptyPruneStats(),
     };
   }
 
@@ -123,6 +130,7 @@ export function runDailyScheduler(force = false): SchedulerStats {
     contactTasksCreated: 0,
     birthdayTasksCreated: 0,
     birthdayTasksExpired: 0,
+    pruned: emptyPruneStats(),
   };
 
   const allUsers = db
@@ -184,6 +192,14 @@ export function runDailyScheduler(force = false): SchedulerStats {
         }
       }
     }
+  }
+
+  // Housekeeping last: it is maintenance, not scheduling, and a failure here
+  // must not cost anyone their nudges for the day.
+  try {
+    stats.pruned = pruneExpiredData();
+  } catch (err) {
+    console.error("[scheduler] prune failed:", err);
   }
 
   finishRun("scheduler", runDate, stats);
