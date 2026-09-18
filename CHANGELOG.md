@@ -1,5 +1,21 @@
 # Changelog
 
+## v1.9.2
+
+### Security
+- Next.js 16.2.10 -> 16.3.5, closing eleven advisories, two of them
+  critical. Nine were fixed in 16.2.11 and include a denial of service
+  reachable through App Router server actions, which is how every
+  mutation in this app is made. The two critical ones needed 16.3.3:
+  a path traversal reported against Windows hosts, and a flaw in the
+  image optimization API.
+- nodemailer 9.0.3 -> 9.1.1, closing four advisories: quadratic time in
+  the address parser, and recipient-domain validation that could be
+  bypassed with punycode or an RFC 5322 comment.
+- The runtime dependency tree now audits clean. What remains is four
+  moderate advisories in build and test tooling that only a semver-major
+  bump would clear; none of it ships in the container.
+
 ## v1.9.1
 
 ### Fixed
