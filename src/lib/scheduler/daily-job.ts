@@ -1,4 +1,4 @@
-import { and, desc, eq, sql } from "drizzle-orm";
+import { and, desc, eq, lt, sql } from "drizzle-orm";
 import { db } from "@/db";
 import {
   friends,
@@ -9,17 +9,21 @@ import {
   users,
 } from "@/db/schema";
 import { today, type LocalDate } from "./clock";
-import { daysBetween } from "./dates";
+import { addDays, daysBetween } from "./dates";
 import { nextBirthday } from "./birthday";
 import { pendingTask, scheduleNextTask } from "./schedule";
 
 const BIRTHDAY_LOOKAHEAD_DAYS = 7;
 const BIRTHDAY_WINDOW_DAYS = 2;
+// Symmetric with the lookahead: a birthday task appears 7 days before the
+// day and is retired 7 days after it.
+const BIRTHDAY_GRACE_DAYS = 7;
 
 export type SchedulerStats = {
   skipped: boolean;
   contactTasksCreated: number;
   birthdayTasksCreated: number;
+  birthdayTasksExpired: number;
 };
 
 function serverToday(): LocalDate {
@@ -44,21 +48,56 @@ function finishRun(job: string, runDate: string, detail: unknown): void {
 }
 
 /**
+ * Retire birthday tasks whose day is well past.
+ *
+ * Unlike a contact nudge — which is deliberately allowed to linger, since
+ * "reach out to someone" stays true indefinitely — a birthday task is bound
+ * to a date that expires. Left pending it reappeared in the board and, via
+ * the digest's every-3rd-day rule, kept nudging forever; worse, next year's
+ * sweep creates a *second* task (the dedupe key includes dueDate), so an
+ * ignored birthday stacked one row per year.
+ *
+ * Resolved as "skipped" rather than deleted: that is the same guilt-free
+ * state the skip button produces, and it keeps the dedupe check working so
+ * this year's occurrence isn't immediately recreated.
+ */
+function expireStaleBirthdayTasks(userId: string, t: LocalDate): number {
+  return db
+    .update(tasks)
+    .set({ status: "skipped", completedAt: Date.now() })
+    .where(
+      and(
+        eq(tasks.userId, userId),
+        eq(tasks.kind, "birthday"),
+        eq(tasks.status, "pending"),
+        lt(tasks.dueDate, addDays(t, -BIRTHDAY_GRACE_DAYS)),
+      ),
+    )
+    .run().changes;
+}
+
+/**
  * Daily sweep: every active autoschedule friend without a pending nudge gets
- * one ("contact too sparse" catch), and upcoming birthdays get a birthday
- * task. Restart-safe via the job_runs lock; `force` bypasses the lock for
- * manual/test triggers.
+ * one ("contact too sparse" catch), upcoming birthdays get a birthday task,
+ * and birthday tasks whose day has passed are retired. Restart-safe via the
+ * job_runs lock; `force` bypasses the lock for manual/test triggers.
  */
 export function runDailyScheduler(force = false): SchedulerStats {
   const runDate = serverToday();
   if (!claimRun("scheduler", runDate) && !force) {
-    return { skipped: true, contactTasksCreated: 0, birthdayTasksCreated: 0 };
+    return {
+      skipped: true,
+      contactTasksCreated: 0,
+      birthdayTasksCreated: 0,
+      birthdayTasksExpired: 0,
+    };
   }
 
   const stats: SchedulerStats = {
     skipped: false,
     contactTasksCreated: 0,
     birthdayTasksCreated: 0,
+    birthdayTasksExpired: 0,
   };
 
   const allUsers = db
@@ -77,6 +116,9 @@ export function runDailyScheduler(force = false): SchedulerStats {
 
     // Contact sweep — friends missing a pending suggestion.
     stats.contactTasksCreated += sweepUserContactTasks(user.id);
+    // Retire last year's (or last week's) unanswered birthday tasks before
+    // creating this year's, so they don't pile up.
+    stats.birthdayTasksExpired += expireStaleBirthdayTasks(user.id, t);
 
     for (const friend of activeFriends) {
       // Birthday sweep
