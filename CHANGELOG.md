@@ -1,5 +1,37 @@
 # Changelog
 
+## v1.8.0
+
+### Added
+- "Start fresh" resolves every open suggestion at once and draws a new
+  one for each friend, spread out over the weeks ahead -- the skip
+  button applied to the whole board, for when so much has gone by that
+  working through it one friend at a time is not realistic. Nothing is
+  deleted: friends, circles and the journal are untouched, and the
+  cleared suggestions resolve as "skipped", the same guilt-free state
+  the per-task skip button produces. It lives in Settings beside
+  Backup & restore, and the dashboard offers it as well once enough of
+  the board has been waiting a while.
+- New accounts get the daily email digest at their account address
+  from the day they register, on any deployment with SMTP configured.
+  An account used to start with no notification channel at all, so
+  anyone who never opened Settings was never contacted again. Switch
+  it off, or point it at another address, in Settings.
+- Accounts that nothing can reach are now offered the digest on the
+  dashboard rather than switched on behind their back. The offer can
+  be dismissed and stays dismissed.
+
+### Changed
+- Lingering suggestions share one rhythm instead of each keeping their
+  own. A lingering suggestion has always come back only every third
+  day, but with enough of them the digest still arrived daily. Whether
+  lingering suggestions speak up at all is now a property of the day,
+  so on two days in three the digest carries only what is due today or
+  tomorrow -- and where there is nothing, no digest is sent.
+- A digest names at most five suggestions and counts the rest as "+N
+  more waiting". Today's come first, then tomorrow's heads-up, then
+  the ones that have waited longest.
+
 ## v1.7.0
 
 ### Security

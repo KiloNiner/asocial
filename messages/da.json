@@ -293,6 +293,26 @@
       "unauthorized": "Din session er udløbet. Log ind igen."
     }
   },
+  "startFresh": {
+    "title": "Start forfra",
+    "intro": "Rydder alle forslag, der er åbne lige nu, og trækker et nyt for hver ven, fordelt over de kommende uger. Dine venner, cirkler og journal bliver ikke rørt.",
+    "nothingOpen": "Der er ingen åbne forslag lige nu.",
+    "openNow": "{n, plural, one {Der er # åbent forslag lige nu.} other {Der er # åbne forslag lige nu.}}",
+    "action": "Start forfra",
+    "confirm": "Dette lukker alle åbne forslag og planlægger nye, fordelt ud. Intet bliver slettet — dine venner, cirkler og journal bliver, som de er. Fortsæt?",
+    "done": "Ryddede {cleared} og planlagde {scheduled} nye.",
+    "prompt": {
+      "title": "Vil du starte forfra?",
+      "body": "{n, plural, one {# forslag har} other {# forslag har}} ventet et stykke tid — det ældste i {days, plural, one {# dag} other {# dage}}. Du kan rydde det hele og lade asocial finde en ny rytme. Intet bliver slettet.",
+      "action": "Start forfra",
+      "confirm": "Dette lukker alle åbne forslag og planlægger nye, fordelt ud. Intet bliver slettet — dine venner, cirkler og journal bliver, som de er. Fortsæt?",
+      "dismiss": "Ikke nu",
+      "failed": "Det virkede ikke. Prøv fra Indstillinger."
+    },
+    "errors": {
+      "unauthorized": "Din session er udløbet. Log ind igen."
+    }
+  },
   "about": {
     "title": "Om",
     "version": "asocial v{version}",
@@ -325,7 +345,7 @@
       },
       "guiltFree": {
         "title": "Skyldfri fra bunden",
-        "body": "Der er aldrig røde “forsinket”-advarsler. Et forslag, der trækker ud, bliver blot blødt ravgult. Udskyd så mange gange, du vil — springer du ét over, starter rytmen bare forfra i dag, uden skyldfølelse og uden en stime at bryde."
+        "body": "Der er aldrig røde “forsinket”-advarsler. Et forslag, der trækker ud, bliver blot blødt ravgult. Udskyd så mange gange, du vil — springer du ét over, starter rytmen bare forfra i dag, uden skyldfølelse og uden en stime at bryde. Og er hele tavlen drevet over i ravgult, gør Start forfra i Indstillinger det for alle på én gang: hvert åbent forslag lukkes, og en ny rytme trækkes."
       },
       "journal": {
         "title": "Journal",

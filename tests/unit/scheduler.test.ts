@@ -1,12 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { effectiveInterval, governingCircle } from "@/lib/scheduler/interval";
-import { jitteredInterval, uniformInt } from "@/lib/scheduler/jitter";
+import { contactGap, jitteredInterval, uniformInt } from "@/lib/scheduler/jitter";
 import {
   pickActivityType,
   resolveWeight,
 } from "@/lib/scheduler/activity-picker";
 import { ageOn, nextBirthday } from "@/lib/scheduler/birthday";
 import { addDays, daysBetween } from "@/lib/scheduler/dates";
+import { isBehind, summarizeBacklog } from "@/lib/scheduler/backlog";
 import { localDateOf } from "@/lib/scheduler/clock";
 import type { Circle } from "@/db/schema";
 
@@ -100,6 +101,102 @@ describe("jitteredInterval", () => {
     const rng = mulberry32(4);
     const seen = new Set(Array.from({ length: 200 }, () => uniformInt(1, 3, rng)));
     expect([...seen].sort()).toEqual([1, 2, 3]);
+  });
+});
+
+describe("contactGap", () => {
+  it("leaves the normal cadence alone", () => {
+    expect(contactGap(30, 3, "normal", mulberry32(1))).toBe(30);
+  });
+
+  it("lands a new friend inside the action window", () => {
+    const rng = mulberry32(5);
+    for (let i = 0; i < 200; i++) {
+      const gap = contactGap(30, 3, "firstContact", rng);
+      expect(gap).toBeGreaterThanOrEqual(1);
+      expect(gap).toBeLessThanOrEqual(3);
+    }
+  });
+
+  it("never pushes a new friend past their own cadence", () => {
+    // A two-day interval with a three-day window: the window is the wider of
+    // the two, and honouring it would schedule later than normal.
+    const rng = mulberry32(6);
+    for (let i = 0; i < 100; i++) {
+      expect(contactGap(2, 3, "firstContact", rng)).toBeLessThanOrEqual(2);
+    }
+  });
+
+  it("spreads across the whole cadence instead of clumping at the end", () => {
+    const rng = mulberry32(7);
+    const draws = Array.from({ length: 400 }, () =>
+      contactGap(30, 3, "spread", rng),
+    );
+    expect(Math.min(...draws)).toBeGreaterThanOrEqual(1);
+    expect(Math.max(...draws)).toBeLessThanOrEqual(30);
+    // The point of the mode: the first half of the interval gets used too.
+    expect(draws.filter((d) => d <= 15).length).toBeGreaterThan(100);
+  });
+});
+
+const today = "2026-07-12";
+
+/** `age` days old on `today`, with a three-day action window. */
+function pending(age: number, windowDays = 3) {
+  return { dueDate: addDays(today, -age), windowDays };
+}
+
+describe("summarizeBacklog", () => {
+  it("ignores suggestions whose window hasn't opened yet", () => {
+    const summary = summarizeBacklog([pending(-5), pending(0)], 2, today);
+    expect(summary.open).toBe(1);
+    expect(summary.oldestDays).toBe(0);
+  });
+
+  it("counts a suggestion as lingering only well past its window", () => {
+    // Three-day window: still fine at 6, stalled at 7.
+    const summary = summarizeBacklog([pending(6), pending(7)], 2, today);
+    expect(summary.open).toBe(2);
+    expect(summary.lingering).toBe(1);
+  });
+
+  it("measures the window per task, not globally", () => {
+    // Same age, different windows — a 14-day window can absorb what a
+    // 3-day window cannot.
+    const summary = summarizeBacklog([pending(20, 14), pending(20, 3)], 2, today);
+    expect(summary.lingering).toBe(1);
+  });
+
+  it("reports the age of the oldest open suggestion", () => {
+    const summary = summarizeBacklog([pending(4), pending(41), pending(9)], 3, today);
+    expect(summary.oldestDays).toBe(41);
+  });
+});
+
+describe("isBehind", () => {
+  const summary = (lingering: number, scheduled: number) => ({
+    open: lingering,
+    lingering,
+    scheduled,
+    oldestDays: 60,
+  });
+
+  it("stays quiet for an empty board", () => {
+    expect(isBehind(summary(0, 0))).toBe(false);
+  });
+
+  it("stays quiet for a few stragglers, however small the address book", () => {
+    // Four of four is proportionally everything, and still not a pile.
+    expect(isBehind(summary(4, 4))).toBe(false);
+  });
+
+  it("speaks up when most of the address book has stalled", () => {
+    expect(isBehind(summary(5, 6))).toBe(true);
+  });
+
+  it("stays quiet when the stalled ones are a small share of many", () => {
+    expect(isBehind(summary(5, 40))).toBe(false);
+    expect(isBehind(summary(16, 40))).toBe(true);
   });
 });
 

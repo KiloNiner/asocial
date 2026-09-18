@@ -5,10 +5,12 @@ import {
   SchedulingForm,
 } from "@/components/settings/SettingsForms";
 import { BackupCard } from "@/components/settings/BackupCard";
+import { StartFreshCard } from "@/components/settings/StartFreshCard";
 import { ThemeSelector } from "@/components/settings/ThemeSelector";
 import { TypesManager } from "@/components/settings/TypesManager";
 import { getSettings, requireUserOrRedirect } from "@/lib/auth/current-user";
 import * as q from "@/lib/db/queries";
+import { contactBacklog } from "@/lib/scheduler/reset";
 import { isThemeChoice, type ThemeChoice } from "@/lib/themes";
 
 export default async function SettingsPage() {
@@ -77,6 +79,7 @@ export default async function SettingsPage() {
         <TypesManager types={types} userPrefs={userPrefs} />
       </section>
 
+      <StartFreshCard open={contactBacklog(user.id, settings.timezone).open} />
       <BackupCard />
     </div>
   );

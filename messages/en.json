@@ -293,6 +293,26 @@
       "unauthorized": "Your session has expired. Please log in again."
     }
   },
+  "startFresh": {
+    "title": "Start fresh",
+    "intro": "Clears every suggestion that is open right now and draws a new one for each friend, spread out over the weeks ahead. Your friends, circles and journal are untouched.",
+    "nothingOpen": "Nothing is open right now.",
+    "openNow": "{n, plural, one {# suggestion is open right now.} other {# suggestions are open right now.}}",
+    "action": "Start fresh",
+    "confirm": "This closes every open suggestion and schedules new ones, spread out. Nothing is deleted — your friends, circles and journal stay as they are. Continue?",
+    "done": "Cleared {cleared} and scheduled {scheduled} new ones.",
+    "prompt": {
+      "title": "Want to start over?",
+      "body": "{n, plural, one {# suggestion has} other {# suggestions have}} been waiting a while — the oldest for {days, plural, one {# day} other {# days}}. You can clear the lot and let asocial find a new rhythm. Nothing gets deleted.",
+      "action": "Start fresh",
+      "confirm": "This closes every open suggestion and schedules new ones, spread out. Nothing is deleted — your friends, circles and journal stay as they are. Continue?",
+      "dismiss": "Not now",
+      "failed": "That didn't work. Try it from Settings."
+    },
+    "errors": {
+      "unauthorized": "Your session has expired. Please log in again."
+    }
+  },
   "about": {
     "title": "About",
     "version": "asocial v{version}",
@@ -325,7 +345,7 @@
       },
       "guiltFree": {
         "title": "Guilt-free by design",
-        "body": "There are no red “overdue” warnings, ever. A lingering suggestion just turns a soft amber. Snooze as many times as you like — skipping one simply restarts the rhythm from today, no guilt and no streak to break."
+        "body": "There are no red “overdue” warnings, ever. A lingering suggestion just turns a soft amber. Snooze as many times as you like — skipping one simply restarts the rhythm from today, no guilt and no streak to break. And if the whole board has drifted amber, Start fresh in Settings does it for everyone at once: every open suggestion closed, a new rhythm drawn."
       },
       "journal": {
         "title": "Journal",

@@ -293,6 +293,26 @@
       "unauthorized": "Din session har gått ut. Logga in igen."
     }
   },
+  "startFresh": {
+    "title": "Börja om",
+    "intro": "Rensar alla förslag som är öppna just nu och drar ett nytt för varje vän, utspritt över veckorna framåt. Dina vänner, cirklar och din journal rörs inte.",
+    "nothingOpen": "Det finns inga öppna förslag just nu.",
+    "openNow": "{n, plural, one {Det finns # öppet förslag just nu.} other {Det finns # öppna förslag just nu.}}",
+    "action": "Börja om",
+    "confirm": "Det här stänger alla öppna förslag och schemalägger nya, utspridda. Inget raderas — dina vänner, cirklar och din journal blir kvar som de är. Fortsätta?",
+    "done": "Rensade {cleared} och schemalade {scheduled} nya.",
+    "prompt": {
+      "title": "Vill du börja om?",
+      "body": "{n, plural, one {# förslag har} other {# förslag har}} väntat ett tag — det äldsta i {days, plural, one {# dag} other {# dagar}}. Du kan rensa alltihop och låta asocial hitta en ny rytm. Inget raderas.",
+      "action": "Börja om",
+      "confirm": "Det här stänger alla öppna förslag och schemalägger nya, utspridda. Inget raderas — dina vänner, cirklar och din journal blir kvar som de är. Fortsätta?",
+      "dismiss": "Inte nu",
+      "failed": "Det fungerade inte. Prova från Inställningar."
+    },
+    "errors": {
+      "unauthorized": "Din session har gått ut. Logga in igen."
+    }
+  },
   "about": {
     "title": "Om",
     "version": "asocial v{version}",
@@ -325,7 +345,7 @@
       },
       "guiltFree": {
         "title": "Skuldfri design",
-        "body": "Det finns aldrig röda “försenad”-varningar. Ett förslag som drar ut på tiden blir bara mjukt gulbrunt. Skjut upp så många gånger du vill — hoppar du över ett startar rytmen bara om från idag, utan skuldkänslor och utan en svit att bryta."
+        "body": "Det finns aldrig röda “försenad”-varningar. Ett förslag som drar ut på tiden blir bara mjukt gulbrunt. Skjut upp så många gånger du vill — hoppar du över ett startar rytmen bara om från idag, utan skuldkänslor och utan en svit att bryta. Och har hela tavlan glidit över i gulbrunt gör Börja om i Inställningar det för alla på en gång: varje öppet förslag stängs och en ny rytm dras."
       },
       "journal": {
         "title": "Journal",
