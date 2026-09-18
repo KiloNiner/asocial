@@ -9,7 +9,7 @@ import { cookies } from "next/headers";
  * retired without a migration. Losing it (new device, cleared cookies) costs
  * one more look at a prompt, which is the harmless direction to fail in.
  */
-export const PROMPT_KEYS = ["digestOff"] as const;
+export const PROMPT_KEYS = ["digestOff", "startFresh"] as const;
 export type PromptKey = (typeof PROMPT_KEYS)[number];
 
 export const DISMISSED_COOKIE = "asocial_dismissed";

@@ -80,7 +80,7 @@ export async function createFriend(
   if (friend.autoschedule) {
     const settings = await getSettings(user.id);
     scheduleNextTask(user.id, friend.id, today(settings.timezone), {
-      firstContact: true,
+      gap: "firstContact",
     });
   }
   revalidate();

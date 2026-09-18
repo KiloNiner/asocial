@@ -9,9 +9,15 @@ import { getCurrentUser, getSettings } from "@/lib/auth/current-user";
 import * as q from "@/lib/db/queries";
 import { today } from "@/lib/scheduler/clock";
 import { addDays } from "@/lib/scheduler/dates";
+import { startFreshContactTasks } from "@/lib/scheduler/reset";
 import { pendingTask, scheduleNextTask } from "@/lib/scheduler/schedule";
 
 export type TaskFormState = { error?: string };
+
+export type StartFreshState = {
+  error?: string;
+  result?: { cleared: number; scheduled: number };
+};
 
 function getTask(userId: string, taskId: string): Task | null {
   return (
@@ -128,6 +134,25 @@ export async function skipTask(taskId: string): Promise<void> {
     }
   }
   revalidate();
+}
+
+/**
+ * Start fresh: resolve every open contact suggestion at once and draw new
+ * ones, spread out. The bulk form of skip — see scheduler/reset.ts.
+ */
+export async function startFresh(): Promise<StartFreshState> {
+  const user = await getCurrentUser();
+  if (!user) return { error: "unauthorized" };
+  const settings = await getSettings(user.id);
+
+  const result = startFreshContactTasks(user.id, settings.timezone);
+  console.log(
+    "[tasks] start fresh:",
+    JSON.stringify({ userId: user.id, ...result }),
+  );
+  revalidate();
+  revalidatePath("/[locale]/settings", "page");
+  return { result };
 }
 
 const manualSchema = z.object({

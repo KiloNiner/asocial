@@ -293,6 +293,26 @@
       "unauthorized": "poH chovta' — yI'el."
     }
   },
+  "startFresh": {
+    "title": "yItaghqa'",
+    "intro": "DaH poSbogh wIvmey Hoch SoQmoH, 'ej jup Hoch wIv chu' chenmoH — jarmey veb luSIch. juppu'lI', ghomHommeylIj, qonta'ghachlIj je choHbe'.",
+    "nothingOpen": "DaH poSbogh wIv tu'lu'be'.",
+    "openNow": "{n, plural, other {DaH poS # wIv.}}",
+    "action": "yItaghqa'",
+    "confirm": "poSbogh wIvmey Hoch SoQmoH, 'ej wIvmey chu' chenmoH. pagh chIllu' — juppu'lI', ghomHommeylIj, qonta'ghachlIj je rInbe'. DaH yIruch'a'?",
+    "done": "{cleared} SoQmoHlu'ta'; {scheduled} chu' chenmoHlu'ta'.",
+    "prompt": {
+      "title": "DaH yItaghqa''a'?",
+      "body": "{n, plural, other {loStaH # wIv}}. {days, plural, other {# jaj}} loStaH qanbogh wIv. Hoch DaSoQmoHlaH, 'ej qet chu' Sam asocial. pagh chIllu'.",
+      "action": "yItaghqa'",
+      "confirm": "poSbogh wIvmey Hoch SoQmoH, 'ej wIvmey chu' chenmoH. pagh chIllu' — juppu'lI', ghomHommeylIj, qonta'ghachlIj je rInbe'. DaH yIruch'a'?",
+      "dismiss": "DaH ghobe'",
+      "failed": "Qapbe'. DuHmey yIlo'."
+    },
+    "errors": {
+      "unauthorized": "poH chovta' — yI'el."
+    }
+  },
   "about": {
     "title": "De'",
     "version": "asocial v{version}",
