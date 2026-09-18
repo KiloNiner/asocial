@@ -101,7 +101,7 @@
     "title": "Vänner",
     "add": "Lägg till vän",
     "search": "Sök…",
-    "empty": "Inga vänner ännu. Lägg till de människor du vill hålla kvar.",
+    "empty": "Inga vänner ännu. Lägg till de människor du vill hålla kontakten med.",
     "emptySearch": "Ingen matchar din sökning.",
     "lastContact": "Senaste kontakt",
     "nextContact": "Nästa kontakt",
@@ -130,7 +130,7 @@
     "archive": "Arkivera",
     "unarchive": "Återställ",
     "archived": "Arkiverad",
-    "archiveConfirm": "Arkivera den här vännen? Väntande förslag avbryts. Journalen behålls och du kan alltid återställa.",
+    "archiveConfirm": "Arkivera den här vännen? Väntande förslag avbryts. Journalen behålls och du kan alltid återställa vännen.",
     "showArchived": "Visa arkiverade",
     "typePrefs": "Aktivitetspreferenser",
     "typePrefsHint": "Hur förslag viktas för den här vännen. Tomt = ärvt, 0 = föreslå aldrig."
@@ -148,7 +148,7 @@
   "contactTypes": {
     "message": "Skicka ett meddelande",
     "call": "Telefonsamtal",
-    "coffee": "Ta en kaffe",
+    "coffee": "Ta en fika",
     "activity": "Gör något tillsammans",
     "visit_them": "Besök dem",
     "host_visit": "Bjud hem dem",
@@ -208,19 +208,19 @@
     "legendBirthday": "födelsedag"
   },
   "calendar": {
-    "today": "Idag"
+    "today": "I dag"
   },
   "digest": {
-    "title": "{n, plural, one {# vän} other {# vänner}} att höra av dig till",
+    "title": "{n, plural, one {# vän} other {# vänner}} du bör höra av dig till",
     "line": "{type} — {name}",
     "lineBirthday": "Det är {name}s födelsedag — {type}",
-    "tomorrow": "imorgon",
+    "tomorrow": "i morgon",
     "openApp": "Öppna asocial",
-    "footer": "Du får det här för att aviseringar är aktiverade i dina asocial-inställningar."
+    "footer": "Du får det här eftersom aviseringar är aktiverade i dina asocial-inställningar."
   },
   "notifications": {
-    "title": "Notiser",
-    "intro": "En kort daglig sammanfattning vid din valda timme — bara när något faktiskt är öppet, och hängande förslag bara var tredje dag.",
+    "title": "Aviseringar",
+    "intro": "En kort daglig sammanfattning vid den tid du valt — bara när något faktiskt är öppet, och förslag som drar ut på tiden bara var tredje dag.",
     "pushoverTitle": "Pushover",
     "pushoverToken": "API-token",
     "pushoverUserKey": "Användarnyckel",
@@ -251,13 +251,13 @@
     "windowDays": "Handlingsfönster (dagar)",
     "jitterPct": "Slumpmässighet (± %)",
     "defaultInterval": "Standardintervall (dagar)",
-    "digestHour": "Sammanfattningstimme (0–23)"
+    "digestHour": "Tid för sammanfattning (0–23)"
   },
   "appearance": {
     "title": "Utseende",
     "auto": "Auto (följ systemet)",
-    "light": "Ljusa",
-    "dark": "Mörka",
+    "light": "Ljusa teman",
+    "dark": "Mörka teman",
     "themes": {
       "paper": "Papper",
       "latte": "Latte",
@@ -297,7 +297,7 @@
     "manual": {
       "circles": {
         "title": "Cirklar",
-        "body": "Vänner hör till en eller flera cirklar, var och en med sin egen kontaktrytm — t.ex. “Nära vänner” varannan vecka. En vän i flera cirklar följer den mest frekventa. Du kan också sätta ett personligt intervall för en vän som helt åsidosätter deras cirklar, och vänner utan någon cirkel alls faller tillbaka på ditt standardintervall i Inställningar."
+        "body": "Vänner hör till en eller flera cirklar, var och en med sin egen kontaktrytm — t.ex. “Nära vänner” varannan vecka. En vän i flera cirklar följer den mest frekventa. Du kan också sätta ett personligt intervall för en vän som helt åsidosätter vännens cirklar, och vänner utan någon cirkel alls faller tillbaka på ditt standardintervall i Inställningar."
       },
       "scheduling": {
         "title": "Slumpmässig schemaläggning",
@@ -309,7 +309,7 @@
       },
       "views": {
         "title": "Två vyer",
-        "body": "Kalendern ger en klassisk månadsvy. Översiktens tavla visar en rad per vän med ett färgat band som markerar dagarna att agera — dämpat innan det öppnar, levande medan det är öppet, och en mjuk gulbrun ton om det drar ut på tiden."
+        "body": "Kalendern ger en klassisk månadsvy. Tavlan i Översikt visar en rad per vän med ett färgat band som markerar dagarna att agera — dämpat innan det öppnar, levande medan det är öppet, och en mjuk gulbrun ton om det drar ut på tiden."
       },
       "guiltFree": {
         "title": "Skuldfri design",
