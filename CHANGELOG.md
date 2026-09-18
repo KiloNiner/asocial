@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.9.1
+
+### Fixed
+- A birthday that has passed no longer orders the board invisibly. The
+  board is sorted by whichever comes first, the birthday or the next
+  suggestion, but it only looks three days back, while a birthday keeps
+  waiting for seven -- so a birthday four to seven days old pulled a
+  friend to the top of the board with nothing drawn to explain it. Such
+  a birthday is now shown, faded, at the edge it fell off, with its real
+  date on hover.
+
 ## v1.9.0
 
 ### Changed

@@ -24,6 +24,17 @@ export type BeyondSpec = {
   future: boolean;
 };
 
+/**
+ * A pending birthday. `clampedLabel` is set when the real date lies outside
+ * the visible range and the marker is pinned to the nearest edge instead —
+ * the row is still sorted by that date, so it has to be visible somewhere.
+ */
+export type BirthdaySpec = {
+  task: Task;
+  col: number;
+  clampedLabel: string | null;
+};
+
 const stateBand = {
   upcoming: "opacity-45",
   open: "opacity-100",
@@ -44,8 +55,7 @@ export function BoardRow({
   emoji,
   band,
   beyond,
-  birthdayCol,
-  birthdayTask,
+  birthday,
   types,
   today,
   columns,
@@ -56,8 +66,7 @@ export function BoardRow({
   emoji: string;
   band: BandSpec | null;
   beyond: BeyondSpec | null;
-  birthdayCol: number | null;
-  birthdayTask: Task | null;
+  birthday: BirthdaySpec | null;
   types: TypeInfo[];
   today: string;
   columns: number;
@@ -76,7 +85,7 @@ export function BoardRow({
         <Link
           href={`/friends/${friendId}`}
           className="sticky left-0 z-10 flex items-center gap-1.5 truncate bg-panel py-1.5 pr-2 text-sm hover:underline"
-          style={{ gridColumn: "1" }}
+          style={{ gridColumn: "1", gridRow: "1" }}
         >
           <span className="truncate">{friendName}</span>
           <span className="text-xs">{emoji}</span>
@@ -94,6 +103,7 @@ export function BoardRow({
             }`}
             style={{
               gridColumn: `${band.startCol} / ${band.endCol + 1}`,
+              gridRow: "1",
               backgroundColor: color,
             }}
           />
@@ -110,6 +120,7 @@ export function BoardRow({
               beyond.future ? "justify-end pr-1" : "justify-start pl-1"
             }`}
             style={{
+              gridRow: "1",
               gridColumn: beyond.future
                 ? `${Math.max(2, columns - 5)} / ${columns + 2}`
                 : `2 / 8`,
@@ -123,14 +134,17 @@ export function BoardRow({
           </button>
         ) : null}
 
-        {birthdayCol ? (
+        {birthday ? (
           <button
             type="button"
             onClick={() =>
               setExpanded(expanded === "birthday" ? null : "birthday")
             }
-            className="text-center text-sm leading-5"
-            style={{ gridColumn: `${birthdayCol}` }}
+            title={birthday.clampedLabel ?? undefined}
+            className={`text-center text-sm leading-5 ${
+              birthday.clampedLabel ? "opacity-50" : ""
+            }`}
+            style={{ gridColumn: `${birthday.col}`, gridRow: "1" }}
           >
             🎂
           </button>
@@ -147,11 +161,11 @@ export function BoardRow({
           />
         </div>
       ) : null}
-      {expanded === "birthday" && birthdayTask ? (
+      {expanded === "birthday" && birthday ? (
         <div className="max-w-xl py-2">
           <TaskCard
-            key={birthdayTask.id}
-            task={birthdayTask}
+            key={birthday.task.id}
+            task={birthday.task}
             types={types}
             today={today}
           />

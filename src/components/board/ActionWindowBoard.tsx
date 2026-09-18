@@ -1,5 +1,10 @@
 import { getTranslations } from "next-intl/server";
-import { BoardRow, type BandSpec, type BeyondSpec } from "./BoardRow";
+import {
+  BoardRow,
+  type BandSpec,
+  type BeyondSpec,
+  type BirthdaySpec,
+} from "./BoardRow";
 import type { BoardRow as BoardRowData } from "@/lib/db/queries";
 import type { ContactType } from "@/db/schema";
 import { addDays, daysBetween } from "@/lib/scheduler/dates";
@@ -160,9 +165,24 @@ export async function ActionWindowBoard({
                   };
                 }
               }
-              const birthdayCol = row.birthdayTask
-                ? colFor(row.birthdayTask.dueDate, rangeStart)
-                : null;
+              let birthday: BirthdaySpec | null = null;
+              if (row.birthdayTask) {
+                const dueDate = row.birthdayTask.dueDate;
+                const col = colFor(dueDate, rangeStart);
+                // The grace period a birthday task is kept for outlives the
+                // board's look-back, so one can still be pending days after it
+                // scrolled off the left edge. It sorts the row either way (see
+                // urgency in queries.ts), so pin it to the edge rather than
+                // ordering the board by something it does not draw.
+                birthday = {
+                  task: row.birthdayTask,
+                  col: col ?? (dueDate < rangeStart ? 2 : COLUMNS + 1),
+                  clampedLabel:
+                    col === null
+                      ? monthFmt.format(new Date(`${dueDate}T12:00:00`))
+                      : null,
+                };
+              }
               const suggested = row.contactTask
                 ? typeById.get(row.contactTask.suggestedTypeId)
                 : null;
@@ -176,8 +196,7 @@ export async function ActionWindowBoard({
                   emoji={suggested?.emoji ?? (row.birthdayTask ? "🎂" : "")}
                   band={band}
                   beyond={beyond}
-                  birthdayCol={birthdayCol}
-                  birthdayTask={row.birthdayTask}
+                  birthday={birthday}
                   types={typeInfo}
                   today={today}
                   columns={COLUMNS}
