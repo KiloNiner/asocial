@@ -37,3 +37,16 @@ export const emailConfigSchema = z.object({
   // Defaults to the account email when empty.
   address: z.union([z.literal(""), z.email()]).optional(),
 });
+
+/**
+ * Whether outbound email is possible at all on this deployment.
+ *
+ * SMTP is optional in asocial, so the email digest can only be *defaulted* on
+ * where it would actually deliver — otherwise a new account would start life
+ * with a channel that fails every day. Lives here rather than in
+ * `channels/email.ts` so callers that only need the answer (registration, the
+ * register form) don't pull nodemailer in with it.
+ */
+export function smtpConfigured(): boolean {
+  return !!process.env.SMTP_HOST;
+}

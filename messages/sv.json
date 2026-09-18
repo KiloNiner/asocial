@@ -45,6 +45,7 @@
     "registerTitle": "Skapa ditt konto",
     "bootstrapHint": "Du är den första användaren — det här kontot blir administratör.",
     "inviteNeededHint": "Registrering kräver en inbjudningslänk från en administratör.",
+    "digestHint": "Din dagliga sammanfattning skickas hit. Du kan ändra den eller stänga av den i Inställningar.",
     "noAccountYet": "Första gången här? Skapa administratörskontot",
     "haveAccount": "Har du redan ett konto? Logga in",
     "resetTitle": "Ange ett nytt lösenord",
@@ -234,11 +235,21 @@
     "logTitle": "Senaste utskick",
     "logEmpty": "Inget skickat ännu.",
     "saved": "Sparat.",
+    "prompt": {
+      "title": "asocial kan inte nå dig",
+      "bodyEmail": "Det väntar förslag, men det finns inget sätt att berätta om dem för dig. En kort daglig sammanfattning till kontots e-post kräver inget mer av dig.",
+      "bodyOther": "Det väntar förslag, men det finns inget sätt att berätta om dem för dig. Välj en kanal i Inställningar.",
+      "enableEmail": "Skicka sammanfattningen till min e-post",
+      "openSettings": "Inställningar för aviseringar",
+      "dismiss": "Inte nu",
+      "failed": "Det fungerade inte — prova via Inställningar."
+    },
     "errors": {
       "invalid": "Kontrollera formuläret och försök igen.",
       "invalidTimezone": "Okänd tidszon.",
       "pushoverConfigMissing": "Pushover kräver både API-token och användarnyckel.",
-      "channelNotConfigured": "Spara kanalens konfiguration först."
+      "channelNotConfigured": "Spara kanalens konfiguration först.",
+      "smtpUnavailable": "Den här servern har ingen e-post konfigurerad."
     }
   },
   "profile": {
@@ -325,7 +336,7 @@
       },
       "notifications": {
         "title": "Aviseringar",
-        "body": "Få en daglig sammanfattning via Pushover eller e-post vid den tid som passar dig — med det som är öppet just nu, plus en påminnelse om det som ska ske i morgon. Ett förslag som drar ut på tiden tjatar inte varje dag — det dyker upp igen som mest var tredje dag."
+        "body": "Få en daglig sammanfattning via Pushover eller e-post vid den tid som passar dig — med det som är öppet just nu, plus en påminnelse om det som ska ske i morgon. E-post till kontots adress är på från den dag du registrerar dig; stäng av den eller lägg till Pushover i Inställningar. Ett förslag som drar ut på tiden tjatar inte varje dag — det dyker upp igen som mest var tredje dag."
       },
       "backup": {
         "title": "Säkerhetskopiering och återställning",

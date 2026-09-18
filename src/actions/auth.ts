@@ -5,7 +5,7 @@ import { headers } from "next/headers";
 import { getLocale } from "next-intl/server";
 import { z } from "zod";
 import { db } from "@/db";
-import { users, userSettings } from "@/db/schema";
+import { notificationChannels, users, userSettings } from "@/db/schema";
 import {
   findRedeemableInvite,
   markInviteUsed,
@@ -19,6 +19,7 @@ import {
 } from "@/lib/auth/rate-limit";
 import { createSession, destroySession } from "@/lib/auth/session";
 import { getSettings } from "@/lib/auth/current-user";
+import { smtpConfigured } from "@/lib/notifications/channel";
 import { redirect } from "@/i18n/navigation";
 
 export type AuthFormState = { error?: string };
@@ -96,6 +97,8 @@ export async function register(
     ? (locale as "en" | "da" | "sv" | "tlh")
     : "en";
 
+  const emailDefault = smtpConfigured();
+
   const outcome = db.transaction((tx) => {
     const bootstrap = tx.select({ n: count() }).from(users).get()?.n === 0;
 
@@ -122,6 +125,22 @@ export async function register(
     tx.insert(userSettings)
       .values({ userId: user.id, locale: initialLocale })
       .run();
+    // Notifications used to start at zero channels, so an account that never
+    // opened Settings was never contacted again — the app went silent the
+    // moment registration finished, which is precisely when someone has the
+    // least reason to come back on their own. An empty email config means
+    // "the account address", so this needs nothing from the new user. Only
+    // where SMTP can actually deliver: see smtpConfigured().
+    if (emailDefault) {
+      tx.insert(notificationChannels)
+        .values({
+          userId: user.id,
+          channel: "email",
+          enabled: true,
+          config: "{}",
+        })
+        .run();
+    }
     if (inviteId) markInviteUsed(inviteId, user.id, tx);
     return { userId: user.id, bootstrap };
   });
@@ -135,6 +154,7 @@ export async function register(
     JSON.stringify({
       userId: outcome.userId,
       role: outcome.bootstrap ? "admin" : "user",
+      emailDigest: emailDefault,
       ip: maskIp(ip),
     }),
   );

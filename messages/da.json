@@ -45,6 +45,7 @@
     "registerTitle": "Opret din konto",
     "bootstrapHint": "Du er den første bruger — denne konto bliver administrator.",
     "inviteNeededHint": "Registrering kræver et invitationslink fra en administrator.",
+    "digestHint": "Dit daglige sammendrag sendes hertil. Du kan ændre det eller slå det fra i Indstillinger.",
     "noAccountYet": "Første gang her? Opret administratorkontoen",
     "haveAccount": "Har du allerede en konto? Log ind",
     "resetTitle": "Angiv en ny adgangskode",
@@ -234,11 +235,21 @@
     "logTitle": "Seneste afsendelser",
     "logEmpty": "Intet sendt endnu.",
     "saved": "Gemt.",
+    "prompt": {
+      "title": "asocial kan ikke få fat i dig",
+      "bodyEmail": "Der venter forslag, men der er ingen måde at fortælle dig om dem på. Et kort dagligt sammendrag til din kontos e-mail kræver ikke andet af dig.",
+      "bodyOther": "Der venter forslag, men der er ingen måde at fortælle dig om dem på. Vælg en kanal i Indstillinger.",
+      "enableEmail": "Send mig sammendraget på e-mail",
+      "openSettings": "Indstillinger for notifikationer",
+      "dismiss": "Ikke nu",
+      "failed": "Det virkede ikke — prøv via Indstillinger."
+    },
     "errors": {
       "invalid": "Tjek venligst formularen og prøv igen.",
       "invalidTimezone": "Ukendt tidszone.",
       "pushoverConfigMissing": "Pushover kræver både API-token og brugernøgle.",
-      "channelNotConfigured": "Gem kanalens konfiguration først."
+      "channelNotConfigured": "Gem kanalens konfiguration først.",
+      "smtpUnavailable": "Denne server har ikke opsat e-mail."
     }
   },
   "profile": {
@@ -325,7 +336,7 @@
       },
       "notifications": {
         "title": "Notifikationer",
-        "body": "Få et dagligt overblik via Pushover eller e-mail på det tidspunkt, der passer dig — med det, der er åbent lige nu, plus et vink om det, der står for tur i morgen. Et forslag, der trækker ud, banker ikke på hver dag — det dukker højst op hver tredje dag."
+        "body": "Få et dagligt overblik via Pushover eller e-mail på det tidspunkt, der passer dig — med det, der er åbent lige nu, plus et vink om det, der står for tur i morgen. E-mail til din kontos adresse er slået til fra den dag, du opretter dig; slå det fra eller tilføj Pushover i Indstillinger. Et forslag, der trækker ud, banker ikke på hver dag — det dukker højst op hver tredje dag."
       },
       "backup": {
         "title": "Sikkerhedskopiering og gendannelse",

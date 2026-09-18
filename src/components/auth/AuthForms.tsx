@@ -62,7 +62,8 @@ export function LoginForm() {
 export function RegisterForm({
   invite,
   bootstrap,
-}: Readonly<{ invite?: string; bootstrap: boolean }>) {
+  emailDigest,
+}: Readonly<{ invite?: string; bootstrap: boolean; emailDigest: boolean }>) {
   const t = useTranslations("auth");
   const [state, action, pending] = useActionState<AuthFormState, FormData>(
     register,
@@ -83,6 +84,9 @@ export function RegisterForm({
       <label className="flex flex-col gap-1 text-sm">
         {t("email")}
         <input name="email" type="email" required className={inputClass} />
+        {emailDigest ? (
+          <span className="text-xs text-muted">{t("digestHint")}</span>
+        ) : null}
       </label>
       <label className="flex flex-col gap-1 text-sm">
         {t("password")}

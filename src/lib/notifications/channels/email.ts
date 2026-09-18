@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import nodemailer, { type Transporter } from "nodemailer";
 import type { NotificationChannel } from "../channel";
-import { emailConfigSchema } from "../channel";
+import { emailConfigSchema, smtpConfigured } from "../channel";
 import { digestLines, digestTranslator, escapeHtml, type DigestT } from "../messages";
 import type { Digest, DigestItem } from "../digest";
 
@@ -29,7 +29,7 @@ function getLogo(): Buffer {
 }
 
 function getTransporter(): Transporter {
-  if (!process.env.SMTP_HOST) {
+  if (!smtpConfigured()) {
     throw new Error("SMTP not configured (SMTP_HOST empty)");
   }
   transporter ??= nodemailer.createTransport({

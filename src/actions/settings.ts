@@ -18,6 +18,7 @@ import { composeDigest } from "@/lib/notifications/digest";
 import { today } from "@/lib/scheduler/clock";
 import {
   SECRET_CONFIG_KEYS,
+  smtpConfigured,
   type ChannelId,
 } from "@/lib/notifications/channel";
 import { THEME_COOKIE, isThemeChoice } from "@/lib/themes";
@@ -179,6 +180,32 @@ export async function upsertNotificationChannel(
       set: { enabled: enabled === "on", config: JSON.stringify(config) },
     })
     .run();
+  revalidate();
+  return { ok: true };
+}
+
+/**
+ * Turn on the email digest to the account address, from the dashboard prompt.
+ *
+ * The full channel form lives in Settings, but someone who has never been
+ * notified is exactly the person least likely to go looking for it — and the
+ * email channel needs no input from them, so asking for a form submission
+ * would be ceremony around an empty config. Existing config is left alone:
+ * this only flips `enabled`, so an address they once set is not discarded.
+ */
+export async function enableEmailDigest(): Promise<SettingsFormState> {
+  const user = await getCurrentUser();
+  if (!user) return { error: "unauthorized" };
+  if (!smtpConfigured()) return { error: "smtpUnavailable" };
+
+  db.insert(notificationChannels)
+    .values({ userId: user.id, channel: "email", enabled: true, config: "{}" })
+    .onConflictDoUpdate({
+      target: [notificationChannels.userId, notificationChannels.channel],
+      set: { enabled: true },
+    })
+    .run();
+  revalidatePath("/[locale]", "page");
   revalidate();
   return { ok: true };
 }
