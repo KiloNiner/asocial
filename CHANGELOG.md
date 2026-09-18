@@ -1,5 +1,19 @@
 # Changelog
 
+## v1.9.0
+
+### Changed
+- The hourly digest log line now accounts for every user it looked at.
+  Since lingering suggestions started sharing one rhythm, a digest that
+  sends nothing is the ordinary outcome on two days in three, and the
+  log could not tell that apart from a digest that was failing to
+  compose. It now reports how many users had nothing to say and how
+  many had already been sent to today, so the counts add up to the
+  number considered.
+- A notification channel stored under a name the app no longer knows is
+  logged instead of passed over in silence. Such a row can never send
+  again, and nothing said so.
+
 ## v1.8.0
 
 ### Added
