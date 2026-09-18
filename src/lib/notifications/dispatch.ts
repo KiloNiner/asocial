@@ -24,11 +24,25 @@ export const channelRegistry: Record<ChannelId, NotificationChannel> = {
   email: emailChannel,
 };
 
+/**
+ * One line in `docker logs` per hourly tick. The counters exist to make a
+ * quiet day distinguishable from a broken one: since the anti-nag rule holds
+ * a lingering task back until its 3rd day, `sent: 0` is the *expected*
+ * outcome most days, so every considered user has to be accounted for
+ * somewhere. `usersConsidered` should equal `quiet` plus the users behind
+ * `sent`/`failed`/`settled`.
+ */
 export type DispatchStats = {
   skipped: boolean;
   sent: number;
   failed: number;
   usersConsidered: number;
+  /** Past their digest hour with nothing to say today. The common case. */
+  quiet: number;
+  /** Channel sends skipped because this local day is already resolved --
+   *  either it went out, or it failed MAX_SEND_ATTEMPTS times (those
+   *  attempts are logged individually as `[digest] send failed`). */
+  settled: number;
 };
 
 function pendingDigestTasks(
@@ -104,7 +118,14 @@ export async function runDigestDispatch(force = false): Promise<DispatchStats> {
       .onConflictDoNothing()
       .run();
     if (claimed.changes === 0) {
-      return { skipped: true, sent: 0, failed: 0, usersConsidered: 0 };
+      return {
+        skipped: true,
+        sent: 0,
+        failed: 0,
+        usersConsidered: 0,
+        quiet: 0,
+        settled: 0,
+      };
     }
   }
 
@@ -113,6 +134,8 @@ export async function runDigestDispatch(force = false): Promise<DispatchStats> {
     sent: 0,
     failed: 0,
     usersConsidered: 0,
+    quiet: 0,
+    settled: 0,
   };
 
   const channelRows = db.select().from(notificationChannels).all();
@@ -147,14 +170,29 @@ export async function runDigestDispatch(force = false): Promise<DispatchStats> {
       pendingDigestTasks(user.id, settings.locale),
       localDate,
     );
-    if (!digest) continue;
+    if (!digest) {
+      stats.quiet++;
+      continue;
+    }
 
     const enabled = channelRows.filter(
       (row) => row.userId === user.id && row.enabled,
     );
     for (const row of enabled) {
       const channel = channelRegistry[row.channel];
-      if (!channel || digestSettled(user.id, row.channel, localDate)) continue;
+      if (!channel) {
+        // A stored channel the registry no longer knows: that row can never
+        // send again, and silence is how it stayed unnoticed.
+        console.error(
+          "[digest] unknown channel:",
+          JSON.stringify({ userId: user.id, channel: row.channel }),
+        );
+        continue;
+      }
+      if (digestSettled(user.id, row.channel, localDate)) {
+        stats.settled++;
+        continue;
+      }
 
       let status: "sent" | "failed" = "sent";
       let error: string | null = null;
