@@ -57,13 +57,22 @@ function pendingDigestTasks(
   }));
 }
 
-function alreadySent(
+// Retries left after a failure, per user/channel/local day. A transient SMTP
+// or Pushover blip deserves another go on the next tick; a permanently
+// misconfigured channel should not reconnect and log hourly until midnight.
+const MAX_SEND_ATTEMPTS = 3;
+
+/**
+ * True when this user/channel/day is done with: it either went out, or it has
+ * failed often enough that retrying is just noise.
+ */
+function digestSettled(
   userId: string,
   channel: string,
   digestDate: string,
 ): boolean {
-  const row = db
-    .select({ id: notificationLog.id })
+  const rows = db
+    .select({ status: notificationLog.status })
     .from(notificationLog)
     .where(
       and(
@@ -71,18 +80,19 @@ function alreadySent(
         eq(notificationLog.channel, channel),
         eq(notificationLog.kind, "digest"),
         eq(notificationLog.digestDate, digestDate),
-        eq(notificationLog.status, "sent"),
       ),
     )
-    .get();
-  return !!row;
+    .all();
+  return (
+    rows.some((row) => row.status === "sent") || rows.length >= MAX_SEND_ATTEMPTS
+  );
 }
 
 /**
- * Hourly dispatch: sends each user's digest on their local digest hour via
- * every enabled channel. Dedupe: one sent digest per user/channel/local day.
- * `force` skips the run-lock and the hour match (manual/test trigger) but
- * never the dedupe log.
+ * Hourly dispatch: sends each user's digest at or after their local digest
+ * hour via every enabled channel. Dedupe: one sent digest per
+ * user/channel/local day, and at most MAX_SEND_ATTEMPTS tries. `force` skips
+ * the run-lock and the hour check (manual/test trigger) but never the log.
  */
 export async function runDigestDispatch(force = false): Promise<DispatchStats> {
   const now = new Date();
@@ -124,7 +134,12 @@ export async function runDigestDispatch(force = false): Promise<DispatchStats> {
         timeZone: settings.timezone,
       }).format(new TZDate(now, settings.timezone)),
     );
-    if (!force && localHour !== settings.digestHour) continue;
+    // `>=`, not `==`: the hourly tick can miss a user's exact digest hour —
+    // the container was restarting, the previous run overran, the host was
+    // asleep. Requiring an exact match dropped that day's digest entirely.
+    // Sending late is the better failure; the per-user/channel/local-day
+    // dedupe below is what keeps it to one.
+    if (!force && localHour < settings.digestHour) continue;
     stats.usersConsidered++;
 
     const localDate = today(settings.timezone);
@@ -139,7 +154,7 @@ export async function runDigestDispatch(force = false): Promise<DispatchStats> {
     );
     for (const row of enabled) {
       const channel = channelRegistry[row.channel];
-      if (!channel || alreadySent(user.id, row.channel, localDate)) continue;
+      if (!channel || digestSettled(user.id, row.channel, localDate)) continue;
 
       let status: "sent" | "failed" = "sent";
       let error: string | null = null;

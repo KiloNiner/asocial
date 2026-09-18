@@ -12,3 +12,12 @@ export function today(timezone: string): LocalDate {
   if (fake && /^\d{4}-\d{2}-\d{2}$/.test(fake)) return fake;
   return format(new TZDate(Date.now(), timezone), "yyyy-MM-dd");
 }
+
+/**
+ * The calendar date an epoch-ms timestamp fell on in the given timezone.
+ * Not FAKE_TODAY-aware: this converts a stored instant, it doesn't ask what
+ * day it is.
+ */
+export function localDateOf(timestamp: number, timezone: string): LocalDate {
+  return format(new TZDate(timestamp, timezone), "yyyy-MM-dd");
+}
