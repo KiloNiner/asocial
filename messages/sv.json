@@ -216,12 +216,13 @@
     "line": "{type} — {name}",
     "lineBirthday": "Det är {name}s födelsedag — {type}",
     "tomorrow": "i morgon",
+    "more": "+{n} fler väntar",
     "openApp": "Öppna asocial",
     "footer": "Du får det här eftersom aviseringar är aktiverade i dina asocial-inställningar."
   },
   "notifications": {
     "title": "Aviseringar",
-    "intro": "En kort daglig sammanfattning vid den tid du valt — bara när något faktiskt är öppet, och förslag som drar ut på tiden bara var tredje dag.",
+    "intro": "En kort sammanfattning vid den tid du valt, bara när något faktiskt är öppet. Förslag som har väntat ett tag kommer tillbaka samlat var tredje dag i stället för ett i taget varje dag.",
     "pushoverTitle": "Pushover",
     "pushoverToken": "API-token",
     "pushoverUserKey": "Användarnyckel",
@@ -336,7 +337,7 @@
       },
       "notifications": {
         "title": "Aviseringar",
-        "body": "Få en daglig sammanfattning via Pushover eller e-post vid den tid som passar dig — med det som är öppet just nu, plus en påminnelse om det som ska ske i morgon. E-post till kontots adress är på från den dag du registrerar dig; stäng av den eller lägg till Pushover i Inställningar. Ett förslag som drar ut på tiden tjatar inte varje dag — det dyker upp igen som mest var tredje dag."
+        "body": "Få en daglig sammanfattning via Pushover eller e-post vid den tid som passar dig — med det som är öppet just nu, plus en påminnelse om det som ska ske i morgon. E-post till kontots adress är på från den dag du registrerar dig; stäng av den eller lägg till Pushover i Inställningar. Förslag som drar ut på tiden tjatar inte varje dag — de kommer tillbaka samlat var tredje dag, och en sammanfattning nämner högst fem åt gången."
       },
       "backup": {
         "title": "Säkerhetskopiering och återställning",

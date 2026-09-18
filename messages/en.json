@@ -216,12 +216,13 @@
     "line": "{type} — {name}",
     "lineBirthday": "It's {name}'s birthday — {type}",
     "tomorrow": "tomorrow",
+    "more": "+{n} more waiting",
     "openApp": "Open asocial",
     "footer": "You're getting this because notifications are enabled in your asocial settings."
   },
   "notifications": {
     "title": "Notifications",
-    "intro": "A short daily digest at your chosen hour — only when something is actually open, and lingering suggestions only every third day.",
+    "intro": "A short digest at your chosen hour, only when something is actually open. Suggestions that have been waiting a while come back together every third day rather than one at a time every day.",
     "pushoverTitle": "Pushover",
     "pushoverToken": "API token",
     "pushoverUserKey": "User key",
@@ -336,7 +337,7 @@
       },
       "notifications": {
         "title": "Notifications",
-        "body": "Get a daily digest by Pushover or email at whatever hour suits you, listing what's open right now plus a heads-up for anything due tomorrow. Email to your account address is on from the day you register; switch it off or add Pushover in Settings. A lingering suggestion won't nag you every day — it resurfaces at most every third day."
+        "body": "Get a daily digest by Pushover or email at whatever hour suits you, listing what's open right now plus a heads-up for anything due tomorrow. Email to your account address is on from the day you register; switch it off or add Pushover in Settings. Lingering suggestions won't nag you every day — they come back together every third day, and one digest names at most five at a time."
       },
       "backup": {
         "title": "Backup & restore",
