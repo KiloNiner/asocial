@@ -16,7 +16,10 @@ import {
 } from "@/lib/notifications/dispatch";
 import { composeDigest } from "@/lib/notifications/digest";
 import { today } from "@/lib/scheduler/clock";
-import type { ChannelId } from "@/lib/notifications/channel";
+import {
+  SECRET_CONFIG_KEYS,
+  type ChannelId,
+} from "@/lib/notifications/channel";
 import { THEME_COOKIE, isThemeChoice } from "@/lib/themes";
 import { redirect } from "@/i18n/navigation";
 
@@ -132,7 +135,32 @@ export async function upsertNotificationChannel(
   if (!user) return { error: "unauthorized" };
   const parsed = channelSchema.safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { error: "invalid" };
-  const { channel, enabled, ...config } = parsed.data;
+  const { channel, enabled, ...submitted } = parsed.data;
+
+  const config: Record<string, string> = Object.fromEntries(
+    Object.entries(submitted).filter(([, value]) => value !== undefined),
+  ) as Record<string, string>;
+
+  // The form never receives saved secrets, so it cannot echo them back on
+  // submit: a blank one means "keep what's stored", not "clear it". Editing
+  // the email address must not wipe the Pushover token.
+  const stored: Record<string, string> = JSON.parse(
+    db
+      .select({ config: notificationChannels.config })
+      .from(notificationChannels)
+      .where(
+        and(
+          eq(notificationChannels.userId, user.id),
+          eq(notificationChannels.channel, channel),
+        ),
+      )
+      .get()?.config ?? "{}",
+  );
+  for (const key of SECRET_CONFIG_KEYS[channel]) {
+    if (config[key]) continue;
+    if (stored[key]) config[key] = stored[key];
+    else delete config[key];
+  }
 
   if (channel === "pushover" && enabled === "on") {
     const check = channelRegistry.pushover.configSchema.safeParse(config);

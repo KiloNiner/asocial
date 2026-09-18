@@ -16,6 +16,18 @@ export interface NotificationChannel {
   ): Promise<void>;
 }
 
+/**
+ * Config keys that must never travel back to the browser.
+ *
+ * `getNotificationChannels()` strips these before the settings page renders,
+ * and `upsertNotificationChannel()` treats a blank one as "leave it alone" —
+ * so a saved secret can be replaced but never read back out.
+ */
+export const SECRET_CONFIG_KEYS: Record<ChannelId, readonly string[]> = {
+  pushover: ["token", "userKey"],
+  email: [],
+};
+
 export const pushoverConfigSchema = z.object({
   token: z.string().min(1),
   userKey: z.string().min(1),
