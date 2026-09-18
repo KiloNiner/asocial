@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isValidBirthday } from "@/lib/validation/birthday";
 import { isSingleEmoji } from "@/lib/validation/emoji";
 import { BACKUP_VERSION } from "./queries";
 
@@ -37,8 +38,22 @@ const friendRowSchema = z
   })
   .refine(
     (row) =>
-      row.birthYear === null || (row.birthMonth !== null && row.birthDay !== null),
-    { message: "birthYear requires birthMonth and birthDay", path: ["birthYear"] },
+      row.birthMonth === null ||
+      row.birthDay === null ||
+      isValidBirthday(row.birthMonth, row.birthDay),
+    {
+      message: "birthMonth/birthDay must be a date that exists",
+      path: ["birthDay"],
+    },
+  )
+  .refine(
+    (row) =>
+      row.birthYear === null ||
+      (row.birthMonth !== null && row.birthDay !== null),
+    {
+      message: "birthYear requires birthMonth and birthDay",
+      path: ["birthYear"],
+    },
   );
 
 const friendCircleRowSchema = z.object({
