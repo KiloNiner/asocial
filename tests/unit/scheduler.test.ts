@@ -7,6 +7,7 @@ import {
 } from "@/lib/scheduler/activity-picker";
 import { ageOn, nextBirthday } from "@/lib/scheduler/birthday";
 import { addDays, daysBetween } from "@/lib/scheduler/dates";
+import { localDateOf } from "@/lib/scheduler/clock";
 import type { Circle } from "@/db/schema";
 
 /** Deterministic rng for reproducible tests. */
@@ -259,5 +260,29 @@ describe("date helpers", () => {
     // Danish DST switch on 2026-03-29
     expect(daysBetween("2026-03-28", "2026-03-30")).toBe(2);
     expect(addDays("2026-03-28", 2)).toBe("2026-03-30");
+  });
+
+  it("localDateOf reads a timestamp in the user's timezone, not UTC", () => {
+    // 22:30 UTC is already the next day in Auckland and still the previous
+    // evening in Los Angeles — the case that made a friend added late in the
+    // evening get a base date one day off.
+    const ts = Date.parse("2026-09-17T22:30:00Z");
+    expect(localDateOf(ts, "UTC")).toBe("2026-09-17");
+    expect(localDateOf(ts, "Pacific/Auckland")).toBe("2026-09-18");
+    expect(localDateOf(ts, "Europe/Copenhagen")).toBe("2026-09-18");
+    expect(localDateOf(ts, "America/Los_Angeles")).toBe("2026-09-17");
+  });
+
+  it("localDateOf ignores FAKE_TODAY (it converts, it doesn't ask)", () => {
+    const previous = process.env.FAKE_TODAY;
+    process.env.FAKE_TODAY = "2030-01-01";
+    try {
+      expect(localDateOf(Date.parse("2026-09-17T12:00:00Z"), "UTC")).toBe(
+        "2026-09-17",
+      );
+    } finally {
+      if (previous === undefined) delete process.env.FAKE_TODAY;
+      else process.env.FAKE_TODAY = previous;
+    }
   });
 });

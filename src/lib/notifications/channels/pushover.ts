@@ -6,6 +6,11 @@ import type { DigestItem } from "../digest";
 const API_URL =
   process.env.PUSHOVER_API_URL ?? "https://api.pushover.net/1/messages.json";
 
+// The digest loop awaits each send in turn, so one unresponsive connection
+// would stall every later user's notification — and the next hourly tick
+// behind it. Fail this one send instead.
+const SEND_TIMEOUT_MS = 15_000;
+
 // Pushover renders a restricted HTML subset (b/i/u/a/font) when html: 1 is
 // set; https://pushover.net/api#html. Bolding the suggestion and dimming
 // the "tomorrow" tag gives it the same visual hierarchy as the digest email
@@ -43,6 +48,7 @@ export const pushoverChannel: NotificationChannel = {
         url: process.env.APP_URL ?? "",
         url_title: t("digest.openApp"),
       }),
+      signal: AbortSignal.timeout(SEND_TIMEOUT_MS),
     });
     if (!response.ok) {
       throw new Error(`pushover ${response.status}: ${await response.text()}`);
