@@ -1,5 +1,87 @@
 # Changelog
 
+## v1.7.0
+
+### Security
+- Closed two per-user isolation gaps. Archiving a friend cancelled that
+  friend's pending tasks by friend id alone, so a caller passing another
+  account's friend id left the friend untouched but still marked that
+  account's tasks "skipped". Contact type ids arriving from forms were
+  never checked for ownership either, letting another account's custom
+  type surface its label and emoji in your journal. Both paths are now
+  scoped to the caller.
+- Invite and password-reset redemption are now atomic. Hashing a
+  password is an `await` on the libuv threadpool, so two concurrent
+  registrations could both pass the "is this invite still open?" check
+  before either marked it used -- turning a single-use invite into two
+  accounts. The same window made the first-user check racy, so two
+  simultaneous first registrations both became administrators. Hashing
+  now happens before the transaction opens, and every read the write
+  depends on happens inside it.
+- Login is rate-limited: 20 attempts per 15 minutes per IP and 10 per
+  15 minutes per account. A successful login clears the counters, so
+  mistyping a password a few times and then getting it right never
+  locks anyone out. Counters are per-process and a restart forgives
+  outstanding attempts.
+- Failed logins no longer write the submitted email address to the log
+  verbatim -- it is masked the same way the caller's IP already was.
+- The `x-cron-token` check compares SHA-256 digests with
+  `timingSafeEqual` instead of raw strings with `!==`, leaking neither
+  the token's content nor its length.
+- A saved Pushover API token and user key are never sent back to the
+  browser -- not in the settings HTML, and not in the React payload
+  behind it. The fields are write-only: leave one blank to keep what is
+  stored, or type a new value to replace it.
+- Responses now carry `frame-ancestors 'none'`, `X-Frame-Options`,
+  `X-Content-Type-Options`, `Referrer-Policy: same-origin` and a
+  `Permissions-Policy` denying camera, microphone and geolocation.
+  Deliberately no HSTS -- it would pin the upgrade and lock an
+  http-only self-host out of its own app, so it belongs on whatever
+  terminates TLS.
+
+### Added
+- The daily scheduler now prunes expired data: sessions past their
+  expiry, spent or expired invite and reset tokens after 30 days, and
+  job-run and notification-log rows after 90 days. Nothing you created
+  is touched -- friends, circles, journal entries and tasks are never
+  pruned. A failure here is logged and doesn't cost anyone the day's
+  scheduling.
+- Backups now carry your settings alongside circles, friends and the
+  journal. Older backups that predate the settings block still restore;
+  they leave the account's current settings alone.
+
+### Fixed
+- A scheduler run that crashed used to block the rest of the day. The
+  lock row is written before the work starts, so a run that threw left
+  a row that the 04:30 cron and the boot catch-up both read as "already
+  done". A claimed but unfinished run is now reclaimable -- a crashed
+  attempt is not an attempt.
+- The digest is no longer lost for the whole day when its hour is
+  missed. A container asleep or restarting at the digest hour now sends
+  at the next hourly tick instead of waiting until tomorrow.
+- Pushover and SMTP sends time out after 15 seconds instead of hanging
+  the job, and a failed send is retried up to three times.
+- Birthday tasks whose day is well past are now retired. Left pending
+  they kept nudging through the digest indefinitely and, because the
+  dedupe key includes the due date, next year's sweep created a second
+  task -- an ignored birthday stacked one row per year. They resolve as
+  "skipped", the same guilt-free state the skip button produces.
+- Impossible birthdays (31 February, 31 April) are rejected on the
+  friend form and on backup restore, instead of being stored and then
+  silently shifting to the next month.
+- The base date for a friend's first contact suggestion is read in your
+  timezone rather than UTC, which put it a day early for anyone who
+  added a friend late in their local evening.
+- Backup restore fails cleanly on a malformed or truncated file rather
+  than throwing.
+- Danish, Swedish and Klingon phrasings: missing relative-clause commas
+  and several literal-from-English constructions, terms that disagreed
+  with the rest of the UI (the dashboard called by a name the nav does
+  not use; "Notiser" in one Swedish heading and "Aviseringar"
+  everywhere else), and two Klingon plural messages that crashed the
+  ICU parser outright -- `'` is the escape character when it precedes a
+  brace, so `{# juppu'}}` swallowed its own closing braces.
+
 ## v1.6.0
 
 ### Added
