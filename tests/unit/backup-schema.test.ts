@@ -10,7 +10,13 @@ function validBackup(): Backup {
     version: BACKUP_VERSION,
     exportedAt: new Date().toISOString(),
     circles: [
-      { id: "c1", name: "Close", color: "#0d9488", intervalDays: 14, sortOrder: 1 },
+      {
+        id: "c1",
+        name: "Close",
+        color: "#0d9488",
+        intervalDays: 14,
+        sortOrder: 1,
+      },
     ],
     friends: [
       {
@@ -107,6 +113,23 @@ describe("backupSchema", () => {
     const badYear = validBackup();
     badYear.friends[0].birthYear = 1899;
     expect(rejects(badYear)).toBe(true);
+  });
+
+  it("rejects a friend born on a date that does not exist", () => {
+    const feb30 = validBackup();
+    feb30.friends[0].birthMonth = 2;
+    feb30.friends[0].birthDay = 30;
+    expect(rejects(feb30)).toBe(true);
+
+    const apr31 = validBackup();
+    apr31.friends[0].birthMonth = 4;
+    apr31.friends[0].birthDay = 31;
+    expect(rejects(apr31)).toBe(true);
+
+    const feb29 = validBackup();
+    feb29.friends[0].birthMonth = 2;
+    feb29.friends[0].birthDay = 29;
+    expect(rejects(feb29)).toBe(false);
   });
 
   it("rejects a friend with only one half of a birthday set", () => {

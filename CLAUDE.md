@@ -59,11 +59,15 @@ All writes are `"use server"` actions in `src/actions/*` (zod-validated). Three 
 ### Background jobs run in-process (`src/instrumentation.ts` → `src/lib/cron.ts`)
 `instrumentation.ts` runs DB migrations at boot, then Croner registers the daily scheduler (04:30) and hourly digest dispatch (`:05`) inside the `next start` process — so they fire without web traffic. A **boot catch-up** runs the scheduler immediately if it hasn't run today (survives a container that was off at 04:30). Migrations are applied here, not by a separate entrypoint.
 
+The `job_runs` row is written *before* the work, so "claimed" and "completed" are different states: a row with `finished_at` NULL means that attempt crashed. `schedulerRanToday()` therefore checks `finished_at IS NOT NULL`, and `claimRun()` retakes an unfinished row rather than backing off — otherwise one crash cost the whole day's scheduling. This assumes a single process (the scheduler is synchronous better-sqlite3); it's a restart guard, not a cross-process mutex.
+
 ### Web hardening (`next.config.ts`)
 `headers()` applies `frame-ancestors 'none'` + `X-Frame-Options: DENY`, `nosniff`, `Referrer-Policy: same-origin` (friend ids are in the path) and a `Permissions-Policy` deny-list to every route; `poweredByHeader` is off. It is deliberately **not** a full CSP — Next's inline bootstrap needs nonces, and a half-applied `script-src` is worse than none. No HSTS either: `headers()` is evaluated at *build* time and baked into `routes-manifest.json`, so it can't branch on the deployment's `APP_URL` the way `secureCookies()` does, and sending it unconditionally would lock an http-only self-host out. That one belongs on whatever terminates TLS.
 
 ### Notifications (`src/lib/notifications/`)
 A channel registry (`dispatch.ts`) with pluggable `NotificationChannel` implementations (`channels/pushover.ts`, `channels/email.ts`). `digest.ts` is pure (unit-tested): it decides what goes in a digest, including the **anti-nag rule** — a lingering task re-appears only every 3rd day. Dedupe is per user/channel/local-day via `notification_log`. Cron-driven sends translate outside request scope via `digestTranslator` in `messages.ts`.
+
+The hourly tick sends at or after the user's `digestHour` (`>=`, not `==`) so a missed hour delays the digest instead of dropping it; `digestSettled()` is what keeps that to one send, and caps a failing channel at `MAX_SEND_ATTEMPTS` tries per local day. Every outbound send needs a timeout — the loop awaits each channel in turn, so one hung connection stalls everyone behind it.
 
 Channel config secrets are **write-only**: `SECRET_CONFIG_KEYS` in `channel.ts` names them, `getNotificationChannels()` strips them before the settings page renders, and `upsertNotificationChannel()` treats a blank one as "keep what's stored". A new channel with a credential must add its keys there — the redaction lives in the query, not the component, so it can't be forgotten at a new call site.
 
