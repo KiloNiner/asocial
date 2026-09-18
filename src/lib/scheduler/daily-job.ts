@@ -8,6 +8,11 @@ import {
   userSettings,
   users,
 } from "@/db/schema";
+import {
+  emptyPruneStats,
+  pruneExpiredData,
+  type PruneStats,
+} from "@/lib/db/retention";
 import { today, type LocalDate } from "./clock";
 import { daysBetween } from "./dates";
 import { nextBirthday } from "./birthday";
@@ -20,6 +25,7 @@ export type SchedulerStats = {
   skipped: boolean;
   contactTasksCreated: number;
   birthdayTasksCreated: number;
+  pruned: PruneStats;
 };
 
 function serverToday(): LocalDate {
@@ -52,13 +58,19 @@ function finishRun(job: string, runDate: string, detail: unknown): void {
 export function runDailyScheduler(force = false): SchedulerStats {
   const runDate = serverToday();
   if (!claimRun("scheduler", runDate) && !force) {
-    return { skipped: true, contactTasksCreated: 0, birthdayTasksCreated: 0 };
+    return {
+      skipped: true,
+      contactTasksCreated: 0,
+      birthdayTasksCreated: 0,
+      pruned: emptyPruneStats(),
+    };
   }
 
   const stats: SchedulerStats = {
     skipped: false,
     contactTasksCreated: 0,
     birthdayTasksCreated: 0,
+    pruned: emptyPruneStats(),
   };
 
   const allUsers = db
@@ -112,6 +124,14 @@ export function runDailyScheduler(force = false): SchedulerStats {
         }
       }
     }
+  }
+
+  // Housekeeping last: it is maintenance, not scheduling, and a failure here
+  // must not cost anyone their nudges for the day.
+  try {
+    stats.pruned = pruneExpiredData();
+  } catch (err) {
+    console.error("[scheduler] prune failed:", err);
   }
 
   finishRun("scheduler", runDate, stats);

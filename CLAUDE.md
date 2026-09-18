@@ -46,7 +46,7 @@ Everything else is CRUD around it. It is deliberately split into **pure function
 - `jitter.ts` — ±jitter% randomization; injectable `rng` for deterministic tests.
 - `activity-picker.ts` — weighted random contact-type pick. Weight resolution is the **same precedence**: friend pref → governing circle pref → user pref → type default. Never repeats the last-used type; `congratulate` (weight 0) is birthday-only and never enters rotation.
 - `schedule.ts` — `scheduleNextTask()`: composes the above and inserts a task; clamps so it never spawns already-overdue tasks (lands 1–3 days out instead).
-- `daily-job.ts` — the sweep: contact catch-up for friends missing a pending task + birthday tasks within 7 days. Idempotent via the `job_runs` UNIQUE(job, run_date) lock.
+- `daily-job.ts` — the sweep: contact catch-up for friends missing a pending task + birthday tasks within 7 days. Idempotent via the `job_runs` UNIQUE(job, run_date) lock. It also runs the retention prune (below) at the end, in a try/catch — housekeeping must never cost anyone their nudges.
 
 Calendar-level dates are **strings** (`YYYY-MM-DD`) manipulated by `dates.ts` (`addDays`/`daysBetween`) to stay DST-immune. Timestamps are epoch-ms integers.
 
@@ -64,6 +64,9 @@ A channel registry (`dispatch.ts`) with pluggable `NotificationChannel` implemen
 
 ### Backup & restore (`src/lib/db/queries.ts`, `src/actions/backup.ts`)
 `exportUserData`/`importUserData` cover circles, friends, journal, custom contact types and activity preferences — **not** `tasks` (regenerated) or account/session/notification data. Restore is replace-all in a transaction; ids are never trusted from the file — every circle/friend/contact type/interaction gets a fresh server-generated id on every restore (even a plain self-restore), with every reference remapped accordingly, so a client can't choose low-entropy primary keys or collide with another account's rows. `sweepUserContactTasks` (also used by the daily job) then regenerates pending suggestions.
+
+### Retention (`src/lib/db/retention.ts`)
+Five tables only ever grew: `sessions` (expired ones were dropped only if that same token showed up again), `invites`, `password_resets`, `job_runs`, `notification_log`. `pruneExpiredData()` deletes expired sessions immediately, spent/expired auth tokens after 30 days, and finished job runs + notification log rows after 90 days. Unfinished `job_runs` rows are never pruned — an old one means a crash nobody noticed. These are cross-user maintenance deletes, so they are the one documented exception to the "user data goes through `queries.ts`" rule. Anything new that logs per-run or per-request rows should get a policy here.
 
 ### Operational logging
 Console logging follows a `[tag] message: JSON` convention (`[boot]`, `[cron]`, `[cron:manual]`, `[digest]`, `[auth]`, `[health]`) so `docker logs` shows scheduled-job completions (with stats + duration), notification send failures, and login attempts without querying the DB. Login logging masks the client IP (last IPv4 octet zeroed / IPv6 collapsed to `/64`) before it's ever logged — keep that when touching `src/actions/auth.ts`.
