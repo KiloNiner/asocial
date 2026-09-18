@@ -26,7 +26,7 @@
     "back": "Tilbage",
     "days": "dage",
     "everyNDays": "ca. hver {n}. dag",
-    "optional": "valgfri",
+    "optional": "valgfrit",
     "none": "ingen",
     "actions": "Handlinger",
     "errors": {
@@ -101,7 +101,7 @@
     "title": "Venner",
     "add": "Tilføj ven",
     "search": "Søg…",
-    "empty": "Ingen venner endnu. Tilføj de mennesker, du vil holde fast i.",
+    "empty": "Ingen venner endnu. Tilføj de mennesker, du gerne vil holde kontakten med.",
     "emptySearch": "Ingen matcher din søgning.",
     "lastContact": "Seneste kontakt",
     "nextContact": "Næste kontakt",
@@ -111,11 +111,11 @@
     "editTitle": "Redigér ven",
     "name": "Navn",
     "notes": "Noter",
-    "notesHint": "Alt der er værd at huske — partner, børn, emner der skal undgås…",
+    "notesHint": "Alt, der er værd at huske — partner, børn, emner, der skal undgås…",
     "circlesLabel": "Cirkler",
     "noCircles": "Ingen cirkler endnu — opret nogle først for automatiske rytmer.",
     "intervalOverride": "Personligt kontaktinterval",
-    "intervalOverrideHint": "Tilsidesætter cirkelrytmer for denne ven. Lad stå tomt for at følge cirklerne.",
+    "intervalOverrideHint": "Tilsidesætter cirkelrytmer for denne ven. Lad feltet stå tomt for at følge cirklerne.",
     "intervalSource": {
       "override": "ca. hver {n}. dag (personligt)",
       "circle": "ca. hver {n}. dag (fra {circle})",
@@ -130,7 +130,7 @@
     "archive": "Arkivér",
     "unarchive": "Gendan",
     "archived": "Arkiveret",
-    "archiveConfirm": "Arkivér denne ven? Ventende forslag annulleres. Journalen beholdes, og du kan altid gendanne.",
+    "archiveConfirm": "Arkivér denne ven? Ventende forslag annulleres. Journalen beholdes, og du kan altid gendanne vennen.",
     "showArchived": "Vis arkiverede",
     "typePrefs": "Aktivitetspræferencer",
     "typePrefsHint": "Hvordan forslag vægtes for denne ven. Tom = nedarvet, 0 = foreslå aldrig."
@@ -177,7 +177,7 @@
       "open": "vindue åbent siden {date}",
       "stillOpen": "stadig åbent (siden {date})"
     },
-    "done": "Gjort",
+    "done": "Klaret",
     "snooze": "Udsæt",
     "snoozeDays": "+{n} dage",
     "skip": "Spring over denne gang",
@@ -211,7 +211,7 @@
     "today": "I dag"
   },
   "digest": {
-    "title": "{n, plural, one {# ven} other {# venner}} at række ud til",
+    "title": "{n, plural, one {# ven} other {# venner}}, du bør række ud til",
     "line": "{type} — {name}",
     "lineBirthday": "Det er {name}s fødselsdag — {type}",
     "tomorrow": "i morgen",
@@ -220,7 +220,7 @@
   },
   "notifications": {
     "title": "Notifikationer",
-    "intro": "Et kort dagligt sammendrag på dit valgte tidspunkt — kun når noget faktisk er åbent, og hængende forslag kun hver tredje dag.",
+    "intro": "Et kort dagligt sammendrag på dit valgte tidspunkt — kun når noget faktisk er åbent, og forslag, der trækker ud, kun hver tredje dag.",
     "pushoverTitle": "Pushover",
     "pushoverToken": "API-token",
     "pushoverUserKey": "Brugernøgle",
@@ -251,13 +251,13 @@
     "windowDays": "Handlingsvindue (dage)",
     "jitterPct": "Tilfældighed (± %)",
     "defaultInterval": "Standardinterval (dage)",
-    "digestHour": "Sammendragstime (0–23)"
+    "digestHour": "Tidspunkt for sammendrag (0–23)"
   },
   "appearance": {
     "title": "Udseende",
     "auto": "Auto (følg systemet)",
-    "light": "Lyse",
-    "dark": "Mørke",
+    "light": "Lyse temaer",
+    "dark": "Mørke temaer",
     "themes": {
       "paper": "Papir",
       "latte": "Latte",
@@ -268,7 +268,7 @@
     }
   },
   "backup": {
-    "title": "Sikkerhedskopi & gendan",
+    "title": "Sikkerhedskopiering og gendannelse",
     "intro": "Hent alle dine cirkler, venner, journal og indstillinger som en JSON-fil, eller gendan fra en.",
     "export": "Hent sikkerhedskopi",
     "importTitle": "Gendan fra en sikkerhedskopi",
@@ -297,23 +297,23 @@
     "manual": {
       "circles": {
         "title": "Cirkler",
-        "body": "Venner hører til én eller flere cirkler, hver med sin egen kontaktrytme — f.eks. “Nære venner” hver 2. uge. En ven i flere cirkler følger den hyppigste. Du kan også sætte et personligt interval for én ven, der tilsidesætter deres cirkler helt, og venner uden nogen cirkel falder tilbage på dit standardinterval i Indstillinger."
+        "body": "Venner hører til én eller flere cirkler, hver med sin egen kontaktrytme — f.eks. “Nære venner” hver 2. uge. En ven i flere cirkler følger den hyppigste. Du kan også sætte et personligt interval for én ven, der tilsidesætter vennens cirkler helt, og venner uden nogen cirkel falder tilbage på dit standardinterval i Indstillinger."
       },
       "scheduling": {
         "title": "Randomiseret planlægning",
-        "body": "Hver foreslået kontaktdato får en tilfældig udsvingsprocent (±25% som standard), så rytmen aldrig føles mekanisk. Falder en ven mellem stolene, hober asocial ikke en pukkel op — den foreslår blot roligt at tage kontakt om nogle dage."
+        "body": "Hver foreslået kontaktdato får en tilfældig forskydning (±25% som standard), så rytmen aldrig føles mekanisk. Falder en ven mellem stolene, opbygger asocial ikke en pukkel — den foreslår blot roligt at tage kontakt om nogle dage."
       },
       "activities": {
         "title": "Hvad I skal lave",
-        "body": "Ud over hvornår I skal mødes, foreslår asocial hvad I skal lave — en besked, et opkald, kaffe, en aktivitet, et besøg eller at være vært — valgt tilfældigt med vægte du kan justere pr. ven, pr. cirkel eller globalt. Den foreslår aldrig samme type to gange i træk."
+        "body": "Ud over hvornår I skal mødes, foreslår asocial, hvad I skal lave — en besked, et opkald, kaffe, en aktivitet, et besøg eller at være vært — valgt tilfældigt med vægte, du kan justere pr. ven, pr. cirkel eller globalt. Den foreslår aldrig samme type to gange i træk."
       },
       "views": {
         "title": "To visninger",
-        "body": "Kalenderen giver et klassisk månedsoverblik. Oversigtens tavle viser én række pr. ven med et farvet bånd, der markerer dagene til at handle — dæmpet før det åbner, levende mens det er åbent, og en blød ravgul, hvis det trækker ud."
+        "body": "Kalenderen giver et klassisk månedsoverblik. Tavlen i Overblik viser én række pr. ven med et farvet bånd, der markerer dagene til at handle — dæmpet før det åbner, levende mens det er åbent, og en blød ravgul, hvis det trækker ud."
       },
       "guiltFree": {
-        "title": "Skyldfri by design",
-        "body": "Der er aldrig røde “forsinket”-advarsler. Et forslag, der trækker ud, bliver blot blødt ravgult. Udskyd så mange gange du vil — springer du ét over, starter rytmen bare forfra i dag, uden skyldfølelse og uden en stime at bryde."
+        "title": "Skyldfri fra bunden",
+        "body": "Der er aldrig røde “forsinket”-advarsler. Et forslag, der trækker ud, bliver blot blødt ravgult. Udskyd så mange gange, du vil — springer du ét over, starter rytmen bare forfra i dag, uden skyldfølelse og uden en stime at bryde."
       },
       "journal": {
         "title": "Journal",
@@ -325,11 +325,11 @@
       },
       "notifications": {
         "title": "Notifikationer",
-        "body": "Få et dagligt overblik via Pushover eller e-mail på det tidspunkt, der passer dig — med det, der er åbent lige nu, plus et vink om det, der falder i morgen. Et forslag, der trækker ud, banker ikke på hver dag — det dukker højst op hver tredje dag."
+        "body": "Få et dagligt overblik via Pushover eller e-mail på det tidspunkt, der passer dig — med det, der er åbent lige nu, plus et vink om det, der står for tur i morgen. Et forslag, der trækker ud, banker ikke på hver dag — det dukker højst op hver tredje dag."
       },
       "backup": {
-        "title": "Backup og gendannelse",
-        "body": "Eksportér dine venner, cirkler, journal og brugerdefinerede aktivitetstyper som en JSON-fil når som helst fra Indstillinger — praktisk ved flytning til en ny installation eller blot som personlig kopi. En gendannelse erstatter alt i din konto med filens indhold, så en backup passer lige ind i enhver konto — din egen eller en helt ny. Hver gendannelse genopbygger dine venner og cirkler med friske interne id'er, så eventuelle bogmærkede links til en bestemt ven eller cirkel holder op med at virke bagefter; find dem bare frem igen i appen."
+        "title": "Sikkerhedskopiering og gendannelse",
+        "body": "Eksportér dine venner, cirkler, journal og brugerdefinerede aktivitetstyper som en JSON-fil når som helst fra Indstillinger — praktisk ved flytning til en ny installation eller blot som personlig kopi. En gendannelse erstatter alt på din konto med filens indhold, så en backup passer lige ind i enhver konto — din egen eller en helt ny. Hver gendannelse genopbygger dine venner og cirkler med friske interne id'er, så eventuelle bogmærkede links til en bestemt ven eller cirkel holder op med at virke bagefter; find dem bare frem igen i appen."
       },
       "themes": {
         "title": "Temaer",
@@ -337,7 +337,7 @@
       },
       "locales": {
         "title": "Sprog",
-        "body": "asocial taler engelsk, dansk, svensk og klingonsk (tlhIngan Hol) — skift dit når som helst i Indstillinger."
+        "body": "asocial taler engelsk, dansk, svensk og klingonsk (tlhIngan Hol) — skift sprog når som helst i Indstillinger."
       },
       "accounts": {
         "title": "Konti",

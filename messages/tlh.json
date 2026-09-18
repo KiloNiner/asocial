@@ -89,7 +89,7 @@
     "name": "pong",
     "color": "rItlh",
     "interval": "rap poH",
-    "members": "{n, plural, other {# juppu'}}",
+    "members": "{n, plural, other {# juppu''}}",
     "createTitle": "ghomHom chu'",
     "empty": "pagh ghomHom. juppu'lI' poH DanobmeH wa' yIchen.",
     "deleteConfirm": "ghomHom yIteq'a'? juppu'chaj pollu'; latlh ghomHom ghap rap poH DuHmey Sang.",
@@ -103,8 +103,8 @@
     "search": "yInej…",
     "empty": "pagh jup. nuvpu' DapolmeH neHbogh yIchel.",
     "emptySearch": "vay' rapHa' nejwI'.",
-    "lastContact": "rIntaHghach Qorwagh",
-    "nextContact": "veb Qorwagh",
+    "lastContact": "Qorwagh Qav",
+    "nextContact": "Qorwagh veb",
     "never": "not",
     "logContact": "Qorwagh yIqon",
     "newTitle": "jup yIchel",
@@ -122,7 +122,7 @@
       "default": "{n} jaj Hoch (motlh)"
     },
     "autoschedule": "reH Qorwagh yIwIv",
-    "birthday": "boghlu'pu'bogh jaj",
+    "birthday": "qoS",
     "birthdayDay": "jaj",
     "birthdayMonth": "jar",
     "birthdayYear": "DIS ({optional})",
@@ -148,11 +148,11 @@
   "contactTypes": {
     "message": "QIn yIngeH",
     "call": "yIrI'",
-    "coffee": "qa'vIn tlhIvatlh",
+    "coffee": "qa'vIn yItlhutlh",
     "activity": "vay' yItlhej",
     "visit_them": "yISuch",
-    "host_visit": "yInob'egh juH",
-    "congratulate": "quvmoHmeH bommey yISo'"
+    "host_visit": "juHlIjDaq tIqem",
+    "congratulate": "qoSlIj DatIvjaj yIja'"
   },
   "settings": {
     "title": "DuHmey",
@@ -171,7 +171,7 @@
   },
   "tasks": {
     "suggestion": "{type}",
-    "birthdaySuggestion": "boghlu'pu'bogh jaj! {type}",
+    "birthdaySuggestion": "qoS! {type}",
     "state": {
       "upcoming": "poSmoH {date}",
       "open": "{date} vo' poSmoHtaH",
@@ -180,7 +180,7 @@
     "done": "vItaHpu'",
     "snooze": "yIloS",
     "snoozeDays": "+{n} jajmey",
-    "skip": "DaHjaj yIySay'Ha'",
+    "skip": "DaHjaj yIbuSHa'",
     "reschedule": "yIvIH",
     "newDate": "jaj chu'",
     "cancel": "yIqIl",
@@ -188,7 +188,7 @@
     "when": "ghorgh",
     "noteLabel": "nuq boja'?",
     "logAndDone": "qon 'ej rIn",
-    "planTitle": "veb Qorwagh yInab",
+    "planTitle": "Qorwagh veb yInab",
     "plan": "yInab",
     "surpriseMe": "choqIHmoH",
     "nextUp": "veb",
@@ -205,15 +205,15 @@
     "legendUpcoming": "SumtaH",
     "legendOpen": "poSmoH — DaH yIvang",
     "legendStillOpen": "poSmoHtaHtaH",
-    "legendBirthday": "boghlu'pu'bogh jaj"
+    "legendBirthday": "qoS"
   },
   "calendar": {
     "today": "DaHjaj"
   },
   "digest": {
-    "title": "{n, plural, other {# juppu'}} DaghomnIS",
+    "title": "{n, plural, other {# juppu''}} DaghomnIS",
     "line": "{type} — {name}",
-    "lineBirthday": "{name} boghlu'pu'bogh jaj 'oH — {type}",
+    "lineBirthday": "{name} qoS 'oH — {type}",
     "tomorrow": "wa'leS",
     "openApp": "asocial yIpoSmoH",
     "footer": "ghummey chu'lu'mo' De'vam boHev."
