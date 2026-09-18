@@ -45,6 +45,7 @@
     "registerTitle": "De'lIj yISaw",
     "bootstrapHint": "lo'wI' wa'DIch SoH — che'wI' Datlhap.",
     "inviteNeededHint": "rI'meH nav poQ De'; che'wI' voHDaq yISuq.",
+    "digestHint": "naDev ngeHlu' DaHjaj boS. DuHmeyDaq yIchoH pagh yIchu'Ha'.",
     "noAccountYet": "wa'DIch yISuchpu'? che'wI' De' yISaw",
     "haveAccount": "De' Daghaj'a'? yI'el",
     "resetTitle": "mu' pegh chu' yIchu'",
@@ -234,11 +235,21 @@
     "logTitle": "ngeHlu'pu'bogh",
     "logEmpty": "pagh ngeHlu'.",
     "saved": "Sawta'.",
+    "prompt": {
+      "title": "SoHvaD jatlhlaHbe' asocial",
+      "bodyEmail": "loS wIvmey, 'ach SoHvaD ja'meH He tu'lu'be'. latlh vay' poQbe' QIn Sum boS.",
+      "bodyOther": "loS wIvmey, 'ach SoHvaD ja'meH He tu'lu'be'. DuHmeyDaq He yIwIv.",
+      "enableEmail": "QIn Sum boS HIngeH",
+      "openSettings": "ghum DuHmey",
+      "dismiss": "DaH ghobe'",
+      "failed": "Qapbe' — DuHmey yInuD."
+    },
     "errors": {
       "invalid": "nav yIS; yInID pab.",
       "invalidTimezone": "poH Sep Sovbe'lu'.",
       "pushoverConfigMissing": "API nItlh lo'wI' ngaQHa'moHwI' je poQ Pushover.",
-      "channelNotConfigured": "wa'DIch tlhoy' DuHmey yISaw."
+      "channelNotConfigured": "wa'DIch tlhoy' DuHmey yISaw.",
+      "smtpUnavailable": "QIn Sum ngeHlaHbe' De'wI'vam."
     }
   },
   "profile": {

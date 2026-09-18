@@ -45,6 +45,7 @@
     "registerTitle": "Create your account",
     "bootstrapHint": "You are the first user — this account will be the administrator.",
     "inviteNeededHint": "Registration requires an invite link from an administrator.",
+    "digestHint": "Your daily digest goes here. Change it or turn it off in Settings.",
     "noAccountYet": "First time here? Create the admin account",
     "haveAccount": "Already have an account? Log in",
     "resetTitle": "Set a new password",
@@ -234,11 +235,21 @@
     "logTitle": "Recent sends",
     "logEmpty": "Nothing sent yet.",
     "saved": "Saved.",
+    "prompt": {
+      "title": "asocial can't reach you",
+      "bodyEmail": "There are suggestions waiting, but no way to tell you about them. A short daily digest to your account email needs nothing else from you.",
+      "bodyOther": "There are suggestions waiting, but no way to tell you about them. Pick a channel in Settings.",
+      "enableEmail": "Email me the digest",
+      "openSettings": "Notification settings",
+      "dismiss": "Not now",
+      "failed": "That didn't work — try Settings."
+    },
     "errors": {
       "invalid": "Please check the form and try again.",
       "invalidTimezone": "Unknown timezone.",
       "pushoverConfigMissing": "Pushover needs both API token and user key.",
-      "channelNotConfigured": "Save the channel configuration first."
+      "channelNotConfigured": "Save the channel configuration first.",
+      "smtpUnavailable": "This server has no mail set up."
     }
   },
   "profile": {
@@ -325,7 +336,7 @@
       },
       "notifications": {
         "title": "Notifications",
-        "body": "Get a daily digest by Pushover or email at whatever hour suits you, listing what's open right now plus a heads-up for anything due tomorrow. A lingering suggestion won't nag you every day — it resurfaces at most every third day."
+        "body": "Get a daily digest by Pushover or email at whatever hour suits you, listing what's open right now plus a heads-up for anything due tomorrow. Email to your account address is on from the day you register; switch it off or add Pushover in Settings. A lingering suggestion won't nag you every day — it resurfaces at most every third day."
       },
       "backup": {
         "title": "Backup & restore",

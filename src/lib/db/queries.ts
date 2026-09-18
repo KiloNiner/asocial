@@ -729,6 +729,27 @@ export function getNotificationChannels(
   );
 }
 
+/**
+ * Whether anything at all would reach this user.
+ *
+ * Accounts created before the email digest was defaulted on have no channel
+ * row whatsoever, which is indistinguishable in the UI from having one turned
+ * off — both mean silence. The dashboard prompt keys off this rather than off
+ * row existence for that reason.
+ */
+export function hasEnabledNotificationChannel(userId: string): boolean {
+  return !!db
+    .select({ channel: notificationChannels.channel })
+    .from(notificationChannels)
+    .where(
+      and(
+        eq(notificationChannels.userId, userId),
+        eq(notificationChannels.enabled, true),
+      ),
+    )
+    .get();
+}
+
 export function listNotificationLog(
   userId: string,
   limit = 10,

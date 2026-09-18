@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { isBootstrap } from "@/actions/auth";
 import { RegisterForm } from "@/components/auth/AuthForms";
 import { Link } from "@/i18n/navigation";
+import { smtpConfigured } from "@/lib/notifications/channel";
 
 export default async function RegisterPage({
   searchParams,
@@ -13,7 +14,11 @@ export default async function RegisterPage({
   return (
     <div className="flex flex-col gap-4">
       <h1 className="text-xl font-semibold">{t("registerTitle")}</h1>
-      <RegisterForm invite={invite} bootstrap={bootstrap} />
+      <RegisterForm
+        invite={invite}
+        bootstrap={bootstrap}
+        emailDigest={smtpConfigured()}
+      />
       <Link href="/login" className="text-sm text-accent hover:underline">
         {t("haveAccount")}
       </Link>
