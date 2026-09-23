@@ -1,5 +1,16 @@
 # Changelog
 
+## v1.9.3
+
+### Security
+- Editing a friend now checks that the friend belongs to you before
+  rewriting its circle links. Previously a signed-in user who knew the id
+  of another user's friend could clear that friend's circle memberships,
+  or add it to their own circles, changing how often the owner was nudged
+  about them. The friend's own details were never affected and no data
+  was exposed, and friend ids are random UUIDs only ever shown to their
+  owner.
+
 ## v1.9.2
 
 ### Security

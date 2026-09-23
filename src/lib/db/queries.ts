@@ -393,6 +393,14 @@ function setFriendCirclesTx(
   friendId: string,
   circleIds: string[],
 ): void {
+  // The friend must belong to the caller too — otherwise the delete below
+  // would wipe another user's circle links for a known friend id.
+  const friend = tx
+    .select({ id: friends.id })
+    .from(friends)
+    .where(and(eq(friends.id, friendId), eq(friends.userId, userId)))
+    .get();
+  if (!friend) return;
   const owned = tx
     .select({ id: circles.id })
     .from(circles)
