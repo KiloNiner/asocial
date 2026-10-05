@@ -3,6 +3,7 @@ import { getSettings, requireUserOrRedirect } from "@/lib/auth/current-user";
 import * as q from "@/lib/db/queries";
 import { today } from "@/lib/scheduler/clock";
 import { ageOn } from "@/lib/scheduler/birthday";
+import { addDays } from "@/lib/scheduler/dates";
 import { Link } from "@/i18n/navigation";
 import { buttonGhostClass } from "@/components/ui/classes";
 import { CalendarFeedCard } from "@/components/calendar/CalendarFeedCard";
@@ -16,6 +17,15 @@ type Chip = {
   emoji: string;
   color: string | null;
   kind: "task" | "birthday" | "overdue";
+  /** Hover/accessible label, e.g. "Anna · 6–12 Oct". */
+  title?: string;
+};
+
+/** A quiet marker on the remaining days of a task's action window. */
+type Mark = {
+  key: string;
+  color: string | null;
+  title: string;
 };
 
 function pad(n: number): string {
@@ -61,30 +71,47 @@ export default async function CalendarPage({
     chipsByDate.set(date, list);
   };
 
+  const marksByDate = new Map<string, Mark[]>();
+  const rangeFmt = new Intl.DateTimeFormat(locale, {
+    day: "numeric",
+    month: "short",
+  });
+  const toDate = (date: string) => {
+    const [y, m, d] = date.split("-").map(Number);
+    return new Date(y, m - 1, d);
+  };
+
   const pending = q.listPendingTasksWithNames(user.id);
   for (const { task, friendName, color } of pending) {
     if (task.kind === "birthday") continue; // rendered from friend data below
-    if (task.dueDate < currentDate) {
-      // Overdue tasks live on today, not bleeding across past days.
-      if (currentDate.slice(0, 7) === month) {
-        push(currentDate, {
-          key: task.id,
-          friendId: task.friendId,
-          label: friendName,
-          emoji: "⏳",
-          color,
-          kind: "overdue",
-        });
-      }
-    } else if (task.dueDate.slice(0, 7) === month) {
-      push(task.dueDate, {
+    // Overdue tasks live on today, not bleeding across past days.
+    const overdue = task.dueDate < currentDate;
+    const chipDate = overdue ? currentDate : task.dueDate;
+    const lastDay = addDays(task.dueDate, Math.max(task.windowDays, 1) - 1);
+    // The window as still ahead of you: from the chip's day to its last day.
+    const title =
+      lastDay >= chipDate
+        ? `${friendName} · ${rangeFmt.formatRange(toDate(chipDate), toDate(lastDay))}`
+        : friendName;
+    if (chipDate.slice(0, 7) === month) {
+      push(chipDate, {
         key: task.id,
         friendId: task.friendId,
         label: friendName,
-        emoji: "•",
+        emoji: overdue ? "⏳" : "•",
         color,
-        kind: "task",
+        kind: overdue ? "overdue" : "task",
+        title,
       });
+    }
+    // The rest of the window gets a nameless tick rather than a repeat chip,
+    // so a week-long window doesn't fill seven cells with the same name.
+    for (let date = addDays(chipDate, 1); date <= lastDay; date = addDays(date, 1)) {
+      if (date.slice(0, 7) > month) break;
+      if (date.slice(0, 7) !== month) continue;
+      const marks = marksByDate.get(date) ?? [];
+      marks.push({ key: task.id, color, title });
+      marksByDate.set(date, marks);
     }
   }
 
@@ -176,6 +203,7 @@ export default async function CalendarPage({
                         <Link
                           key={chip.key}
                           href={`/friends/${chip.friendId}`}
+                          title={chip.title}
                           className={`truncate rounded px-1 py-0.5 text-[11px] leading-tight hover:opacity-80 ${
                             chip.kind === "overdue"
                               ? "bg-warn-soft text-warn"
@@ -195,6 +223,26 @@ export default async function CalendarPage({
                         </Link>
                       ))}
                     </div>
+                    {marksByDate.has(cell.date!) ? (
+                      <div className="mt-1 flex flex-wrap gap-0.5 px-1">
+                        {marksByDate.get(cell.date!)!.map((mark) => (
+                          <span
+                            key={mark.key}
+                            role="img"
+                            title={mark.title}
+                            aria-label={mark.title}
+                            className={`h-1.5 w-3 rounded-full opacity-60 ${
+                              mark.color ? "" : "bg-dot"
+                            }`}
+                            style={
+                              mark.color
+                                ? { backgroundColor: mark.color }
+                                : undefined
+                            }
+                          />
+                        ))}
+                      </div>
+                    ) : null}
                   </>
                 ) : null}
               </div>
