@@ -15,10 +15,6 @@
   stays visible on the calendar page. "Make a new link" replaces it and
   "Turn off" removes it, and either stops existing subscriptions. Adds a
   `calendar_feeds` table, which is created automatically at boot.
-- The in-app calendar now shows each suggestion's whole action window.
-  The named chip stays on the start day and shows the window's dates on
-  hover. Each remaining day of the window gets a small unlabelled tick in
-  the friend's circle colour, which also shows the dates on hover.
 
 ## v1.9.3
 
