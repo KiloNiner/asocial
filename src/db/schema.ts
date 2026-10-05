@@ -83,6 +83,18 @@ export const passwordResets = sqliteTable("password_resets", {
   usedAt: integer("used_at"),
 });
 
+// One row per user who has turned the calendar subscription on. The token is
+// stored raw (unlike invites/resets) so the feed URL can be shown again; it
+// only grants read access to that user's .ics feed, and rotating it is the
+// revocation path.
+export const calendarFeeds = sqliteTable("calendar_feeds", {
+  userId: text("user_id")
+    .primaryKey()
+    .references(() => users.id, { onDelete: "cascade" }),
+  token: text("token").notNull().unique(),
+  createdAt: createdAt(),
+});
+
 export const circles = sqliteTable(
   "circles",
   {

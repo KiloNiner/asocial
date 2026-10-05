@@ -209,7 +209,21 @@
     "legendBirthday": "qoS"
   },
   "calendar": {
-    "today": "DaHjaj"
+    "today": "DaHjaj",
+    "feed": {
+      "title": "jaj chovnatlh De'wI' laH lo'",
+      "intro": "Google, Apple, Outlook jaj chovnatlh ghap .ics rar laj vay' DaqDaq qeSmey qoSmey je yIchel. poHmey puS ret choHmey 'ang jaj chovnatlh.",
+      "enable": "jaj chovnatlh rar yIchenmoH",
+      "urlLabel": "jaj chovnatlh rar",
+      "copy": "rar yIlIH",
+      "copied": "lIHlu'pu'",
+      "privateNote": "rarvam ghaj vay' 'e' lu'legh qeSmey juppu' qoSmey je. yIpegh; ghoSlu'chugh, chu' yIchenmoH.",
+      "openApp": "jaj chovnatlh De'wI'Daq yIpoSmoH",
+      "regenerate": "rar chu' yIchenmoH",
+      "regenerateConfirm": "DaH rar lo'bogh jaj chovnatlh, choHmey Hevbe'. rar chu' DachenmoH'a'?",
+      "disable": "yIchu'Ha'",
+      "disableConfirm": "rarvam lo'bogh jaj chovnatlh, choHmey Hevbe'. rar Dachu'Ha''a'?"
+    }
   },
   "digest": {
     "title": "{n, plural, other {# juppu''}} DaghomnIS",

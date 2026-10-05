@@ -209,7 +209,21 @@
     "legendBirthday": "födelsedag"
   },
   "calendar": {
-    "today": "I dag"
+    "today": "I dag",
+    "feed": {
+      "title": "Prenumerera i din kalenderapp",
+      "intro": "Lägg in dina förslag och födelsedagar i Google Kalender, Apple Kalender, Outlook eller något annat som kan prenumerera på en .ics-länk. Din kalenderapp söker efter ändringar i sin egen takt, så uppdateringar kan dröja några timmar.",
+      "enable": "Skapa kalenderlänk",
+      "urlLabel": "Länk för kalenderprenumeration",
+      "copy": "Kopiera länk",
+      "copied": "Kopierad",
+      "privateNote": "Alla med den här länken kan se dina förslag och dina vänners födelsedagar. Håll den för dig själv; om den kommer ut, skapa en ny.",
+      "openApp": "Öppna i kalenderapp",
+      "regenerate": "Skapa en ny länk",
+      "regenerateConfirm": "Kalendrar som prenumererar på den nuvarande länken slutar uppdateras. Skapa en ny länk?",
+      "disable": "Stäng av",
+      "disableConfirm": "Kalendrar som prenumererar på den här länken slutar uppdateras. Stänga av länken?"
+    }
   },
   "digest": {
     "title": "{n, plural, one {# vän} other {# vänner}} du bör höra av dig till",

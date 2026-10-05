@@ -697,6 +697,48 @@ export function listPendingTasksWithNames(
   }));
 }
 
+export type CalendarFeedTask = {
+  id: string;
+  friendId: string;
+  friendName: string;
+  dueDate: string;
+  windowDays: number;
+  type: Pick<ContactType, "id" | "name" | "emoji">;
+};
+
+/**
+ * Pending contact tasks with what the .ics feed needs to describe them.
+ * Birthday tasks are left out: the feed carries birthdays as yearly events
+ * built from friend data, like the calendar view does.
+ */
+export function listCalendarFeedTasks(userId: string): CalendarFeedTask[] {
+  return db
+    .select({
+      id: tasks.id,
+      friendId: tasks.friendId,
+      friendName: friends.name,
+      dueDate: tasks.dueDate,
+      windowDays: tasks.windowDays,
+      type: {
+        id: contactTypes.id,
+        name: contactTypes.name,
+        emoji: contactTypes.emoji,
+      },
+    })
+    .from(tasks)
+    .innerJoin(friends, eq(tasks.friendId, friends.id))
+    .innerJoin(contactTypes, eq(tasks.suggestedTypeId, contactTypes.id))
+    .where(
+      and(
+        eq(tasks.userId, userId),
+        eq(tasks.status, "pending"),
+        eq(tasks.kind, "contact"),
+      ),
+    )
+    .orderBy(asc(tasks.dueDate))
+    .all();
+}
+
 // ---------- notifications (settings UI) ----------
 
 export type ChannelView = {
