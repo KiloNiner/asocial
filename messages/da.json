@@ -209,7 +209,21 @@
     "legendBirthday": "fødselsdag"
   },
   "calendar": {
-    "today": "I dag"
+    "today": "I dag",
+    "feed": {
+      "title": "Abonnér i din kalender-app",
+      "intro": "Få dine forslag og fødselsdage ind i Google Kalender, Apple Kalender, Outlook eller alt andet, der kan abonnere på et .ics-link. Din kalender-app tjekker for ændringer i sit eget tempo, så opdateringer kan tage et par timer om at dukke op.",
+      "enable": "Opret kalenderlink",
+      "urlLabel": "Link til kalenderabonnement",
+      "copy": "Kopiér link",
+      "copied": "Kopieret",
+      "privateNote": "Alle med dette link kan se dine forslag og dine venners fødselsdage. Hold det for dig selv; slipper det ud, så lav et nyt.",
+      "openApp": "Åbn i kalender-app",
+      "regenerate": "Lav et nyt link",
+      "regenerateConfirm": "Kalendere, der abonnerer på det nuværende link, holder op med at blive opdateret. Lav et nyt link?",
+      "disable": "Slå fra",
+      "disableConfirm": "Kalendere, der abonnerer på dette link, holder op med at blive opdateret. Slå linket fra?"
+    }
   },
   "digest": {
     "title": "{n, plural, one {# ven} other {# venner}}, du bør række ud til",

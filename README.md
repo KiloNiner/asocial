@@ -26,6 +26,10 @@ like you're acting off a script.
 - **Two views** — a classic Monday-first month calendar, and an
   action-window board: one row per friend, a color-coded band showing the
   days in which to act, sorted by urgency.
+- **Calendar subscription** — a private `.ics` link (turned on from the
+  calendar page) puts suggestions and yearly birthdays into Google, Apple,
+  Outlook or any other calendar app. The link can be replaced or turned off
+  at any time; replacing it stops every old subscription.
 - **Guilt-free by design** — no red overdue states, ever. Lingering
   suggestions turn a soft amber ("still open"), snoozing is unlimited, and
   skipping just restarts the rhythm.
@@ -98,7 +102,7 @@ dispatch). Publishing requires two repo secrets: `DOCKERHUB_USERNAME` and a
 | Variable | Purpose |
 |---|---|
 | `DATABASE_PATH` | SQLite file path (default `./dev.db`, container: `/data/asocial.db`) |
-| `APP_URL` | Public URL; enables Secure cookies and links in notifications |
+| `APP_URL` | Public URL; enables Secure cookies, links in notifications and the calendar subscription link |
 | `CRON_SECRET` | Guards the manual job trigger `POST /api/cron/run` |
 | `TZ` | Server timezone for the nightly scheduler run |
 | `SMTP_HOST/PORT/SECURE/USER/PASS/FROM` | Email digest delivery (leave `SMTP_HOST` empty to disable) |

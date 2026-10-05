@@ -5,6 +5,9 @@ import { today } from "@/lib/scheduler/clock";
 import { ageOn } from "@/lib/scheduler/birthday";
 import { Link } from "@/i18n/navigation";
 import { buttonGhostClass } from "@/components/ui/classes";
+import { CalendarFeedCard } from "@/components/calendar/CalendarFeedCard";
+import { getCalendarFeedToken } from "@/lib/auth/calendar-feed";
+import { appUrl } from "@/lib/app-url";
 
 type Chip = {
   key: string;
@@ -118,6 +121,11 @@ export default async function CalendarPage({
   ];
   while (cells.length % 7 !== 0) cells.push({ date: null, day: null });
 
+  const feedToken = getCalendarFeedToken(user.id);
+  const feedUrl = feedToken
+    ? `${appUrl()}/api/calendar/${feedToken}/asocial.ics`
+    : null;
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-3">
@@ -194,6 +202,8 @@ export default async function CalendarPage({
           </div>
         </div>
       </div>
+
+      <CalendarFeedCard url={feedUrl} />
     </div>
   );
 }

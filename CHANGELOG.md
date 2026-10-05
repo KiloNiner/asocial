@@ -1,5 +1,21 @@
 # Changelog
 
+## v1.10.0
+
+### Added
+- Calendar subscription. The calendar page has a card that creates a
+  private `.ics` link for Google Calendar, Apple Calendar, Outlook or any
+  other app that subscribes to calendar feeds. The feed holds pending
+  suggestions as all-day events spanning their action window, and each
+  friend's birthday as a yearly event (Feb 29 lands on Feb 28 in common
+  years). A suggestion whose window has already opened starts on today,
+  so lingering ones stay in view instead of sliding into the past. Events
+  are marked free, so they don't block availability. The link is
+  served at `/api/calendar/<token>/asocial.ics`, needs no session, and
+  stays visible on the calendar page. "Make a new link" replaces it and
+  "Turn off" removes it, and either stops existing subscriptions. Adds a
+  `calendar_feeds` table, which is created automatically at boot.
+
 ## v1.9.3
 
 ### Security

@@ -209,7 +209,21 @@
     "legendBirthday": "birthday"
   },
   "calendar": {
-    "today": "Today"
+    "today": "Today",
+    "feed": {
+      "title": "Subscribe in your calendar app",
+      "intro": "Add your suggestions and birthdays to Google Calendar, Apple Calendar, Outlook or anything else that can subscribe to an .ics link. Your calendar app checks for changes on its own schedule, so updates can take a few hours to show up.",
+      "enable": "Create calendar link",
+      "urlLabel": "Calendar subscription link",
+      "copy": "Copy link",
+      "copied": "Copied",
+      "privateNote": "Anyone with this link can see your suggestions and friends' birthdays. Keep it to yourself; if it gets out, make a new one.",
+      "openApp": "Open in calendar app",
+      "regenerate": "Make a new link",
+      "regenerateConfirm": "Calendars subscribed to the current link will stop updating. Make a new link?",
+      "disable": "Turn off",
+      "disableConfirm": "Calendars subscribed to this link will stop updating. Turn the link off?"
+    }
   },
   "digest": {
     "title": "{n, plural, one {# friend} other {# friends}} to reach out to",
