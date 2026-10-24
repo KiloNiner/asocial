@@ -15,6 +15,26 @@ export async function register() {
     }),
   );
 
+  const { oidcConfig, oidcPartiallyConfigured, passwordLoginEnabled } =
+    await import("./lib/auth/oidc/config");
+  const sso = oidcConfig();
+  if (sso) {
+    console.log(
+      "[boot] sso enabled:",
+      JSON.stringify({
+        issuer: sso.issuer,
+        redirectUri: sso.redirectUri,
+        autoRegister: sso.autoRegister,
+        adminGroup: sso.adminGroup,
+        passwordLogin: passwordLoginEnabled(),
+      }),
+    );
+  } else if (oidcPartiallyConfigured()) {
+    console.warn(
+      "[boot] sso disabled: set both OIDC_ISSUER and OIDC_CLIENT_ID to enable it",
+    );
+  }
+
   const { runMigrations } = await import("./db/migrate");
   runMigrations();
   console.log("[boot] migrations applied");

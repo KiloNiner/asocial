@@ -83,6 +83,26 @@ export const passwordResets = sqliteTable("password_resets", {
   usedAt: integer("used_at"),
 });
 
+// Links a local user to an account at an OpenID Connect provider. The pair
+// (issuer, subject) is the identity — email addresses can change or be
+// reassigned at the provider, the subject cannot.
+export const oidcIdentities = sqliteTable(
+  "oidc_identities",
+  {
+    id: id(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    issuer: text("issuer").notNull(),
+    subject: text("subject").notNull(),
+    createdAt: createdAt(),
+  },
+  (t) => [
+    uniqueIndex("oidc_identities_subject_uq").on(t.issuer, t.subject),
+    index("oidc_identities_user_idx").on(t.userId),
+  ],
+);
+
 // One row per user who has turned the calendar subscription on. The token is
 // stored raw (unlike invites/resets) so the feed URL can be shown again; it
 // only grants read access to that user's .ics feed, and rotating it is the
