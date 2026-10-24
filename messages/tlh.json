@@ -58,8 +58,16 @@
       "emailTaken": "QIn Sum lo'lu'ta' De' tu'lu'.",
       "inviteInvalid": "rI'meH nav ram, lo'lu'ta' ghap chov.",
       "resetInvalid": "chu' nav ram, lo'lu'ta' ghap chov.",
-      "tooManyAttempts": "qaStaHvIS nID law'. tup puS yIloS, yInID pab."
-    }
+      "tooManyAttempts": "qaStaHvIS nID law'. tup puS yIloS, yInID pab.",
+      "ssoUnavailable": "SSO vIngHa'. tup puS yInID.",
+      "ssoExpired": "ghaH 'el law' ghItlh. chaq latlh QorwI' Daq patlh. yInID.",
+      "ssoFailed": "SSO Qapla'be'. yInID.",
+      "ssoNoEmail": "'el nav Daq 'ay' ghItlh nav Qoch 'ej De' poQ.",
+      "ssoEmailUnverified": "'el nav Daq ghItlh chaw'be'.",
+      "ssoNoAccount": "Sutlh Dochvam ghaH ngu'be'. che'wI' yIyu' rI'meH nav.",
+      "passwordLoginDisabled": "mu' Sum yI'el vIghajbe'. SSO yIlo'."
+    },
+    "sso": "{provider} yIlo'"
   },
   "admin": {
     "title": "che'wI'",

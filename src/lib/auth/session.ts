@@ -9,7 +9,7 @@ export const SESSION_COOKIE = "asocial_session";
 const SESSION_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 const RENEWAL_THRESHOLD_MS = 15 * 24 * 60 * 60 * 1000; // renew when <15 days left
 
-function secureCookies(): boolean {
+export function secureCookies(): boolean {
   return (process.env.APP_URL ?? "").startsWith("https://");
 }
 

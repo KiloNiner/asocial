@@ -58,8 +58,16 @@
       "emailTaken": "An account with this email already exists.",
       "inviteInvalid": "This invite link is invalid, used or expired.",
       "resetInvalid": "This reset link is invalid, used or expired.",
-      "tooManyAttempts": "Too many attempts. Please wait a few minutes and try again."
-    }
+      "tooManyAttempts": "Too many attempts. Please wait a few minutes and try again.",
+      "ssoUnavailable": "Single sign-on isn't available right now. Please try again later.",
+      "ssoExpired": "That sign-in took too long or was started in another browser. Please try again.",
+      "ssoFailed": "Single sign-on failed. Please try again.",
+      "ssoNoEmail": "Your sign-in provider didn't share an email address, which this app needs.",
+      "ssoEmailUnverified": "Your sign-in provider hasn't verified your email address yet.",
+      "ssoNoAccount": "There's no account for you here yet. Ask an administrator for an invite.",
+      "passwordLoginDisabled": "Password login is turned off. Use single sign-on instead."
+    },
+    "sso": "Continue with {provider}"
   },
   "admin": {
     "title": "Admin",

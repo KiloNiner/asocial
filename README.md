@@ -107,9 +107,37 @@ dispatch). Publishing requires two repo secrets: `DOCKERHUB_USERNAME` and a
 | `TZ` | Server timezone for the nightly scheduler run |
 | `SMTP_HOST/PORT/SECURE/USER/PASS/FROM` | Email digest delivery (leave `SMTP_HOST` empty to disable) |
 | `SMTP_TLS_REJECT_UNAUTHORIZED` | Set to `false` to accept a self-signed cert (e.g. a local Proton Mail Bridge or Mailhog container) while keeping STARTTLS encryption. Default: verify certs. |
+| `OIDC_ISSUER`, `OIDC_CLIENT_ID` | Enable single sign-on (see below). Both are required |
+| `OIDC_CLIENT_SECRET` | Client secret; leave empty for a public client (PKCE only) |
+| `OIDC_PROVIDER_NAME` | Login button label (default `SSO`) |
+| `OIDC_SCOPES` | Requested scopes (default `openid email profile`) |
+| `OIDC_AUTO_REGISTER` | `true` creates an account on first SSO sign-in (default `false`) |
+| `OIDC_TRUST_UNVERIFIED_EMAIL` | `true` accepts emails the provider hasn't verified (default `false`) |
+| `PASSWORD_LOGIN` | `false` hides password login and registration; ignored unless SSO is configured |
 | `FAKE_TODAY` | Test-only: freeze the scheduler's notion of today (`YYYY-MM-DD`) |
 
 Pushover credentials are per-user, entered in Settings — not env vars.
+
+### Single sign-on (OpenID Connect)
+
+Any OIDC provider works (Pocket ID, Authentik, Keycloak, Authelia, Zitadel,
+Google, …). Create an OIDC client at the provider with the redirect URI
+`<APP_URL>/api/auth/oidc/callback`, then set `OIDC_ISSUER` (the provider's base
+URL; endpoints come from its discovery document), `OIDC_CLIENT_ID` and,
+unless the client is public, `OIDC_CLIENT_SECRET`. `APP_URL` must be the
+address users reach the app on. The login page then shows a
+"Continue with …" button. Authorization code flow with PKCE, state and nonce.
+
+- A provider identity is stored as `(issuer, subject)`. The first sign-in
+  links it to the existing account with the same email, but only when the
+  provider reports the email as verified (override with
+  `OIDC_TRUST_UNVERIFIED_EMAIL`, only if you trust the provider).
+- With no matching account, sign-in is refused unless `OIDC_AUTO_REGISTER=true`
+  — then the provider is the gatekeeper and accounts are created on demand.
+  On an empty instance the first SSO sign-in becomes the admin, as with
+  registration.
+- `PASSWORD_LOGIN=false` makes the instance SSO-only. SSO accounts have no
+  password; an admin reset link can still set one.
 
 ## How scheduling works
 
