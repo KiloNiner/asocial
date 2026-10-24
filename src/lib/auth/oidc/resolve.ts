@@ -10,10 +10,14 @@ import { UNUSABLE_PASSWORD_HASH } from "@/lib/auth/password";
 import { smtpConfigured } from "@/lib/notifications/channel";
 import type { OidcConfig } from "./config";
 import type { OidcIdentity } from "./client";
-import { decideSignIn, type DenyReason } from "./decide";
+import { decideRole, decideSignIn, type DenyReason } from "./decide";
 
 export type SignInOutcome =
-  | { userId: string; how: "existing" | "linked" | "created" }
+  | {
+      userId: string;
+      how: "existing" | "linked" | "created";
+      roleChange?: "admin" | "user";
+    }
   | { error: DenyReason };
 
 /**
@@ -54,11 +58,36 @@ export function resolveSignIn(
       trustUnverifiedEmail: cfg.trustUnverifiedEmail,
     });
 
+    const inAdminGroup =
+      cfg.adminGroup && identity.groups
+        ? identity.groups.includes(cfg.adminGroup)
+        : null;
+
+    /** Applies the group → role mapping to an account that already exists. */
+    const syncRole = (userId: string) => {
+      const user = tx
+        .select({ role: users.role })
+        .from(users)
+        .where(eq(users.id, userId))
+        .get();
+      if (!user) return undefined;
+      const adminCount =
+        tx.select({ n: count() }).from(users).where(eq(users.role, "admin")).get()?.n ?? 0;
+      const role = decideRole({ currentRole: user.role, inAdminGroup, adminCount });
+      if (!role) return undefined;
+      tx.update(users).set({ role }).where(eq(users.id, userId)).run();
+      return role;
+    };
+
     switch (decision.kind) {
       case "deny":
         return { error: decision.reason };
       case "existing":
-        return { userId: decision.userId, how: "existing" as const };
+        return {
+          userId: decision.userId,
+          how: "existing" as const,
+          roleChange: syncRole(decision.userId),
+        };
       case "link":
         tx.insert(oidcIdentities)
           .values({
@@ -67,7 +96,11 @@ export function resolveSignIn(
             subject: identity.subject,
           })
           .run();
-        return { userId: decision.userId, how: "linked" as const };
+        return {
+          userId: decision.userId,
+          how: "linked" as const,
+          roleChange: syncRole(decision.userId),
+        };
       case "create": {
         // decideSignIn only reaches here with an email.
         const email = identity.email as string;
@@ -77,7 +110,7 @@ export function resolveSignIn(
             email,
             passwordHash: UNUSABLE_PASSWORD_HASH,
             displayName: (identity.name ?? email.split("@")[0]).slice(0, 100),
-            role: decision.admin ? "admin" : "user",
+            role: decision.admin || inAdminGroup ? "admin" : "user",
           })
           .returning({ id: users.id })
           .get();

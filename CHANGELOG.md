@@ -11,6 +11,8 @@
   `<APP_URL>/api/auth/oidc/callback` at the provider. A provider account is
   linked to the local account with the same verified email on first
   sign-in, and recognised by its stable subject afterwards.
+  `OIDC_ADMIN_GROUP` maps a provider group to the admin role, synced at
+  each sign-in (the last admin is never demoted).
   `OIDC_AUTO_REGISTER=true` creates accounts on demand, and
   `PASSWORD_LOGIN=false` turns the instance SSO-only. Adds an
   `oidc_identities` table, created automatically at boot. See the README.

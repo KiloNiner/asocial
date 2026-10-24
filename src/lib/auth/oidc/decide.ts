@@ -46,3 +46,36 @@ export function decideSignIn(input: SignInInput): SignInDecision {
   if (input.autoRegister) return { kind: "create", admin: false };
   return { kind: "deny", reason: "noAccount" };
 }
+
+/**
+ * Normalises a groups claim. Providers send an array of names, or a lone
+ * string; anything else (absent, wrong type) is "unknown", which is not the
+ * same as "member of nothing" and must never demote anyone.
+ */
+export function parseGroups(value: unknown): string[] | null {
+  if (typeof value === "string") return value ? [value] : [];
+  if (!Array.isArray(value)) return null;
+  return value.filter((g): g is string => typeof g === "string");
+}
+
+export type RoleInput = {
+  currentRole: "admin" | "user";
+  /** Whether the provider says the user is in the admin group; null = unknown. */
+  inAdminGroup: boolean | null;
+  adminCount: number;
+};
+
+/**
+ * The provider is the source of truth for admin status of people who sign in
+ * through it. Returns the role to set, or null to leave things alone. The last
+ * remaining admin is never demoted — a misconfigured group name must not be
+ * able to lock everyone out of the admin page.
+ */
+export function decideRole(input: RoleInput): "admin" | "user" | null {
+  if (input.inAdminGroup === null) return null;
+  if (input.inAdminGroup && input.currentRole === "user") return "admin";
+  if (!input.inAdminGroup && input.currentRole === "admin") {
+    return input.adminCount > 1 ? "user" : null;
+  }
+  return null;
+}

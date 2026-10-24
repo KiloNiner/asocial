@@ -25,6 +25,7 @@ export async function register() {
         issuer: sso.issuer,
         redirectUri: sso.redirectUri,
         autoRegister: sso.autoRegister,
+        adminGroup: sso.adminGroup,
         passwordLogin: passwordLoginEnabled(),
       }),
     );

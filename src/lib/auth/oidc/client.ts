@@ -1,6 +1,6 @@
 import * as oidc from "openid-client";
 import { oidcConfig, type OidcConfig } from "./config";
-import type { OidcClaims } from "./decide";
+import { parseGroups, type OidcClaims } from "./decide";
 
 // Every outbound call to the provider needs a ceiling: a hung IdP must fail a
 // login, not hold a request open forever.
@@ -59,6 +59,8 @@ export type OidcIdentity = OidcClaims & {
   issuer: string;
   subject: string;
   name: string | null;
+  /** Null when the provider sent no groups claim at all. */
+  groups: string[] | null;
 };
 
 /** Exchanges the code and returns the verified identity. Throws on any
@@ -86,7 +88,8 @@ export async function completeAuthorization(
   // Some providers leave profile claims out of the ID token and serve them
   // from the userinfo endpoint only.
   let info: oidc.UserInfoResponse | null = null;
-  if (!idToken.email || idToken.email_verified === undefined) {
+  const needGroups = cfg.adminGroup !== null && idToken[cfg.groupsClaim] === undefined;
+  if (!idToken.email || idToken.email_verified === undefined || needGroups) {
     info = await oidc.fetchUserInfo(config, tokens.access_token, idToken.sub);
   }
   const claim = (k: string) => idToken[k] ?? info?.[k];
@@ -98,6 +101,7 @@ export async function completeAuthorization(
     subject: idToken.sub,
     email: typeof email === "string" && email.trim() ? email.trim().toLowerCase() : null,
     emailVerified: claim("email_verified") === true,
+    groups: cfg.adminGroup ? parseGroups(claim(cfg.groupsClaim)) : null,
     name: typeof name === "string" && name.trim() ? name.trim() : null,
   };
 }

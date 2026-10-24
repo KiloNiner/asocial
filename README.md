@@ -112,6 +112,8 @@ dispatch). Publishing requires two repo secrets: `DOCKERHUB_USERNAME` and a
 | `OIDC_PROVIDER_NAME` | Login button label (default `SSO`) |
 | `OIDC_SCOPES` | Requested scopes (default `openid email profile`) |
 | `OIDC_AUTO_REGISTER` | `true` creates an account on first SSO sign-in (default `false`) |
+| `OIDC_ADMIN_GROUP` | Provider group whose members are admins (see below) |
+| `OIDC_GROUPS_CLAIM` | Claim that carries the groups (default `groups`) |
 | `OIDC_TRUST_UNVERIFIED_EMAIL` | `true` accepts emails the provider hasn't verified (default `false`) |
 | `PASSWORD_LOGIN` | `false` hides password login and registration; ignored unless SSO is configured |
 | `FAKE_TODAY` | Test-only: freeze the scheduler's notion of today (`YYYY-MM-DD`) |
@@ -136,6 +138,13 @@ address users reach the app on. The login page then shows a
   — then the provider is the gatekeeper and accounts are created on demand.
   On an empty instance the first SSO sign-in becomes the admin, as with
   registration.
+- `OIDC_ADMIN_GROUP=<group>` makes the provider the source of truth for
+  admin status: at every SSO sign-in, members of that group are promoted
+  (or created as admins) and non-members are demoted. Adds the `groups`
+  scope (Pocket ID needs it) unless you set `OIDC_SCOPES` yourself. If the
+  provider sends no groups claim at all, roles are left alone, and the last
+  remaining admin is never demoted, so a wrong group name can't lock you
+  out. Accounts that only use password login are unaffected.
 - `PASSWORD_LOGIN=false` makes the instance SSO-only. SSO accounts have no
   password; an admin reset link can still set one.
 

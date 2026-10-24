@@ -15,6 +15,10 @@ export type OidcConfig = {
   autoRegister: boolean;
   /** Accept an email the provider has not marked verified. */
   trustUnverifiedEmail: boolean;
+  /** Members of this provider group are admins. Null = roles stay local. */
+  adminGroup: string | null;
+  /** Claim holding the user's groups (an array, or a single string). */
+  groupsClaim: string;
   redirectUri: string;
 };
 
@@ -33,15 +37,25 @@ export function oidcConfig(env: Env = process.env): OidcConfig | null {
   const clientId = env.OIDC_CLIENT_ID?.trim();
   if (!issuer || !clientId) return null;
 
+  const adminGroup = env.OIDC_ADMIN_GROUP?.trim() || null;
+  // Groups only arrive if asked for (Pocket ID gates them behind a `groups`
+  // scope), so asking is implied by naming an admin group — unless the
+  // operator spelled out their own scopes, which are then used as written.
+  const scopes =
+    env.OIDC_SCOPES?.trim() ||
+    (adminGroup ? "openid email profile groups" : "openid email profile");
+
   const base = (env.APP_URL ?? "http://localhost:3000").replace(/\/+$/, "");
   return {
     issuer,
     clientId,
     clientSecret: env.OIDC_CLIENT_SECRET?.trim() || null,
-    scopes: env.OIDC_SCOPES?.trim() || "openid email profile",
+    scopes,
     providerName: env.OIDC_PROVIDER_NAME?.trim() || "SSO",
     autoRegister: flag(env.OIDC_AUTO_REGISTER, false),
     trustUnverifiedEmail: flag(env.OIDC_TRUST_UNVERIFIED_EMAIL, false),
+    adminGroup,
+    groupsClaim: env.OIDC_GROUPS_CLAIM?.trim() || "groups",
     redirectUri: `${base}/api/auth/oidc/callback`,
   };
 }

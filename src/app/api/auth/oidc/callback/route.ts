@@ -60,7 +60,12 @@ export async function GET(request: NextRequest) {
 
   console.log(
     "[auth] sso login succeeded:",
-    JSON.stringify({ userId: outcome.userId, how: outcome.how, ip }),
+    JSON.stringify({
+      userId: outcome.userId,
+      how: outcome.how,
+      ...(outcome.roleChange ? { roleChange: outcome.roleChange } : {}),
+      ip,
+    }),
   );
   await createSession(outcome.userId);
   // The account's own locale wins over the one this browser started in.

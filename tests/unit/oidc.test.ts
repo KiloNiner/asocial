@@ -4,7 +4,12 @@ import {
   oidcPartiallyConfigured,
   passwordLoginEnabled,
 } from "@/lib/auth/oidc/config";
-import { decideSignIn, type SignInInput } from "@/lib/auth/oidc/decide";
+import {
+  decideRole,
+  decideSignIn,
+  parseGroups,
+  type SignInInput,
+} from "@/lib/auth/oidc/decide";
 
 const base = { OIDC_ISSUER: "https://id.example.com", OIDC_CLIENT_ID: "abc" };
 
@@ -107,5 +112,72 @@ describe("decideSignIn", () => {
       kind: "create",
       admin: true,
     });
+  });
+});
+
+describe("admin group config", () => {
+  it("is off by default and asks only for the standard scopes", () => {
+    const cfg = oidcConfig(base);
+    expect(cfg).toMatchObject({
+      adminGroup: null,
+      groupsClaim: "groups",
+      scopes: "openid email profile",
+    });
+  });
+
+  it("naming an admin group also requests the groups scope", () => {
+    expect(oidcConfig({ ...base, OIDC_ADMIN_GROUP: " asocial_admins " })).toMatchObject({
+      adminGroup: "asocial_admins",
+      scopes: "openid email profile groups",
+    });
+  });
+
+  it("uses explicit scopes and claim name as written", () => {
+    expect(
+      oidcConfig({
+        ...base,
+        OIDC_ADMIN_GROUP: "a",
+        OIDC_SCOPES: "openid email",
+        OIDC_GROUPS_CLAIM: "roles",
+      }),
+    ).toMatchObject({ scopes: "openid email", groupsClaim: "roles" });
+  });
+});
+
+describe("parseGroups", () => {
+  it("accepts arrays and lone strings", () => {
+    expect(parseGroups(["a", "b"])).toEqual(["a", "b"]);
+    expect(parseGroups("a")).toEqual(["a"]);
+    expect(parseGroups([])).toEqual([]);
+  });
+
+  it("drops non-strings and treats a missing/odd claim as unknown", () => {
+    expect(parseGroups(["a", 1, null])).toEqual(["a"]);
+    expect(parseGroups(undefined)).toBeNull();
+    expect(parseGroups({ a: 1 })).toBeNull();
+  });
+});
+
+describe("decideRole", () => {
+  it("promotes a user in the admin group", () => {
+    expect(decideRole({ currentRole: "user", inAdminGroup: true, adminCount: 1 })).toBe("admin");
+  });
+
+  it("demotes an admin who left the group when another admin remains", () => {
+    expect(decideRole({ currentRole: "admin", inAdminGroup: false, adminCount: 2 })).toBe("user");
+  });
+
+  it("never demotes the last admin", () => {
+    expect(decideRole({ currentRole: "admin", inAdminGroup: false, adminCount: 1 })).toBeNull();
+  });
+
+  it("changes nothing when the provider sent no groups", () => {
+    expect(decideRole({ currentRole: "admin", inAdminGroup: null, adminCount: 2 })).toBeNull();
+    expect(decideRole({ currentRole: "user", inAdminGroup: null, adminCount: 2 })).toBeNull();
+  });
+
+  it("changes nothing when role already matches", () => {
+    expect(decideRole({ currentRole: "admin", inAdminGroup: true, adminCount: 2 })).toBeNull();
+    expect(decideRole({ currentRole: "user", inAdminGroup: false, adminCount: 2 })).toBeNull();
   });
 });
