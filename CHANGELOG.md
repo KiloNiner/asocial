@@ -1,5 +1,12 @@
 # Changelog
 
+## v1.11.1
+
+### Changed
+- Moved the locale-routing file from Next.js's deprecated `middleware`
+  convention to `proxy`, which removes the deprecation warning printed at
+  build time. Routing behaves the same.
+
 ## v1.11.0
 
 ### Added
