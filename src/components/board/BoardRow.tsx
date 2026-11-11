@@ -59,6 +59,7 @@ export function BoardRow({
   types,
   today,
   columns,
+  grid,
 }: Readonly<{
   friendId: string;
   friendName: string;
@@ -70,24 +71,27 @@ export function BoardRow({
   types: TypeInfo[];
   today: string;
   columns: number;
+  /** grid-template-columns shared with the board header. */
+  grid: string;
 }>) {
   const [expanded, setExpanded] = useState<"contact" | "birthday" | null>(null);
   const contactTask = band?.task ?? beyond?.task ?? null;
 
   return (
-    <div className="border-b border-line">
-      <div
-        className="grid items-center"
-        style={{
-          gridTemplateColumns: `11rem repeat(${columns}, minmax(24px, 1fr))`,
-        }}
-      >
+    <div className="border-b border-line last:border-b-0">
+      <div className="grid items-center" style={{ gridTemplateColumns: grid }}>
         <Link
           href={`/friends/${friendId}`}
-          className="sticky left-0 z-10 flex items-center gap-1.5 truncate bg-panel py-1.5 pr-2 text-sm hover:underline"
+          className="group sticky left-0 z-10 flex items-center gap-2 bg-panel py-2 pr-2 text-sm font-semibold"
           style={{ gridColumn: "1", gridRow: "1" }}
         >
-          <span className="truncate">{friendName}</span>
+          <span
+            className="h-2.5 w-2.5 shrink-0 rounded-full"
+            style={{ backgroundColor: color }}
+          />
+          <span className="truncate underline-offset-2 group-hover:underline">
+            {friendName}
+          </span>
           <span className="text-xs">{emoji}</span>
         </Link>
 
@@ -97,10 +101,12 @@ export function BoardRow({
             onClick={() =>
               setExpanded(expanded === "contact" ? null : "contact")
             }
+            aria-expanded={expanded === "contact"}
+            aria-label={friendName}
             title={friendName}
-            className={`h-5 cursor-pointer ${bandRounding(band)} ${
+            className={`h-6 transition hover:brightness-95 ${bandRounding(band)} ${
               stateBand[band.state]
-            }`}
+            } ${expanded === "contact" ? "ring-2 ring-sel/40 ring-offset-1 ring-offset-panel" : ""}`}
             style={{
               gridColumn: `${band.startCol} / ${band.endCol + 1}`,
               gridRow: "1",
@@ -115,8 +121,9 @@ export function BoardRow({
             onClick={() =>
               setExpanded(expanded === "contact" ? null : "contact")
             }
+            aria-expanded={expanded === "contact"}
             title={friendName}
-            className={`flex items-center gap-1 truncate py-1 text-xs text-muted hover:text-ink ${
+            className={`flex items-center gap-1.5 truncate py-1 text-xs font-medium text-muted hover:text-ink ${
               beyond.future ? "justify-end pr-1" : "justify-start pl-1"
             }`}
             style={{
@@ -140,8 +147,10 @@ export function BoardRow({
             onClick={() =>
               setExpanded(expanded === "birthday" ? null : "birthday")
             }
+            aria-expanded={expanded === "birthday"}
+            aria-label={`🎂 ${friendName}`}
             title={birthday.clampedLabel ?? undefined}
-            className={`text-center text-sm leading-5 ${
+            className={`z-[1] text-center text-sm leading-6 transition hover:scale-125 ${
               birthday.clampedLabel ? "opacity-50" : ""
             }`}
             style={{ gridColumn: `${birthday.col}`, gridRow: "1" }}
@@ -152,7 +161,7 @@ export function BoardRow({
       </div>
 
       {expanded === "contact" && contactTask ? (
-        <div className="max-w-xl py-2">
+        <div className="max-w-xl pb-3 pt-1">
           <TaskCard
             key={contactTask.id}
             task={contactTask}
@@ -162,7 +171,7 @@ export function BoardRow({
         </div>
       ) : null}
       {expanded === "birthday" && birthday ? (
-        <div className="max-w-xl py-2">
+        <div className="max-w-xl pb-3 pt-1">
           <TaskCard
             key={birthday.task.id}
             task={birthday.task}

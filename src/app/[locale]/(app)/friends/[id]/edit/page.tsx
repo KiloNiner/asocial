@@ -3,6 +3,9 @@ import { getTranslations } from "next-intl/server";
 import { setFriendPref } from "@/actions/friends";
 import { FriendForm } from "@/components/friends/FriendForm";
 import { PrefEditor, type PrefRow } from "@/components/prefs/PrefEditor";
+import { Icon } from "@/components/ui/Icon";
+import { h1Class } from "@/components/ui/classes";
+import { Link } from "@/i18n/navigation";
 import { requireUserOrRedirect } from "@/lib/auth/current-user";
 import * as q from "@/lib/db/queries";
 import { governingCircle } from "@/lib/scheduler/interval";
@@ -43,17 +46,24 @@ export default async function EditFriendPage({
   }));
 
   return (
-    <div className="flex max-w-xl flex-col gap-6">
-      <h1 className="text-2xl font-semibold">{t("editTitle")}</h1>
+    <div className="flex flex-col gap-6">
+      <div className="flex flex-col gap-2">
+        <Link
+          href={`/friends/${friend.id}`}
+          className="flex items-center gap-1.5 self-start text-sm font-medium text-muted hover:text-ink"
+        >
+          <Icon name="arrowLeft" size={16} />
+          {friend.name}
+        </Link>
+        <h1 className={h1Class}>{t("editTitle")}</h1>
+      </div>
       <FriendForm
         friend={friend}
         allCircles={q.listCircles(user.id)}
         memberCircleIds={memberCircleIds}
         activityPrefs={
-          <div className="flex flex-col gap-2 border-t border-line pt-4">
-            <h2 className="text-sm font-medium text-muted">
-              {t("typePrefs")}
-            </h2>
+          <div className="flex flex-col gap-2 border-t border-line pt-5">
+            <h2 className="text-sm font-medium">{t("typePrefs")}</h2>
             <PrefEditor
               rows={prefRows}
               action={setFriendPref.bind(null, friend.id)}

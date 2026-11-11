@@ -209,6 +209,11 @@
   },
   "dashboard": {
     "title": "Dashboard",
+    "greeting": "Hi {name}",
+    "allClear": "Nothing is open right now — enjoy the quiet.",
+    "openNow": "Open now",
+    "openingSoon": "Opening soon",
+    "boardTitle": "The weeks ahead",
     "intro": "Your action windows — colored bands show when to reach out to whom. Click a band to act on it.",
     "empty": "Nothing scheduled yet. Add friends and circles, and asocial will suggest when to reach out.",
     "legendUpcoming": "upcoming",
@@ -218,6 +223,9 @@
   },
   "calendar": {
     "today": "Today",
+    "previous": "Previous month",
+    "next": "Next month",
+    "emptyMonth": "Nothing planned this month.",
     "feed": {
       "title": "Subscribe in your calendar app",
       "intro": "Add your suggestions and birthdays to Google Calendar, Apple Calendar, Outlook or anything else that can subscribe to an .ics link. Your calendar app checks for changes on its own schedule, so updates can take a few hours to show up.",

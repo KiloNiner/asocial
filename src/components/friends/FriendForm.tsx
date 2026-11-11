@@ -10,10 +10,15 @@ import {
 import type { Circle, Friend } from "@/db/schema";
 import {
   buttonClass,
+  buttonGhostClass,
+  cardClass,
+  checkboxClass,
   errorClass,
+  hintClass,
   inputClass,
   labelClass,
 } from "@/components/ui/classes";
+import { Link } from "@/i18n/navigation";
 
 export function FriendForm({
   friend,
@@ -35,7 +40,10 @@ export function FriendForm({
   const months = Array.from({ length: 12 }, (_, i) => i + 1);
 
   return (
-    <form action={formAction} className="flex max-w-xl flex-col gap-4">
+    <form
+      action={formAction}
+      className={`${cardClass} flex max-w-2xl flex-col gap-5 sm:p-6`}
+    >
       {state.error ? (
         <p className={errorClass}>{t(`common.errors.${state.error}`)}</p>
       ) : null}
@@ -51,16 +59,16 @@ export function FriendForm({
         />
       </label>
 
-      <fieldset className="flex flex-col gap-1 text-sm">
-        <legend className="mb-1">{t("friends.circlesLabel")}</legend>
+      <fieldset className="flex flex-col gap-1.5 text-sm">
+        <legend className="mb-1.5 font-medium">{t("friends.circlesLabel")}</legend>
         {allCircles.length === 0 ? (
-          <p className="text-xs text-muted">{t("friends.noCircles")}</p>
+          <p className={hintClass}>{t("friends.noCircles")}</p>
         ) : (
           <div className="flex flex-wrap gap-2">
             {allCircles.map((circle) => (
               <label
                 key={circle.id}
-                className="flex cursor-pointer items-center gap-1.5 rounded-full border border-line px-3 py-1.5 text-sm has-checked:border-sel has-checked:bg-faint"
+                className="flex items-center gap-2 rounded-full border border-line bg-panel px-3 py-1.5 text-sm font-medium text-muted transition-colors hover:bg-faint has-checked:border-accent/50 has-checked:bg-accent-soft has-checked:text-accent-ink has-focus-visible:ring-2 has-focus-visible:ring-accent"
               >
                 <input
                   type="checkbox"
@@ -74,7 +82,7 @@ export function FriendForm({
                   style={{ backgroundColor: circle.color }}
                 />
                 {circle.name}
-                <span className="text-xs text-subtle">
+                <span className="text-xs font-normal opacity-70">
                   {circle.intervalDays}d
                 </span>
               </label>
@@ -91,17 +99,15 @@ export function FriendForm({
           min={1}
           max={730}
           defaultValue={friend?.intervalOverrideDays ?? ""}
-          className={inputClass}
+          className={`${inputClass} w-32`}
         />
-        <span className="text-xs text-muted">
-          {t("friends.intervalOverrideHint")}
-        </span>
+        <span className={hintClass}>{t("friends.intervalOverrideHint")}</span>
       </label>
 
-      <fieldset className="flex flex-col gap-1 text-sm">
-        <legend className="mb-1">{t("friends.birthday")}</legend>
-        <div className="flex gap-2">
-          <label className="flex flex-col gap-0.5 text-xs text-muted">
+      <fieldset className="flex flex-col gap-1.5 text-sm">
+        <legend className="mb-1.5 font-medium">{t("friends.birthday")}</legend>
+        <div className="flex flex-wrap gap-2">
+          <label className="flex flex-col gap-1 text-xs text-muted">
             {t("friends.birthdayDay")}
             <input
               name="birthDay"
@@ -112,7 +118,7 @@ export function FriendForm({
               className={`${inputClass} w-20`}
             />
           </label>
-          <label className="flex flex-col gap-0.5 text-xs text-muted">
+          <label className="flex flex-col gap-1 text-xs text-muted">
             {t("friends.birthdayMonth")}
             <select
               name="birthMonth"
@@ -129,7 +135,7 @@ export function FriendForm({
               ))}
             </select>
           </label>
-          <label className="flex flex-col gap-0.5 text-xs text-muted">
+          <label className="flex flex-col gap-1 text-xs text-muted">
             {t("friends.birthdayYear", { optional: t("common.optional") })}
             <input
               name="birthYear"
@@ -157,19 +163,27 @@ export function FriendForm({
 
       {activityPrefs}
 
-      <label className="flex items-center gap-2 text-sm">
+      <label className="flex items-center gap-2 text-sm font-medium">
         <input
           type="checkbox"
           name="autoschedule"
           defaultChecked={friend?.autoschedule ?? true}
-          className="h-4 w-4 accent-accent"
+          className={checkboxClass}
         />
         {t("friends.autoschedule")}
       </label>
 
-      <button type="submit" disabled={pending} className={buttonClass}>
-        {t("common.save")}
-      </button>
+      <div className="flex items-center gap-2 border-t border-line pt-5">
+        <button type="submit" disabled={pending} className={buttonClass}>
+          {t("common.save")}
+        </button>
+        <Link
+          href={friend ? `/friends/${friend.id}` : "/friends"}
+          className={buttonGhostClass}
+        >
+          {t("common.cancel")}
+        </Link>
+      </div>
     </form>
   );
 }

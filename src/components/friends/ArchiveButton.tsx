@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { setFriendArchived } from "@/actions/friends";
+import { Icon } from "@/components/ui/Icon";
 import { buttonGhostClass } from "@/components/ui/classes";
 
 export function ArchiveButton({
@@ -20,6 +21,7 @@ export function ArchiveButton({
       }}
       className={buttonGhostClass}
     >
+      <Icon name={archived ? "refresh" : "archive"} size={15} />
       {archived ? t("unarchive") : t("archive")}
     </button>
   );

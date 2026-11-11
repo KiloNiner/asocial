@@ -6,6 +6,13 @@ import {
   ResetPasswordButton,
   RevokeButton,
 } from "@/components/invites/InviteManager";
+import { Avatar } from "@/components/ui/Avatar";
+import {
+  eyebrowClass,
+  h1Class,
+  h2Class,
+  listClass,
+} from "@/components/ui/classes";
 import { db } from "@/db";
 import { invites, users } from "@/db/schema";
 import { getCurrentUser } from "@/lib/auth/current-user";
@@ -51,22 +58,29 @@ export default async function AdminPage() {
     .all();
 
   return (
-    <div className="flex max-w-2xl flex-col gap-6">
-      <h1 className="text-2xl font-semibold">{t("title")}</h1>
+    <div className="flex max-w-3xl flex-col gap-10">
+      <h1 className={h1Class}>{t("title")}</h1>
 
-      <section className="flex flex-col gap-2">
-        <h2 className="text-lg font-medium">{t("usersTitle")}</h2>
-        <ul className="divide-y divide-line rounded-md border border-line bg-panel">
+      <section className="flex flex-col gap-3">
+        <h2 className={h2Class}>{t("usersTitle")}</h2>
+        <ul className={listClass}>
           {allUsers.map((u) => (
-            <li
-              key={u.id}
-              className="flex items-center justify-between gap-2 px-4 py-2 text-sm"
-            >
-              <div className="flex flex-col">
-                <span>{u.displayName}</span>
-                <span className="text-xs text-muted">
-                  {u.email} · {u.role}
+            <li key={u.id} className="flex items-start gap-3 px-4 py-3 text-sm">
+              <Avatar name={u.displayName} />
+              <div className="flex min-w-0 flex-1 flex-col">
+                <span className="flex items-center gap-2 font-bold">
+                  <span className="truncate">{u.displayName}</span>
+                  <span
+                    className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
+                      u.role === "admin"
+                        ? "bg-accent-soft text-accent-ink"
+                        : "bg-faint text-muted"
+                    }`}
+                  >
+                    {u.role}
+                  </span>
                 </span>
+                <span className="truncate text-muted">{u.email}</span>
               </div>
               <ResetPasswordButton userId={u.id} />
             </li>
@@ -75,51 +89,54 @@ export default async function AdminPage() {
       </section>
 
       <section className="flex flex-col gap-3">
-        <h2 className="text-lg font-medium">{t("invitesTitle")}</h2>
+        <h2 className={h2Class}>{t("invitesTitle")}</h2>
         <InviteCreateForm />
-        <div className="flex flex-col gap-2">
-          <h3 className="text-sm font-medium text-muted">
-            {tInvites("listTitle")}
-          </h3>
-          {rows.length === 0 ? (
-            <p className="text-sm text-muted">{tInvites("empty")}</p>
-          ) : (
-            <ul className="divide-y divide-line rounded-md border border-line bg-panel">
-              {rows.map(({ invite, usedByName }) => {
-                const status = inviteStatus(invite.usedBy, invite.expiresAt);
-                return (
-                  <li
-                    key={invite.id}
-                    className="flex items-center justify-between gap-2 px-4 py-2 text-sm"
-                  >
-                    <div className="flex flex-col">
-                      <span>
-                        {invite.email ?? tInvites("anyEmail")}
-                        {usedByName ? ` → ${usedByName}` : ""}
-                      </span>
-                      <span className="text-xs text-muted">
+        <h3 className={`${eyebrowClass} mt-2`}>{tInvites("listTitle")}</h3>
+        {rows.length === 0 ? (
+          <p className="text-sm text-muted">{tInvites("empty")}</p>
+        ) : (
+          <ul className={listClass}>
+            {rows.map(({ invite, usedByName }) => {
+              const status = inviteStatus(invite.usedBy, invite.expiresAt);
+              return (
+                <li
+                  key={invite.id}
+                  className="flex items-center gap-3 px-4 py-3 text-sm"
+                >
+                  <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+                    <span className="truncate font-semibold">
+                      {invite.email ?? tInvites("anyEmail")}
+                      {usedByName ? ` → ${usedByName}` : ""}
+                    </span>
+                    <span className="flex flex-wrap items-center gap-2 text-xs text-muted">
+                      <span
+                        className={`rounded-full px-2 py-0.5 font-semibold ${
+                          status === "open"
+                            ? "bg-accent-soft text-accent-ink"
+                            : "bg-faint text-muted"
+                        }`}
+                      >
                         {tInvites(`status.${status}`)}
-                        {status === "open"
-                          ? ` · ${tInvites("expires", {
-                              date: format.dateTime(
-                                new Date(invite.expiresAt),
-                                { dateStyle: "medium" },
-                              ),
-                            })}`
-                          : ""}
                       </span>
-                    </div>
-                    <RevokeButton
-                      inviteId={invite.id}
-                      onRevoke={revokeInvite}
-                      label={status === "open" ? undefined : tInvites("remove")}
-                    />
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-        </div>
+                      {status === "open"
+                        ? tInvites("expires", {
+                            date: format.dateTime(new Date(invite.expiresAt), {
+                              dateStyle: "medium",
+                            }),
+                          })
+                        : null}
+                    </span>
+                  </div>
+                  <RevokeButton
+                    inviteId={invite.id}
+                    onRevoke={revokeInvite}
+                    label={status === "open" ? undefined : tInvites("remove")}
+                  />
+                </li>
+              );
+            })}
+          </ul>
+        )}
       </section>
     </div>
   );

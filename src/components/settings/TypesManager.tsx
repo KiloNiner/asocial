@@ -10,11 +10,15 @@ import {
 } from "@/actions/contact-types";
 import type { ContactType } from "@/db/schema";
 import { contactTypeLabel } from "@/lib/contact-type-label";
+import { Icon } from "@/components/ui/Icon";
 import {
   buttonClass,
+  buttonQuietClass,
   cardClass,
   errorClass,
+  eyebrowClass,
   inputClass,
+  listClass,
 } from "@/components/ui/classes";
 
 export function TypesManager({
@@ -31,8 +35,6 @@ export function TypesManager({
 
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-sm text-muted">{t("typesIntro")}</p>
-
       <TypeGroup
         title={t("builtin")}
         types={builtin.filter((type) => type.id !== "congratulate")}
@@ -72,15 +74,19 @@ function TypeGroup({
 
   return (
     <section className="flex flex-col gap-2">
-      <h3 className="text-sm font-medium text-muted">{title}</h3>
-      <ul className="divide-y divide-line rounded-md border border-line bg-panel">
+      <h3 className={eyebrowClass}>{title}</h3>
+      <ul className={listClass}>
         {types.map((type) => (
           <li key={type.id} className="flex items-center gap-3 px-4 py-2">
-            <span className="w-8 text-lg">{type.emoji}</span>
-            <span className={`text-sm ${type.archived ? "text-subtle line-through" : ""}`}>
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-faint text-lg">
+              {type.emoji}
+            </span>
+            <span
+              className={`min-w-0 text-sm font-semibold ${type.archived ? "text-subtle line-through" : ""}`}
+            >
               {labelOf(type)}
               {type.archived ? (
-                <span className="ml-2 text-xs no-underline">
+                <span className="ml-2 inline-block text-xs font-normal">
                   ({t("archivedTag")})
                 </span>
               ) : null}
@@ -97,7 +103,7 @@ function TypeGroup({
                   onClick={() =>
                     void setContactTypeArchived(type.id, !type.archived)
                   }
-                  className="text-xs text-muted hover:underline"
+                  className={`${buttonQuietClass} px-1 py-1 text-xs`}
                 >
                   {type.archived ? t("restore") : t("archive")}
                 </button>
@@ -121,7 +127,7 @@ function WeightField({
   return (
     <form ref={formRef} action={setUserContactPref} className="flex items-center gap-2">
       <input type="hidden" name="contactTypeId" value={typeId} />
-      <label className="flex items-center gap-1.5 text-xs text-muted">
+      <label className="flex items-center gap-2 text-xs font-medium text-muted">
         {t("typeWeight")}
         <input
           name="weight"
@@ -163,23 +169,21 @@ function CreateTypeForm() {
       action={action}
       className={`${cardClass} flex flex-wrap items-end gap-3`}
     >
-      <h3 className="w-full text-sm font-medium text-muted">
-        {t("addType")}
-      </h3>
+      <h3 className="w-full font-bold">{t("addType")}</h3>
       {state.error ? (
         <p className={`${errorClass} w-full`}>
           {tCommon(`errors.${state.error}`)}
         </p>
       ) : null}
-      <label className="flex flex-col gap-1 text-xs text-muted">
+      <label className="flex flex-col gap-1 text-xs font-medium text-muted">
         {t("typeEmoji")}
         <input name="emoji" maxLength={32} className={`${inputClass} w-16`} />
       </label>
-      <label className="flex flex-col gap-1 text-xs text-muted">
+      <label className="flex min-w-40 flex-1 flex-col gap-1 text-xs font-medium text-muted">
         {t("typeName")}
-        <input name="name" required maxLength={60} className={`${inputClass} w-52`} />
+        <input name="name" required maxLength={60} className={`${inputClass} w-full`} />
       </label>
-      <label className="flex flex-col gap-1 text-xs text-muted">
+      <label className="flex flex-col gap-1 text-xs font-medium text-muted">
         {t("typeWeight")}
         <input
           name="defaultWeight"
@@ -192,6 +196,7 @@ function CreateTypeForm() {
         />
       </label>
       <button type="submit" disabled={pending} className={buttonClass}>
+        <Icon name="plus" size={16} />
         {tCommon("create")}
       </button>
     </form>

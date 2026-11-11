@@ -3,15 +3,26 @@ import { getTranslations } from "next-intl/server";
 import { logout } from "@/actions/auth";
 import { Link } from "@/i18n/navigation";
 import { MobileNav } from "@/components/layout/MobileNav";
+import {
+  NavLinks,
+  TabBar,
+  type NavItem,
+} from "@/components/layout/NavLinks";
+import { Avatar } from "@/components/ui/Avatar";
+import { Icon } from "@/components/ui/Icon";
 import type { User } from "@/db/schema";
 
-const navItems = [
-  { href: "/", key: "dashboard" },
-  { href: "/calendar", key: "calendar" },
-  { href: "/friends", key: "friends" },
-  { href: "/circles", key: "circles" },
-  { href: "/settings", key: "settings" },
-] as const;
+function Brand() {
+  return (
+    <Link
+      href="/"
+      className="flex items-center gap-2 rounded-lg text-xl font-extrabold tracking-tight"
+    >
+      <Image src="/mark.svg" alt="" width={26} height={26} className="shrink-0" />
+      asocial
+    </Link>
+  );
+}
 
 export async function AppShell({
   user,
@@ -19,73 +30,69 @@ export async function AppShell({
 }: Readonly<{ user: User; children: React.ReactNode }>) {
   const t = await getTranslations("nav");
 
-  const translatedNavItems = navItems.map((item) => ({
-    href: item.href,
-    label: t(item.key),
-  }));
-  const adminItem =
-    user.role === "admin" ? { href: "/admin", label: t("admin") } : null;
-  const aboutItem = { href: "/about", label: t("about") };
+  // The five places you go every day; also the mobile tab bar.
+  const primary: NavItem[] = [
+    { href: "/", label: t("dashboard"), icon: "dashboard" },
+    { href: "/calendar", label: t("calendar"), icon: "calendar" },
+    { href: "/friends", label: t("friends"), icon: "friends" },
+    { href: "/circles", label: t("circles"), icon: "circles" },
+    { href: "/settings", label: t("settings"), icon: "settings" },
+  ];
+  const secondary: NavItem[] = [
+    ...(user.role === "admin"
+      ? [{ href: "/admin", label: t("admin"), icon: "admin" } as const]
+      : []),
+    { href: "/about", label: t("about"), icon: "about" },
+  ];
 
   return (
     <div className="flex min-h-screen flex-col md:flex-row">
-      <aside className="flex w-full shrink-0 flex-col gap-4 border-b border-line bg-panel p-4 md:min-h-screen md:w-52 md:border-b-0 md:border-r">
-        <div className="flex items-center gap-2">
-          <MobileNav
-            navItems={translatedNavItems}
-            adminItem={adminItem}
-            aboutItem={aboutItem}
-            displayName={user.displayName}
-            logoutAction={logout}
-            logoutLabel={t("logout")}
-            menuLabel={t("menu")}
-          />
-          <Link
-            href="/"
-            className="flex items-center gap-2 text-lg font-bold tracking-tight"
-          >
-            <Image src="/mark.svg" alt="" width={22} height={22} className="shrink-0" />
-            asocial
-          </Link>
+      {/* Small screens: brand + full menu on top, tab bar at the thumb. The bar
+          stays opaque: a backdrop-filter would become the containing block for
+          the menu's fixed backdrop and shrink it to the bar. */}
+      <header className="sticky top-0 z-30 flex items-center justify-between border-b border-line bg-panel px-4 py-2 md:hidden">
+        <Brand />
+        <MobileNav
+          items={[...primary, ...secondary]}
+          displayName={user.displayName}
+          logoutAction={logout}
+          logoutLabel={t("logout")}
+          menuLabel={t("menu")}
+        />
+      </header>
+
+      <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col gap-6 border-r border-line bg-panel p-4 md:flex">
+        <div className="px-2 pt-2">
+          <Brand />
         </div>
-        <nav className="hidden flex-row flex-wrap gap-1 md:flex md:flex-col">
-          {navItems.map((item) => (
-            <Link
-              key={item.key}
-              href={item.href}
-              className="rounded-md px-3 py-1.5 text-sm text-ink hover:bg-faint"
-            >
-              {t(item.key)}
-            </Link>
-          ))}
-          {user.role === "admin" ? (
-            <Link
-              href="/admin"
-              className="rounded-md px-3 py-1.5 text-sm text-ink hover:bg-faint"
-            >
-              {t("admin")}
-            </Link>
-          ) : null}
-          <Link
-            href="/about"
-            className="rounded-md px-3 py-1.5 text-sm text-ink hover:bg-faint"
-          >
-            {t("about")}
-          </Link>
+        <nav className="flex flex-1 flex-col gap-1 overflow-y-auto">
+          <NavLinks items={primary} />
+          <div className="mx-3 my-2 border-t border-line" />
+          <NavLinks items={secondary} />
         </nav>
-        <div className="mt-auto hidden flex-col gap-2 text-sm md:flex">
-          <span className="truncate text-muted">{user.displayName}</span>
-          <form action={logout}>
+        <div className="flex items-center gap-2 rounded-xl bg-faint p-2">
+          <Avatar name={user.displayName} size="sm" />
+          <span className="min-w-0 flex-1 truncate text-sm font-semibold">
+            {user.displayName}
+          </span>
+          <form action={logout} className="flex">
             <button
               type="submit"
-              className="rounded-md px-3 py-1.5 text-left text-sm text-muted hover:bg-faint"
+              title={t("logout")}
+              aria-label={t("logout")}
+              className="flex h-8 w-8 items-center justify-center rounded-lg text-muted transition-colors hover:bg-panel hover:text-ink"
             >
-              {t("logout")}
+              <Icon name="logout" size={17} />
             </button>
           </form>
         </div>
       </aside>
-      <main className="flex-1 p-4 md:p-8">{children}</main>
+
+      <main className="min-w-0 flex-1 px-4 pb-28 pt-5 sm:px-6 md:px-10 md:pb-12 md:pt-9">
+        <div className="mx-auto w-full max-w-6xl">{children}</div>
+      </main>
+
+      <TabBar items={primary} />
     </div>
   );
 }

@@ -39,7 +39,7 @@ export function StartFreshPrompt({
         </button>
       </form>
       {state.error ? (
-        <span className="text-sm text-warn">{t("failed")}</span>
+        <span className="text-sm font-medium text-warn">{t("failed")}</span>
       ) : null}
     </Nudge>
   );

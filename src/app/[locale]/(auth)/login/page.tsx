@@ -1,6 +1,7 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import { isBootstrap } from "@/actions/auth";
 import { LoginForm } from "@/components/auth/AuthForms";
+import { buttonClass, errorClass, linkClass } from "@/components/ui/classes";
 import { Link } from "@/i18n/navigation";
 import { oidcConfig, passwordLoginEnabled } from "@/lib/auth/oidc/config";
 
@@ -27,10 +28,10 @@ export default async function LoginPage({
   const errorKey = ssoCode ? SSO_ERRORS[ssoCode] : undefined;
 
   return (
-    <div className="flex flex-col gap-4">
-      <h1 className="text-xl font-semibold">{t("loginTitle")}</h1>
+    <div className="flex flex-col gap-5">
+      <h1 className="text-xl font-extrabold tracking-tight">{t("loginTitle")}</h1>
       {errorKey ? (
-        <p className="rounded-md bg-warn-soft px-3 py-2 text-sm text-warn">
+        <p className={errorClass}>
           {t(`errors.${errorKey}`)}
         </p>
       ) : null}
@@ -39,7 +40,7 @@ export default async function LoginPage({
         // prefetched (the route sets a cookie and redirects off-site).
         <a
           href={`/api/auth/oidc/login?locale=${locale}`}
-          className="w-full rounded-md bg-accent px-3 py-2 text-center text-sm font-medium text-on-accent hover:bg-accent-strong"
+          className={`${buttonClass} w-full`}
         >
           {t("sso", { provider: sso.providerName })}
         </a>
@@ -48,7 +49,7 @@ export default async function LoginPage({
       {bootstrap && passwords ? (
         <Link
           href="/register"
-          className="text-sm text-accent hover:underline"
+          className={`${linkClass} text-sm`}
         >
           {t("noAccountYet")}
         </Link>

@@ -2,6 +2,7 @@
 
 import { useTransition, type ReactNode } from "react";
 import { dismissPrompt } from "@/actions/prompts";
+import { buttonQuietClass } from "@/components/ui/classes";
 import type { PromptKey } from "@/lib/prompts";
 
 /**
@@ -30,12 +31,12 @@ export function Nudge({
   const [pending, startTransition] = useTransition();
 
   return (
-    <div className="flex flex-col gap-3 rounded-xl border border-accent/40 bg-accent-soft/30 p-4">
-      <div className="flex flex-col gap-1">
-        <h2 className="text-sm font-semibold">{title}</h2>
+    <div className="flex flex-col gap-3 rounded-2xl border border-accent/30 bg-accent-soft/50 p-4 sm:flex-row sm:items-center sm:gap-6 sm:p-5">
+      <div className="flex flex-1 flex-col gap-1">
+        <h2 className="font-bold">{title}</h2>
         <p className="text-sm text-muted">{body}</p>
       </div>
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-wrap items-center gap-2">
         {children}
         <button
           type="button"
@@ -45,7 +46,7 @@ export function Nudge({
               await dismissPrompt(promptKey);
             })
           }
-          className="text-sm text-muted underline-offset-2 hover:underline disabled:opacity-50"
+          className={buttonQuietClass}
         >
           {dismissLabel}
         </button>

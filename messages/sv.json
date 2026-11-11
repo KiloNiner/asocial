@@ -209,6 +209,11 @@
   },
   "dashboard": {
     "title": "Översikt",
+    "greeting": "Hej {name}",
+    "allClear": "Inget är öppet just nu — njut av lugnet.",
+    "openNow": "Öppna nu",
+    "openingSoon": "Öppnar snart",
+    "boardTitle": "Veckorna framöver",
     "intro": "Dina handlingsfönster — färgade band visar när du bör höra av dig till vem. Klicka på ett band för att agera.",
     "empty": "Inget planerat ännu. Lägg till vänner och cirklar, så föreslår asocial när du ska höra av dig.",
     "legendUpcoming": "kommande",
@@ -218,6 +223,9 @@
   },
   "calendar": {
     "today": "I dag",
+    "previous": "Föregående månad",
+    "next": "Nästa månad",
+    "emptyMonth": "Inget planerat den här månaden.",
     "feed": {
       "title": "Prenumerera i din kalenderapp",
       "intro": "Lägg in dina förslag och födelsedagar i Google Kalender, Apple Kalender, Outlook eller något annat som kan prenumerera på en .ics-länk. Din kalenderapp söker efter ändringar i sin egen takt, så uppdateringar kan dröja några timmar.",

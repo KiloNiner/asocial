@@ -7,6 +7,29 @@ import {
   createPasswordReset,
   type CreateResetState,
 } from "@/actions/password-resets";
+import { Icon } from "@/components/ui/Icon";
+import {
+  buttonClass,
+  buttonQuietClass,
+  cardClass,
+  inputClass,
+  labelClass,
+} from "@/components/ui/classes";
+
+/** A link that is shown exactly once, so it has to be easy to take away. */
+function OneTimeLink({
+  hint,
+  url,
+}: Readonly<{ hint: string; url: string }>) {
+  return (
+    <div className="rounded-xl border border-accent/30 bg-accent-soft p-3 text-sm">
+      <p className="mb-1 font-bold text-accent-ink">{hint}</p>
+      <code className="block select-all break-all font-mono text-xs text-accent-ink">
+        {url}
+      </code>
+    </div>
+  );
+}
 
 export function InviteCreateForm() {
   const t = useTranslations("invites");
@@ -16,31 +39,19 @@ export function InviteCreateForm() {
   );
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className={`${cardClass} flex flex-col gap-3`}>
       <form action={action} className="flex flex-wrap items-end gap-2">
-        <label className="flex flex-col gap-1 text-sm">
+        <label className={`${labelClass} min-w-48 flex-1 sm:max-w-sm`}>
           {t("emailOptional")}
-          <input
-            name="email"
-            type="email"
-            className="rounded-md border border-field-border bg-field px-3 py-2 text-base focus:outline-none focus:ring-2 focus:ring-accent"
-          />
+          <input name="email" type="email" className={inputClass} />
         </label>
-        <button
-          type="submit"
-          disabled={pending}
-          className="rounded-md bg-accent px-3 py-2 text-sm font-medium text-on-accent hover:bg-accent-strong disabled:opacity-50"
-        >
+        <button type="submit" disabled={pending} className={buttonClass}>
+          <Icon name="plus" size={16} />
           {t("create")}
         </button>
       </form>
       {state.inviteUrl ? (
-        <div className="rounded-md bg-accent-soft p-3 text-sm">
-          <p className="mb-1 font-medium text-accent-ink">{t("copyHint")}</p>
-          <code className="block break-all text-accent-ink">
-            {state.inviteUrl}
-          </code>
-        </div>
+        <OneTimeLink hint={t("copyHint")} url={state.inviteUrl} />
       ) : null}
     </div>
   );
@@ -63,22 +74,17 @@ export function ResetPasswordButton({
           setState(await createPasswordReset(userId));
           setPending(false);
         }}
-        className="text-sm text-muted hover:text-accent hover:underline disabled:opacity-50"
+        className={`${buttonQuietClass} py-1`}
       >
         {t("resetPassword")}
       </button>
       {state.resetUrl ? (
-        <div className="max-w-xs rounded-md bg-accent-soft p-3 text-sm">
-          <p className="mb-1 font-medium text-accent-ink">
-            {t("resetLinkHint")}
-          </p>
-          <code className="block break-all text-accent-ink">
-            {state.resetUrl}
-          </code>
+        <div className="max-w-xs">
+          <OneTimeLink hint={t("resetLinkHint")} url={state.resetUrl} />
         </div>
       ) : null}
       {state.error ? (
-        <span className="text-xs text-warn">{state.error}</span>
+        <span className="text-xs font-medium text-warn">{state.error}</span>
       ) : null}
     </div>
   );
@@ -99,7 +105,7 @@ export function RevokeButton({
     <button
       type="button"
       onClick={() => onRevoke(inviteId)}
-      className="text-sm text-muted hover:text-danger hover:underline"
+      className={`${buttonQuietClass} py-1 hover:text-danger`}
     >
       {label ?? t("revoke")}
     </button>

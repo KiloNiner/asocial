@@ -16,9 +16,11 @@ import {
   buttonClass,
   buttonGhostClass,
   cardClass,
+  checkboxClass,
   errorClass,
   inputClass,
   labelClass,
+  successClass,
 } from "@/components/ui/classes";
 
 function StateNote({ state }: Readonly<{ state: SettingsFormState }>) {
@@ -37,7 +39,7 @@ function StateNote({ state }: Readonly<{ state: SettingsFormState }>) {
     );
   }
   if (state.ok) {
-    return <p className="text-sm text-accent">{t("saved")}</p>;
+    return <p className={successClass}>{t("saved")}</p>;
   }
   return null;
 }
@@ -53,37 +55,46 @@ export function ProfileForm({
   );
 
   return (
-    <form action={action} className={`${cardClass} flex flex-wrap items-end gap-3`}>
-      <h2 className="w-full text-lg font-medium">{t("profile.title")}</h2>
+    <form action={action} className={`${cardClass} flex flex-col gap-4`}>
       <StateNote state={state} />
-      <label className={labelClass}>
-        {t("auth.displayName")}
-        <input
-          name="displayName"
-          required
-          defaultValue={user.displayName}
-          className={inputClass}
-        />
-      </label>
-      <label className={labelClass}>
-        {t("profile.language")}
-        <select name="locale" defaultValue={settings.locale} className={inputClass}>
-          <option value="en">English</option>
-          <option value="da">Dansk</option>
-          <option value="sv">Svenska</option>
-          <option value="tlh">tlhIngan Hol</option>
-        </select>
-      </label>
-      <label className={labelClass}>
-        {t("profile.timezone")}
-        <input
-          name="timezone"
-          required
-          defaultValue={settings.timezone}
-          className={inputClass}
-        />
-      </label>
-      <button type="submit" disabled={pending} className={buttonClass}>
+      <div className="grid gap-3 sm:grid-cols-3">
+        <label className={labelClass}>
+          {t("auth.displayName")}
+          <input
+            name="displayName"
+            required
+            defaultValue={user.displayName}
+            className={inputClass}
+          />
+        </label>
+        <label className={labelClass}>
+          {t("profile.language")}
+          <select
+            name="locale"
+            defaultValue={settings.locale}
+            className={inputClass}
+          >
+            <option value="en">English</option>
+            <option value="da">Dansk</option>
+            <option value="sv">Svenska</option>
+            <option value="tlh">tlhIngan Hol</option>
+          </select>
+        </label>
+        <label className={labelClass}>
+          {t("profile.timezone")}
+          <input
+            name="timezone"
+            required
+            defaultValue={settings.timezone}
+            className={inputClass}
+          />
+        </label>
+      </div>
+      <button
+        type="submit"
+        disabled={pending}
+        className={`${buttonClass} self-start`}
+      >
         {t("common.save")}
       </button>
     </form>
@@ -99,31 +110,61 @@ export function SchedulingForm({
     {},
   );
   const fields = [
-    { name: "actionWindowDays", label: t("scheduling.windowDays"), value: settings.actionWindowDays, min: 1, max: 30 },
-    { name: "jitterPct", label: t("scheduling.jitterPct"), value: settings.jitterPct, min: 0, max: 50 },
-    { name: "defaultIntervalDays", label: t("scheduling.defaultInterval"), value: settings.defaultIntervalDays, min: 1, max: 730 },
-    { name: "digestHour", label: t("scheduling.digestHour"), value: settings.digestHour, min: 0, max: 23 },
+    {
+      name: "actionWindowDays",
+      label: t("scheduling.windowDays"),
+      value: settings.actionWindowDays,
+      min: 1,
+      max: 30,
+    },
+    {
+      name: "jitterPct",
+      label: t("scheduling.jitterPct"),
+      value: settings.jitterPct,
+      min: 0,
+      max: 50,
+    },
+    {
+      name: "defaultIntervalDays",
+      label: t("scheduling.defaultInterval"),
+      value: settings.defaultIntervalDays,
+      min: 1,
+      max: 730,
+    },
+    {
+      name: "digestHour",
+      label: t("scheduling.digestHour"),
+      value: settings.digestHour,
+      min: 0,
+      max: 23,
+    },
   ];
 
   return (
-    <form action={action} className={`${cardClass} flex flex-wrap items-end gap-3`}>
-      <h2 className="w-full text-lg font-medium">{t("scheduling.title")}</h2>
+    <form action={action} className={`${cardClass} flex flex-col gap-4`}>
       <StateNote state={state} />
-      {fields.map((field) => (
-        <label key={field.name} className={labelClass}>
-          {field.label}
-          <input
-            name={field.name}
-            type="number"
-            required
-            min={field.min}
-            max={field.max}
-            defaultValue={field.value}
-            className={`${inputClass} w-28`}
-          />
-        </label>
-      ))}
-      <button type="submit" disabled={pending} className={buttonClass}>
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {fields.map((field) => (
+          // justify-between: labels wrap to different heights, inputs still align.
+          <label key={field.name} className={`${labelClass} justify-between`}>
+            {field.label}
+            <input
+              name={field.name}
+              type="number"
+              required
+              min={field.min}
+              max={field.max}
+              defaultValue={field.value}
+              className={inputClass}
+            />
+          </label>
+        ))}
+      </div>
+      <button
+        type="submit"
+        disabled={pending}
+        className={`${buttonClass} self-start`}
+      >
         {t("common.save")}
       </button>
     </form>
@@ -149,11 +190,12 @@ function TestButton({ channel }: Readonly<{ channel: ChannelId }>) {
       >
         {t("sendTest")}
       </button>
-      {result?.ok ? (
-        <span className="text-sm text-accent">{t("testOk")}</span>
-      ) : null}
+      {result?.ok ? <span className={successClass}>{t("testOk")}</span> : null}
       {result?.error ? (
-        <span className="max-w-60 truncate text-sm text-warn" title={result.error}>
+        <span
+          className="max-w-60 truncate text-sm font-medium text-warn"
+          title={result.error}
+        >
           {result.error}
         </span>
       ) : null}
@@ -189,81 +231,85 @@ export function NotificationChannelsForm({
 
   return (
     <div className="flex flex-col gap-3">
-      <p className="text-sm text-muted">{t("intro")}</p>
-
-      <form action={poAction} className={`${cardClass} flex flex-wrap items-end gap-3`}>
-        <h3 className="w-full text-sm font-medium text-muted">
-          {t("pushoverTitle")}
-        </h3>
+      <form action={poAction} className={`${cardClass} flex flex-col gap-4`}>
+        <div className="flex items-center justify-between gap-3">
+          <h3 className="font-bold">{t("pushoverTitle")}</h3>
+          <label className="flex items-center gap-2 text-sm font-medium">
+            <input
+              type="checkbox"
+              name="enabled"
+              defaultChecked={pushover?.enabled ?? false}
+              className={checkboxClass}
+            />
+            {t("enabled")}
+          </label>
+        </div>
         <StateNote state={poState} />
         <input type="hidden" name="channel" value="pushover" />
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            name="enabled"
-            defaultChecked={pushover?.enabled ?? false}
-            className="h-4 w-4 accent-accent"
-          />
-          {t("enabled")}
-        </label>
-        {/* Secrets are write-only: the server strips them, so these render
+        <div className="grid gap-3 sm:grid-cols-2">
+          {/* Secrets are write-only: the server strips them, so these render
             blank and an empty submit keeps whatever is stored. */}
-        <label className={labelClass}>
-          {t("pushoverToken")}
-          <input
-            name="token"
-            type="password"
-            defaultValue=""
-            placeholder={secretPlaceholder(pushover, "token", t)}
-            className={inputClass}
-            autoComplete="off"
-          />
-        </label>
-        <label className={labelClass}>
-          {t("pushoverUserKey")}
-          <input
-            name="userKey"
-            type="password"
-            defaultValue=""
-            placeholder={secretPlaceholder(pushover, "userKey", t)}
-            className={inputClass}
-            autoComplete="off"
-          />
-        </label>
-        <button type="submit" disabled={poPending} className={buttonClass}>
-          {t("saveChannel")}
-        </button>
-        {pushover ? <TestButton channel="pushover" /> : null}
+          <label className={labelClass}>
+            {t("pushoverToken")}
+            <input
+              name="token"
+              type="password"
+              defaultValue=""
+              placeholder={secretPlaceholder(pushover, "token", t)}
+              className={inputClass}
+              autoComplete="off"
+            />
+          </label>
+          <label className={labelClass}>
+            {t("pushoverUserKey")}
+            <input
+              name="userKey"
+              type="password"
+              defaultValue=""
+              placeholder={secretPlaceholder(pushover, "userKey", t)}
+              className={inputClass}
+              autoComplete="off"
+            />
+          </label>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <button type="submit" disabled={poPending} className={buttonClass}>
+            {t("saveChannel")}
+          </button>
+          {pushover ? <TestButton channel="pushover" /> : null}
+        </div>
       </form>
 
-      <form action={emAction} className={`${cardClass} flex flex-wrap items-end gap-3`}>
-        <h3 className="w-full text-sm font-medium text-muted">
-          {t("emailTitle")}
-        </h3>
+      <form action={emAction} className={`${cardClass} flex flex-col gap-4`}>
+        <div className="flex items-center justify-between gap-3">
+          <h3 className="font-bold">{t("emailTitle")}</h3>
+          <label className="flex items-center gap-2 text-sm font-medium">
+            <input
+              type="checkbox"
+              name="enabled"
+              defaultChecked={email?.enabled ?? false}
+              className={checkboxClass}
+            />
+            {t("enabled")}
+          </label>
+        </div>
         <StateNote state={emState} />
         <input type="hidden" name="channel" value="email" />
-        <label className="flex items-center gap-2 text-sm">
-          <input
-            type="checkbox"
-            name="enabled"
-            defaultChecked={email?.enabled ?? false}
-            className="h-4 w-4 accent-accent"
-          />
-          {t("enabled")}
-        </label>
         <label className={labelClass}>
           {t("emailAddress")}
           <input
             name="address"
             type="email"
             defaultValue={email?.config.address ?? ""}
-            className={`${inputClass} w-64`}
+            className={`${inputClass} sm:max-w-sm`}
           />
         </label>
-        <button type="submit" disabled={emPending} className={buttonClass}>
-          {t("saveChannel")}
-        </button>
-        {email ? <TestButton channel="email" /> : null}
+        <div className="flex flex-wrap items-center gap-2">
+          <button type="submit" disabled={emPending} className={buttonClass}>
+            {t("saveChannel")}
+          </button>
+          {email ? <TestButton channel="email" /> : null}
+        </div>
       </form>
     </div>
   );

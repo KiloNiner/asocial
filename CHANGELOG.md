@@ -1,5 +1,39 @@
 # Changelog
 
+## v2.0.0
+
+A redesign of the whole interface. Nothing was removed and no data, schema
+or configuration changes — upgrading needs no action.
+
+### Changed
+- New visual foundation. The interface is set in Nunito Sans (the typeface
+  of the wordmark; it previously fell back to Arial), bundled with the app
+  so builds need no network and pages make no third-party requests. The
+  Paper theme is warmed to the cream and ink of the logo; the other five
+  themes keep their palettes. Dark themes now render native date pickers
+  and selects dark.
+- Navigation. The sidebar has icons and marks the current page. On phones
+  a bottom tab bar holds the five main pages, and the menu in the top bar
+  holds everything, including Admin, About and Log out.
+- Dashboard. It opens with the date, a greeting and how many friends are
+  waiting, followed by "Open now" — one card per open suggestion with Did
+  it, Snooze, Move and Skip right there — and "Opening soon" for the next
+  seven days. The board follows, now with month names in its header.
+- Calendar. Phones get the month as an agenda list instead of a
+  seven-column grid. The previous/today/next controls are one group.
+- Friends. The list is a single panel with monogram avatars tinted by
+  circle and circle names spelled out. "Show archived" is a toggle that
+  applies at once and keeps the search. A friend's page puts circles,
+  birthday and notes in a side card next to the suggestion, the log form
+  and the journal; the birthday is formatted for your language.
+- Settings is divided into titled sections with a jump list — a side rail
+  on wide screens, a sticky strip on narrow ones.
+- Circles, Admin, About and the login pages are restyled to match. The new
+  circle form sits beside the list on wide screens, and the manual on the
+  About page is a grid of cards.
+- The delete control on a journal entry is an icon that is always visible
+  on touch screens; it used to appear only on hover.
+
 ## v1.11.1
 
 ### Changed

@@ -8,19 +8,17 @@ import {
 import type { BoardRow as BoardRowData } from "@/lib/db/queries";
 import type { ContactType } from "@/db/schema";
 import { addDays, daysBetween } from "@/lib/scheduler/dates";
+import { windowState } from "@/lib/scheduler/window-state";
 
 const DAYS_BEFORE = 3;
 const DAYS_AFTER = 27;
 const COLUMNS = DAYS_BEFORE + 1 + DAYS_AFTER; // 31 day columns
 
-function windowState(
-  dueDate: string,
-  windowDays: number,
-  today: string,
-): BandSpec["state"] {
-  if (today < dueDate) return "upcoming";
-  return today <= addDays(dueDate, windowDays - 1) ? "open" : "stillOpen";
-}
+/**
+ * One template for the header, the shading layer and every row, so they can
+ * never drift apart. --name-col narrows on phones (set on the board wrapper).
+ */
+export const BOARD_GRID = `var(--name-col) repeat(${COLUMNS}, minmax(22px, 1fr))`;
 
 /** Grid column for a date: column 2 = rangeStart (col 1 is the name). */
 function colFor(date: string, rangeStart: string): number | null {
@@ -49,6 +47,7 @@ export async function ActionWindowBoard({
     month: "short",
     day: "numeric",
   });
+  const monthNameFmt = new Intl.DateTimeFormat(locale, { month: "long" });
 
   const days = Array.from({ length: COLUMNS }, (_, i) => {
     const date = addDays(rangeStart, i);
@@ -61,8 +60,9 @@ export async function ActionWindowBoard({
       weekdayLabel: weekdayFmt.format(jsDate),
       isToday: date === today,
       isWeekend: dow === 0 || dow === 6,
-      isMonthStart: date.endsWith("-01"),
-      monthLabel: monthFmt.format(jsDate),
+      // Named where a month begins — and at the left edge, for orientation.
+      monthLabel:
+        i === 0 || date.endsWith("-01") ? monthNameFmt.format(jsDate) : null,
     };
   });
 
@@ -73,31 +73,45 @@ export async function ActionWindowBoard({
   }));
   const typeById = new Map(types.map((type) => [type.id, type]));
 
-  if (rows.length === 0) {
-    return <p className="text-sm text-muted">{t("empty")}</p>;
-  }
-
   return (
-    <div className="overflow-x-auto rounded-xl border border-line bg-panel p-3">
-      <div className="min-w-[720px]">
-        {/* header */}
+    <div className="overflow-x-auto rounded-2xl border border-line bg-panel p-3 shadow-card [--name-col:7.5rem] sm:p-4 sm:[--name-col:11rem]">
+      <div className="min-w-[700px]">
+        {/* header: month names over weekday + day number */}
         <div
-          className="grid border-b border-line pb-1 text-center text-[10px] text-subtle"
-          style={{
-            gridTemplateColumns: `11rem repeat(${COLUMNS}, minmax(24px, 1fr))`,
-          }}
+          className="grid border-b border-line pb-1.5 text-center text-[10px] text-subtle"
+          style={{ gridTemplateColumns: BOARD_GRID }}
         >
-          <span style={{ gridColumn: "1" }} />
-          {days.map((day) => (
-            <span key={day.date} style={{ gridColumn: day.col }}>
-              {day.weekdayLabel}
-              <br />
+          {days.map((day, i) =>
+            day.monthLabel ? (
               <span
-                className={
+                key={`month-${day.date}`}
+                className="truncate pb-1 text-left text-[11px] font-bold capitalize text-muted"
+                style={{
+                  gridRow: "1",
+                  // Run until the next month label, or the end of the board.
+                  gridColumn: `${day.col} / ${
+                    (days.slice(i + 1).find((d) => d.monthLabel)?.col ??
+                      COLUMNS + 2)
+                  }`,
+                }}
+              >
+                {day.monthLabel}
+              </span>
+            ) : null,
+          )}
+          {days.map((day) => (
+            <span
+              key={day.date}
+              className="flex flex-col items-center gap-0.5"
+              style={{ gridColumn: day.col, gridRow: "2" }}
+            >
+              <span className="uppercase">{day.weekdayLabel}</span>
+              <span
+                className={`flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[11px] ${
                   day.isToday
-                    ? "rounded-full bg-accent px-1 font-semibold text-on-accent"
-                    : "text-muted"
-                }
+                    ? "bg-accent font-bold text-on-accent"
+                    : "font-medium text-muted"
+                }`}
               >
                 {day.dayLabel}
               </span>
@@ -109,9 +123,7 @@ export async function ActionWindowBoard({
         <div className="relative">
           <div
             className="pointer-events-none absolute inset-0 grid"
-            style={{
-              gridTemplateColumns: `11rem repeat(${COLUMNS}, minmax(24px, 1fr))`,
-            }}
+            style={{ gridTemplateColumns: BOARD_GRID }}
           >
             {days.map((day) =>
               day.isWeekend || day.isToday ? (
@@ -119,7 +131,7 @@ export async function ActionWindowBoard({
                   key={day.date}
                   className={
                     day.isToday
-                      ? "border-x border-accent/70 bg-accent-soft/40"
+                      ? "border-x border-accent/60 bg-accent-soft/50"
                       : "bg-surface"
                   }
                   style={{ gridColumn: day.col, gridRow: "1 / -1" }}
@@ -200,6 +212,7 @@ export async function ActionWindowBoard({
                   types={typeInfo}
                   today={today}
                   columns={COLUMNS}
+                  grid={BOARD_GRID}
                 />
               );
             })}
@@ -207,20 +220,20 @@ export async function ActionWindowBoard({
         </div>
 
         {/* legend */}
-        <div className="mt-3 flex flex-wrap gap-4 text-xs text-muted">
-          <span className="flex items-center gap-1">
+        <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-xs text-muted">
+          <span className="flex items-center gap-1.5">
             <span className="h-3 w-6 rounded-full bg-dot opacity-45" />
             {t("legendUpcoming")}
           </span>
-          <span className="flex items-center gap-1">
+          <span className="flex items-center gap-1.5">
             <span className="h-3 w-6 rounded-full bg-dot" />
             {t("legendOpen")}
           </span>
-          <span className="flex items-center gap-1">
+          <span className="flex items-center gap-1.5">
             <span className="h-3 w-6 rounded-full bg-dot opacity-80 saturate-50" />
             {t("legendStillOpen")}
           </span>
-          <span className="flex items-center gap-1">🎂 {t("legendBirthday")}</span>
+          <span className="flex items-center gap-1.5">🎂 {t("legendBirthday")}</span>
         </div>
       </div>
     </div>

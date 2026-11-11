@@ -4,7 +4,8 @@ import * as q from "@/lib/db/queries";
 import { today } from "@/lib/scheduler/clock";
 import { ageOn } from "@/lib/scheduler/birthday";
 import { Link } from "@/i18n/navigation";
-import { buttonGhostClass } from "@/components/ui/classes";
+import { Icon } from "@/components/ui/Icon";
+import { h1Class, listClass } from "@/components/ui/classes";
 import { CalendarFeedCard } from "@/components/calendar/CalendarFeedCard";
 import { getCalendarFeedToken } from "@/lib/auth/calendar-feed";
 import { appUrl } from "@/lib/app-url";
@@ -126,84 +127,164 @@ export default async function CalendarPage({
     ? `${appUrl()}/api/calendar/${feedToken}/asocial.ics`
     : null;
 
+  const agenda = cells.filter(
+    (cell): cell is { date: string; day: number } =>
+      cell.date !== null && chipsByDate.has(cell.date),
+  );
+  const navButton =
+    "flex h-9 items-center justify-center px-2.5 text-ink transition-colors hover:bg-faint";
+
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-6">
       <div className="flex flex-wrap items-center gap-3">
-        <h1 className="text-2xl font-semibold capitalize">{monthTitle}</h1>
-        <div className="ml-auto flex gap-2">
-          <Link href={`/calendar?month=${prev}`} className={buttonGhostClass}>
-            ←
+        <h1 className={`${h1Class} capitalize`}>{monthTitle}</h1>
+        <div className="ml-auto flex divide-x divide-line overflow-hidden rounded-lg border border-line bg-panel shadow-card">
+          <Link
+            href={`/calendar?month=${prev}`}
+            aria-label={t("calendar.previous")}
+            title={t("calendar.previous")}
+            className={navButton}
+          >
+            <Icon name="chevronLeft" />
           </Link>
-          <Link href="/calendar" className={buttonGhostClass}>
+          <Link
+            href="/calendar"
+            className={`${navButton} px-3.5 text-sm font-semibold`}
+          >
             {t("calendar.today")}
           </Link>
-          <Link href={`/calendar?month=${next}`} className={buttonGhostClass}>
-            →
+          <Link
+            href={`/calendar?month=${next}`}
+            aria-label={t("calendar.next")}
+            title={t("calendar.next")}
+            className={navButton}
+          >
+            <Icon name="chevronRight" />
           </Link>
         </div>
       </div>
 
-      <div className="overflow-x-auto">
-        <div className="min-w-[640px] rounded-xl border border-line bg-panel">
-          <div className="grid grid-cols-7 border-b border-line text-center text-xs font-medium text-muted">
-            {weekdays.map((weekday) => (
-              <span key={weekday} className="py-2 capitalize">
-                {weekday}
-              </span>
-            ))}
-          </div>
-          <div className="grid grid-cols-7">
-            {cells.map((cell, i) => (
+      {/* Phones get the month as an agenda: a 7-column grid at that width
+          leaves no room for a name. */}
+      <div className="md:hidden">
+        {agenda.length === 0 ? (
+          <p className="text-sm text-muted">{t("calendar.emptyMonth")}</p>
+        ) : (
+          <ol className={listClass}>
+            {agenda.map((cell) => {
+              const isToday = cell.date === currentDate;
+              return (
+                <li
+                  key={cell.date}
+                  className={`flex items-start gap-3 px-3 py-2.5 ${
+                    isToday ? "bg-accent-soft/60" : ""
+                  }`}
+                >
+                  <span
+                    className={`flex w-11 shrink-0 flex-col items-center rounded-lg py-1 leading-tight ${
+                      isToday ? "bg-accent text-on-accent" : "bg-faint"
+                    }`}
+                  >
+                    <span className="text-[10px] font-bold uppercase opacity-80">
+                      {weekdays[(firstDow + cell.day - 1) % 7]}
+                    </span>
+                    <span className="text-base font-extrabold">{cell.day}</span>
+                  </span>
+                  <div className="flex min-w-0 flex-1 flex-col gap-1 pt-0.5">
+                    {chipsByDate.get(cell.date)!.map((chip) => (
+                      <ChipLink key={chip.key} chip={chip} roomy />
+                    ))}
+                  </div>
+                </li>
+              );
+            })}
+          </ol>
+        )}
+      </div>
+
+      <div className="hidden overflow-hidden rounded-2xl border border-line bg-line shadow-card md:block">
+        <div className="grid grid-cols-7 bg-panel text-center text-xs font-bold uppercase tracking-wider text-subtle">
+          {weekdays.map((weekday) => (
+            <span key={weekday} className="py-2.5">
+              {weekday}
+            </span>
+          ))}
+        </div>
+        {/* gap-px over a line-colored backing draws the hairlines, so no cell
+            has to know whether it sits on an edge. */}
+        <div className="grid grid-cols-7 gap-px border-t border-line">
+          {cells.map((cell, i) => {
+            const isToday = cell.date === currentDate;
+            return (
               <div
                 key={cell.date ?? `empty-${i}`}
-                className={`min-h-24 border-b border-r border-line p-1.5 ${
-                  cell.date === currentDate ? "bg-accent-soft/60" : ""
-                } ${i % 7 >= 5 ? "bg-surface/60" : ""}`}
+                className={`min-h-28 min-w-0 p-1.5 ${
+                  // Days outside the month sink to the page surface, which is
+                  // the recessed tone in every theme (faint is not: on dark
+                  // themes it is lighter than a panel). Weekends sit halfway.
+                  !cell.day
+                    ? "bg-surface"
+                    : isToday
+                      ? "bg-accent-soft"
+                      : i % 7 >= 5
+                        ? "bg-[color-mix(in_srgb,var(--t-surface)_50%,var(--t-panel))]"
+                        : "bg-panel"
+                }`}
               >
                 {cell.day ? (
                   <>
                     <span
-                      className={`text-xs ${
-                        cell.date === currentDate
-                          ? "rounded-full bg-accent px-1.5 py-0.5 font-semibold text-on-accent"
-                          : "text-subtle"
+                      className={`inline-flex h-6 min-w-6 items-center justify-center rounded-full px-1.5 text-xs ${
+                        isToday
+                          ? "bg-accent font-bold text-on-accent"
+                          : "font-semibold text-muted"
                       }`}
                     >
                       {cell.day}
                     </span>
                     <div className="mt-1 flex flex-col gap-0.5">
                       {(chipsByDate.get(cell.date!) ?? []).map((chip) => (
-                        <Link
-                          key={chip.key}
-                          href={`/friends/${chip.friendId}`}
-                          className={`truncate rounded px-1 py-0.5 text-[11px] leading-tight hover:opacity-80 ${
-                            chip.kind === "overdue"
-                              ? "bg-warn-soft text-warn"
-                              : chip.kind === "birthday"
-                                ? "bg-birthday-soft text-birthday"
-                                : "bg-faint text-ink"
-                          }`}
-                        >
-                          {chip.color ? (
-                            <span
-                              className="mr-1 inline-block h-2 w-2 rounded-full align-middle"
-                              style={{ backgroundColor: chip.color }}
-                            />
-                          ) : null}
-                          {chip.emoji !== "•" ? `${chip.emoji} ` : ""}
-                          {chip.label}
-                        </Link>
+                        <ChipLink key={chip.key} chip={chip} />
                       ))}
                     </div>
                   </>
                 ) : null}
               </div>
-            ))}
-          </div>
+            );
+          })}
         </div>
       </div>
 
       <CalendarFeedCard url={feedUrl} />
     </div>
+  );
+}
+
+const chipKind: Record<Chip["kind"], string> = {
+  overdue: "bg-warn-soft text-warn",
+  birthday: "bg-birthday-soft text-birthday",
+  task: "bg-faint text-ink",
+};
+
+function ChipLink({
+  chip,
+  roomy,
+}: Readonly<{ chip: Chip; roomy?: boolean }>) {
+  return (
+    <Link
+      href={`/friends/${chip.friendId}`}
+      className={`truncate rounded-md font-medium transition hover:brightness-95 ${
+        roomy ? "px-2 py-1 text-sm" : "px-1.5 py-0.5 text-xs"
+      } ${chipKind[chip.kind]}`}
+    >
+      {chip.kind !== "birthday" ? (
+        <span
+          className="mr-1.5 inline-block h-2 w-2 rounded-full align-middle"
+          style={{ backgroundColor: chip.color ?? "var(--t-dot)" }}
+        />
+      ) : null}
+      {chip.emoji !== "•" ? `${chip.emoji} ` : ""}
+      {chip.label}
+    </Link>
   );
 }

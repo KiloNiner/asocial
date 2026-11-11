@@ -4,7 +4,11 @@ import { useActionState } from "react";
 import { useTranslations } from "next-intl";
 import { enableEmailDigest, type SettingsFormState } from "@/actions/settings";
 import { Nudge } from "@/components/ui/Nudge";
-import { buttonClass, buttonGhostClass } from "@/components/ui/classes";
+import {
+  buttonClass,
+  buttonGhostClass,
+  linkClass,
+} from "@/components/ui/classes";
 import { Link } from "@/i18n/navigation";
 
 /**
@@ -35,12 +39,12 @@ export function DigestPrompt({ canEmail }: Readonly<{ canEmail: boolean }>) {
       ) : null}
       <Link
         href="/settings"
-        className={canEmail ? "text-sm text-accent hover:underline" : buttonGhostClass}
+        className={canEmail ? `${linkClass} px-1 text-sm` : buttonGhostClass}
       >
         {t("openSettings")}
       </Link>
       {state.error ? (
-        <span className="text-sm text-warn">{t("failed")}</span>
+        <span className="text-sm font-medium text-warn">{t("failed")}</span>
       ) : null}
     </Nudge>
   );
