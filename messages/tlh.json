@@ -209,6 +209,11 @@
   },
   "dashboard": {
     "title": "chovnatlh",
+    "greeting": "nuqneH, {name}",
+    "allClear": "DaH pagh poS — yIjot.",
+    "openNow": "DaH poS",
+    "openingSoon": "tugh poSmoH",
+    "boardTitle": "Hoghmey veb",
     "intro": "vangmeH poSmey — 'Iw naghmey 'anglu': ghorgh 'Iv DaghomnIS. vang 'e' DawIvmeH nagh yISaH.",
     "empty": "pagh nablu'. juppu' ghomHommey je yIchel, vaj ghorgh DaghomnIS 'oH wIv asocial.",
     "legendUpcoming": "SumtaH",
@@ -218,6 +223,9 @@
   },
   "calendar": {
     "today": "DaHjaj",
+    "previous": "jar vorgh",
+    "next": "jar veb",
+    "emptyMonth": "jarvam pagh nablu'.",
     "feed": {
       "title": "jaj chovnatlh De'wI' laH lo'",
       "intro": "Google, Apple, Outlook jaj chovnatlh ghap .ics rar laj vay' DaqDaq qeSmey qoSmey je yIchel. poHmey puS ret choHmey 'ang jaj chovnatlh.",

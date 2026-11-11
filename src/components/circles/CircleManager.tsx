@@ -11,11 +11,14 @@ import {
 } from "@/actions/circles";
 import type { Circle } from "@/db/schema";
 import { CIRCLE_COLORS } from "@/lib/colors";
+import { Icon } from "@/components/ui/Icon";
 import {
   buttonClass,
   buttonGhostClass,
   cardClass,
   errorClass,
+  h2Class,
+  hintClass,
   inputClass,
   labelClass,
 } from "@/components/ui/classes";
@@ -27,19 +30,24 @@ function ColorPicker({
 }: Readonly<{ name: string; defaultValue?: string }>) {
   const [selected, setSelected] = useState(defaultValue ?? CIRCLE_COLORS[0]);
   return (
-    <div className="flex flex-wrap gap-1.5">
+    <div className="flex flex-wrap gap-2">
       <input type="hidden" name={name} value={selected} />
       {CIRCLE_COLORS.map((color) => (
         <button
           key={color}
           type="button"
           onClick={() => setSelected(color)}
-          className={`h-7 w-7 rounded-full border-2 ${
-            selected === color ? "border-sel" : "border-transparent"
+          aria-pressed={selected === color}
+          className={`flex h-7 w-7 items-center justify-center rounded-full text-white transition hover:scale-110 ${
+            selected === color
+              ? "ring-2 ring-sel ring-offset-2 ring-offset-panel"
+              : ""
           }`}
           style={{ backgroundColor: color }}
           aria-label={color}
-        />
+        >
+          {selected === color ? <Icon name="check" size={15} /> : null}
+        </button>
       ))}
     </div>
   );
@@ -68,7 +76,7 @@ function CircleFields({ circle }: Readonly<{ circle?: Circle }>) {
           min={1}
           max={730}
           defaultValue={circle?.intervalDays ?? 30}
-          className={inputClass}
+          className={`${inputClass} w-32`}
         />
       </label>
       <div className={labelClass}>
@@ -87,14 +95,21 @@ export function CircleCreateForm() {
   );
 
   return (
-    <form action={action} className={`${cardClass} flex flex-col gap-3`}>
-      <h2 className="text-lg font-medium">{t("circles.createTitle")}</h2>
-      <p className="text-xs text-muted">{t("circles.examples")}</p>
+    <form action={action} className={`${cardClass} flex flex-col gap-4`}>
+      <div className="flex flex-col gap-1">
+        <h2 className={h2Class}>{t("circles.createTitle")}</h2>
+        <p className={hintClass}>{t("circles.examples")}</p>
+      </div>
       {state.error ? (
         <p className={errorClass}>{t(`common.errors.${state.error}`)}</p>
       ) : null}
       <CircleFields />
-      <button type="submit" disabled={pending} className={buttonClass}>
+      <button
+        type="submit"
+        disabled={pending}
+        className={`${buttonClass} self-start`}
+      >
+        <Icon name="plus" size={16} />
         {t("common.create")}
       </button>
     </form>
@@ -124,17 +139,22 @@ export function CircleCard({
   );
 
   return (
-    <div className={`${cardClass} flex flex-col gap-3`}>
-      <div className="flex items-center gap-2">
+    <div className={`${cardClass} flex flex-col gap-4`}>
+      <div className="flex items-center gap-3">
         <span
-          className="h-4 w-4 shrink-0 rounded-full"
-          style={{ backgroundColor: circle.color }}
+          className="h-10 w-10 shrink-0 rounded-full"
+          style={{
+            backgroundColor: `color-mix(in srgb, ${circle.color} 22%, var(--t-panel))`,
+            boxShadow: `inset 0 0 0 4px ${circle.color}`,
+          }}
         />
-        <span className="font-medium">{circle.name}</span>
-        <span className="ml-auto text-sm text-muted">
-          {t("common.everyNDays", { n: circle.intervalDays })} ·{" "}
-          {t("circles.members", { n: memberCount })}
-        </span>
+        <div className="flex min-w-0 flex-col">
+          <span className="truncate font-bold">{circle.name}</span>
+          <span className="text-sm text-muted">
+            {t("common.everyNDays", { n: circle.intervalDays })} ·{" "}
+            {t("circles.members", { n: memberCount })}
+          </span>
+        </div>
       </div>
 
       {editing ? (
@@ -163,13 +183,16 @@ export function CircleCard({
             onClick={() => setEditing(true)}
             className={buttonGhostClass}
           >
+            <Icon name="pencil" size={15} />
             {t("common.edit")}
           </button>
           <button
             type="button"
             onClick={() => setShowPrefs((v) => !v)}
-            className={buttonGhostClass}
+            aria-expanded={showPrefs}
+            className={`${buttonGhostClass} ${showPrefs ? "bg-faint" : ""}`}
           >
+            <Icon name="settings" size={15} />
             {t("circles.typePrefs")}
           </button>
           <button
@@ -179,19 +202,22 @@ export function CircleCard({
                 void deleteCircle(circle.id);
               }
             }}
-            className={`${buttonGhostClass} text-danger`}
+            className={`${buttonGhostClass} ml-auto text-danger`}
           >
+            <Icon name="trash" size={15} />
             {t("common.delete")}
           </button>
         </div>
       )}
 
       {showPrefs ? (
-        <PrefEditor
-          rows={prefRows}
-          action={setCirclePref.bind(null, circle.id)}
-          hint={t("circles.typePrefsHint")}
-        />
+        <div className="border-t border-line pt-4">
+          <PrefEditor
+            rows={prefRows}
+            action={setCirclePref.bind(null, circle.id)}
+            hint={t("circles.typePrefsHint")}
+          />
+        </div>
       ) : null}
     </div>
   );

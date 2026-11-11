@@ -3,7 +3,13 @@
 import { useActionState } from "react";
 import { useTranslations } from "next-intl";
 import { startFresh, type StartFreshState } from "@/actions/tasks";
-import { buttonGhostClass, cardClass, errorClass } from "@/components/ui/classes";
+import { Icon } from "@/components/ui/Icon";
+import {
+  buttonGhostClass,
+  cardClass,
+  errorClass,
+  successClass,
+} from "@/components/ui/classes";
 
 /**
  * Permanent home for the reset, next to Backup & restore — the other thing
@@ -18,12 +24,7 @@ export function StartFreshCard({ open }: Readonly<{ open: number }>) {
 
   return (
     <div className={`${cardClass} flex flex-col gap-4`}>
-      <div className="flex flex-col gap-1">
-        <h2 className="text-lg font-medium">{t("title")}</h2>
-        <p className="text-sm text-muted">{t("intro")}</p>
-      </div>
-
-      <p className="text-sm">
+      <p className="text-sm font-medium">
         {open === 0 ? t("nothingOpen") : t("openNow", { n: open })}
       </p>
 
@@ -31,7 +32,7 @@ export function StartFreshCard({ open }: Readonly<{ open: number }>) {
         <p className={errorClass}>{t(`errors.${state.error}`)}</p>
       ) : null}
       {state.result ? (
-        <p className="text-sm text-accent">
+        <p className={successClass}>
           {t("done", {
             cleared: state.result.cleared,
             scheduled: state.result.scheduled,
@@ -48,8 +49,9 @@ export function StartFreshCard({ open }: Readonly<{ open: number }>) {
         <button
           type="submit"
           disabled={pending || open === 0}
-          className={`${buttonGhostClass} self-start`}
+          className={buttonGhostClass}
         >
+          <Icon name="refresh" size={15} />
           {t("action")}
         </button>
       </form>

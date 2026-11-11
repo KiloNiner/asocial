@@ -209,6 +209,11 @@
   },
   "dashboard": {
     "title": "Overblik",
+    "greeting": "Hej {name}",
+    "allClear": "Intet er åbent lige nu — nyd roen.",
+    "openNow": "Åbne nu",
+    "openingSoon": "Åbner snart",
+    "boardTitle": "De kommende uger",
     "intro": "Dine handlingsvinduer — farvede bånd viser, hvornår du bør række ud til hvem. Klik på et bånd for at handle.",
     "empty": "Intet planlagt endnu. Tilføj venner og cirkler, så foreslår asocial, hvornår du skal række ud.",
     "legendUpcoming": "kommende",
@@ -218,6 +223,9 @@
   },
   "calendar": {
     "today": "I dag",
+    "previous": "Forrige måned",
+    "next": "Næste måned",
+    "emptyMonth": "Intet planlagt i denne måned.",
     "feed": {
       "title": "Abonnér i din kalender-app",
       "intro": "Få dine forslag og fødselsdage ind i Google Kalender, Apple Kalender, Outlook eller alt andet, der kan abonnere på et .ics-link. Din kalender-app tjekker for ændringer i sit eget tempo, så opdateringer kan tage et par timer om at dukke op.",

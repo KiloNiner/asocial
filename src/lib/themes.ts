@@ -30,7 +30,7 @@ export const THEME_SWATCHES: Record<
   ThemeId,
   { surface: string; panel: string; accent: string; ink: string }
 > = {
-  paper: { surface: "#fafaf9", panel: "#ffffff", accent: "#0f766e", ink: "#1c1917" },
+  paper: { surface: "#fbf7f1", panel: "#ffffff", accent: "#0f766e", ink: "#2a241d" },
   latte: { surface: "#e6e9ef", panel: "#eff1f5", accent: "#179299", ink: "#4c4f69" },
   dawn: { surface: "#faf4ed", panel: "#fffaf3", accent: "#286983", ink: "#575279" },
   mocha: { surface: "#1e1e2e", panel: "#28283c", accent: "#94e2d5", ink: "#cdd6f4" },

@@ -10,7 +10,9 @@ import {
   errorClass,
   inputClass,
   labelClass,
+  successClass,
 } from "@/components/ui/classes";
+import { Icon } from "@/components/ui/Icon";
 
 export function BackupCard() {
   const t = useTranslations("backup");
@@ -26,12 +28,8 @@ export function BackupCard() {
 
   return (
     <div className={`${cardClass} flex flex-col gap-4`}>
-      <div className="flex flex-col gap-1">
-        <h2 className="text-lg font-medium">{t("title")}</h2>
-        <p className="text-sm text-muted">{t("intro")}</p>
-      </div>
-
       <a href="/api/backup" download className={`${buttonGhostClass} self-start`}>
+        <Icon name="download" size={15} />
         {t("export")}
       </a>
 
@@ -41,14 +39,14 @@ export function BackupCard() {
         onSubmit={(e) => {
           if (!confirm(t("replaceWarning"))) e.preventDefault();
         }}
-        className="flex flex-col gap-2 border-t border-line pt-4"
+        className="flex flex-col gap-3 border-t border-line pt-4"
       >
-        <h3 className="text-sm font-medium">{t("importTitle")}</h3>
+        <h3 className="font-bold">{t("importTitle")}</h3>
         {state.error ? (
           <p className={errorClass}>{t(`errors.${state.error}`)}</p>
         ) : null}
         {state.imported ? (
-          <p className="text-sm text-accent">
+          <p className={successClass}>
             {t("imported", {
               friends: state.imported.friends,
               circles: state.imported.circles,
@@ -63,7 +61,7 @@ export function BackupCard() {
             name="file"
             accept="application/json,.json"
             required
-            className={`${inputClass} file:mr-3 file:rounded file:border-0 file:bg-faint file:px-2 file:py-1 file:text-sm`}
+            className={`${inputClass} text-sm file:mr-3 file:rounded-md file:border-0 file:bg-faint file:px-2.5 file:py-1 file:text-sm file:font-semibold file:text-ink`}
           />
         </label>
         <button

@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { updateTheme } from "@/actions/settings";
-import { cardClass } from "@/components/ui/classes";
+import { cardClass, eyebrowClass } from "@/components/ui/classes";
 import {
   THEMES,
   THEME_SWATCHES,
@@ -51,10 +51,10 @@ function Option({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`flex items-center gap-2 rounded-lg border p-2 text-left text-sm transition ${
+      className={`flex items-center gap-2.5 rounded-xl border p-2 text-left text-sm transition ${
         active
-          ? "border-accent ring-2 ring-accent"
-          : "border-line hover:bg-faint"
+          ? "border-accent bg-accent-soft font-bold text-accent-ink ring-1 ring-accent"
+          : "border-line font-medium hover:bg-faint"
       }`}
     >
       {children}
@@ -80,21 +80,19 @@ export function ThemeSelector({
 
   return (
     <div className={`${cardClass} flex flex-col gap-4`}>
-      <h2 className="text-lg font-medium">{t("title")}</h2>
-
       <Option
         active={selected === "auto"}
         onClick={() => choose("auto")}
         label={t("auto")}
       >
         <span className="flex h-10 w-14 shrink-0 overflow-hidden rounded-md border border-line">
-          <span className="h-full w-1/2" style={{ backgroundColor: "#fafaf9" }} />
-          <span className="h-full w-1/2" style={{ backgroundColor: "#1e1e2e" }} />
+          <span className="h-full w-1/2" style={{ backgroundColor: THEME_SWATCHES.paper.surface }} />
+          <span className="h-full w-1/2" style={{ backgroundColor: THEME_SWATCHES.mocha.surface }} />
         </span>
       </Option>
 
       <div className="flex flex-col gap-2">
-        <span className="text-xs font-medium uppercase tracking-wide text-subtle">
+        <span className={eyebrowClass}>
           {t("light")}
         </span>
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
@@ -112,7 +110,7 @@ export function ThemeSelector({
       </div>
 
       <div className="flex flex-col gap-2">
-        <span className="text-xs font-medium uppercase tracking-wide text-subtle">
+        <span className={eyebrowClass}>
           {t("dark")}
         </span>
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">

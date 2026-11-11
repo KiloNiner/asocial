@@ -1,6 +1,32 @@
 @import "tailwindcss";
 
 /*
+ * Nunito Sans (variable, SIL OFL — see fonts/OFL.txt) is vendored rather than
+ * fetched, so a build needs no network and the app makes no third-party
+ * requests. It is the typeface of the wordmark in public/logo.svg.
+ */
+@font-face {
+  font-family: "Nunito Sans Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 1000;
+  src: url("./fonts/nunito-sans-latin-ext-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF,
+    U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020,
+    U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Nunito Sans Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 200 1000;
+  src: url("./fonts/nunito-sans-latin-wght-normal.woff2") format("woff2-variations");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/*
  * Semantic color tokens. Components use these roles (bg-surface, text-ink,
  * bg-accent, …) instead of hardcoded palette colors, so a theme is just a
  * set of --t-* values. Circle colors (user data) and emoji are exempt.
@@ -27,34 +53,39 @@
   --color-birthday-soft: var(--t-birthday-soft);
   --color-danger: var(--t-danger);
   --color-dot: var(--t-dot);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: "Nunito Sans Variable", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Noto Color Emoji";
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas,
+    monospace;
 }
 
-/* --- Light: Paper (default / current look) --- */
+/* --- Light: Paper (default) — the cream and warm ink of the logo --- */
 :root,
 [data-theme="paper"] {
-  --t-surface: #fafaf9;
+  --t-surface: #fbf7f1;
   --t-panel: #ffffff;
-  --t-ink: #1c1917;
-  --t-muted: #78716c;
-  --t-subtle: #a8a29e;
-  --t-line: #e7e5e4;
-  --t-sel: #292524;
-  --t-faint: #f5f5f4;
+  --t-ink: #2a241d;
+  --t-muted: #6f655a;
+  --t-subtle: #a3978a;
+  --t-line: #ebe4d9;
+  --t-sel: #2a241d;
+  --t-faint: #f5efe6;
   --t-field: #ffffff;
-  --t-field-border: #d6d3d1;
+  --t-field-border: #d8cfc2;
   --t-accent: #0f766e;
   --t-accent-strong: #115e59;
-  --t-accent-soft: #f0fdfa;
+  --t-accent-soft: #e4f3f0;
   --t-accent-ink: #134e4a;
   --t-on-accent: #ffffff;
   --t-warn: #92400e;
-  --t-warn-soft: #fffbeb;
+  --t-warn-soft: #fdf2d8;
   --t-birthday: #9d174d;
-  --t-birthday-soft: #fdf2f8;
+  --t-birthday-soft: #fdeef5;
   --t-danger: #b91c1c;
-  --t-dot: #a8a29e;
+  --t-dot: #a3978a;
+  --t-shadow: 42 36 29;
+  color-scheme: light;
 }
 
 /* --- Light: Catppuccin Latte --- */
@@ -80,6 +111,8 @@
   --t-birthday-soft: #f2e0ee;
   --t-danger: #d20f39;
   --t-dot: #8c8fa1;
+  --t-shadow: 76 79 105;
+  color-scheme: light;
 }
 
 /* --- Light: Rosé Pine Dawn --- */
@@ -105,6 +138,8 @@
   --t-birthday-soft: #f0e0e4;
   --t-danger: #a3324a;
   --t-dot: #9893a5;
+  --t-shadow: 87 82 121;
+  color-scheme: light;
 }
 
 /* --- Dark: Catppuccin Mocha --- */
@@ -130,6 +165,8 @@
   --t-birthday-soft: #3a2a38;
   --t-danger: #f38ba8;
   --t-dot: #7f849c;
+  --t-shadow: 0 0 0;
+  color-scheme: dark;
 }
 
 /* --- Dark: Tokyo Night --- */
@@ -155,6 +192,8 @@
   --t-birthday-soft: #2b2540;
   --t-danger: #f7768e;
   --t-dot: #565f89;
+  --t-shadow: 0 0 0;
+  color-scheme: dark;
 }
 
 /* --- Dark: Rosé Pine --- */
@@ -180,6 +219,8 @@
   --t-birthday-soft: #33262c;
   --t-danger: #eb6f92;
   --t-dot: #6e6a86;
+  --t-shadow: 0 0 0;
+  color-scheme: dark;
 }
 
 /* Auto mode: no data-theme attribute -> follow the OS preference,
@@ -207,11 +248,62 @@
     --t-birthday-soft: #3a2a38;
     --t-danger: #f38ba8;
     --t-dot: #7f849c;
+    --t-shadow: 0 0 0;
+    color-scheme: dark;
   }
 }
 
-body {
-  background: var(--t-surface);
-  color: var(--t-ink);
-  font-family: Arial, Helvetica, sans-serif;
+/*
+ * Elevation is a token too: a warm ink shadow on light themes, plain black on
+ * dark ones (where a tinted shadow reads as a glow).
+ */
+@utility shadow-card {
+  box-shadow:
+    0 1px 2px rgb(var(--t-shadow) / 0.05),
+    0 8px 24px -14px rgb(var(--t-shadow) / 0.18);
+}
+@utility shadow-pop {
+  box-shadow:
+    0 2px 6px rgb(var(--t-shadow) / 0.08),
+    0 24px 48px -16px rgb(var(--t-shadow) / 0.3);
+}
+
+@layer base {
+  html {
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+  }
+  body {
+    background: var(--t-surface);
+    color: var(--t-ink);
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+  button:not(:disabled),
+  summary,
+  label:has(input[type="checkbox"]),
+  label:has(input[type="radio"]) {
+    cursor: pointer;
+  }
+  :where(a, button, summary, [tabindex]):focus-visible {
+    outline: 2px solid var(--t-accent);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--t-accent) 24%, transparent);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      transition-duration: 0.01ms !important;
+      animation-duration: 0.01ms !important;
+    }
+  }
 }

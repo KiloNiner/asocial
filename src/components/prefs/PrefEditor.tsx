@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import type { ContactType } from "@/db/schema";
 import { contactTypeLabel } from "@/lib/contact-type-label";
-import { inputClass } from "@/components/ui/classes";
+import { hintClass, inputClass } from "@/components/ui/classes";
 
 export type PrefRow = {
   type: Pick<ContactType, "id" | "name" | "emoji" | "defaultWeight">;
@@ -31,9 +31,9 @@ export function PrefEditor({
   const t = useTranslations("contactTypes");
 
   return (
-    <div className="flex flex-col gap-2">
-      <p className="text-xs text-muted">{hint}</p>
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+    <div className="flex flex-col gap-3">
+      <p className={hintClass}>{hint}</p>
+      <div className="grid grid-cols-2 gap-x-3 gap-y-2 sm:grid-cols-3">
         {rows.map((row) => (
           <PrefField key={row.type.id} row={row} action={action} label={
             `${row.type.emoji ?? ""} ${contactTypeLabel(row.type, t)}`.trim()
@@ -56,7 +56,7 @@ function PrefField({
   const [, startTransition] = useTransition();
 
   return (
-    <label className="flex flex-col gap-0.5 text-xs text-muted">
+    <label className="flex flex-col gap-1 text-xs font-medium text-muted">
       <span className="truncate" title={label}>
         {label}
       </span>

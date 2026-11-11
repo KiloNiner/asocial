@@ -9,10 +9,12 @@ import {
 } from "@/actions/interactions";
 import type { ContactType, Interaction } from "@/db/schema";
 import { contactTypeLabel } from "@/lib/contact-type-label";
+import { Icon } from "@/components/ui/Icon";
 import {
   buttonClass,
   cardClass,
   errorClass,
+  h2Class,
   inputClass,
   labelClass,
 } from "@/components/ui/classes";
@@ -42,12 +44,12 @@ export function LogInteractionForm({
       action={action}
       className={`${cardClass} flex flex-col gap-3`}
     >
-      <h2 className="text-lg font-medium">{t("journal.logTitle")}</h2>
+      <h2 className={h2Class}>{t("journal.logTitle")}</h2>
       {state.error ? (
         <p className={errorClass}>{t(`common.errors.${state.error}`)}</p>
       ) : null}
       <input type="hidden" name="friendId" value={friendId} />
-      <div className="flex flex-wrap gap-2">
+      <div className="grid gap-3 sm:grid-cols-2">
         <label className={labelClass}>
           {t("journal.what")}
           <select name="contactTypeId" required className={inputClass}>
@@ -100,17 +102,17 @@ export function JournalTimeline({
   }
 
   return (
-    <ul className="flex flex-col gap-0">
+    <ul className="ml-1.5 flex flex-col">
       {entries.map((entry) => {
         const type = typeById.get(entry.contactTypeId);
         return (
           <li
             key={entry.id}
-            className="group relative border-l-2 border-line pb-4 pl-4"
+            className="group relative border-l-2 border-line pb-5 pl-5 last:border-transparent last:pb-0"
           >
-            <span className="absolute -left-[7px] top-1 h-3 w-3 rounded-full bg-dot" />
-            <div className="flex items-baseline gap-2 text-sm">
-              <span className="font-medium">
+            <span className="absolute -left-[7px] top-1 h-3 w-3 rounded-full border-2 border-surface bg-accent" />
+            <div className="flex items-baseline gap-x-2 text-sm">
+              <span className="font-bold">
                 {type
                   ? `${type.emoji ?? ""} ${contactTypeLabel(type, tTypes)}`.trim()
                   : entry.contactTypeId}
@@ -120,16 +122,19 @@ export function JournalTimeline({
                   dateStyle: "medium",
                 })}
               </span>
+              {/* Revealed on hover where there is one; always there on touch. */}
               <button
                 type="button"
+                title={t("common.delete")}
+                aria-label={t("common.delete")}
                 onClick={() => {
                   if (confirm(t("journal.deleteConfirm"))) {
                     void deleteInteraction(entry.id, friendId);
                   }
                 }}
-                className="invisible ml-auto text-xs text-subtle hover:text-danger group-hover:visible"
+                className="ml-auto self-center rounded-md p-1 text-subtle opacity-0 transition hover:text-danger focus-visible:opacity-100 group-hover:opacity-100 [@media(hover:none)]:opacity-100"
               >
-                {t("common.delete")}
+                <Icon name="trash" size={15} />
               </button>
             </div>
             {entry.note ? (

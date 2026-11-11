@@ -6,10 +6,12 @@ import {
   disableCalendarFeed,
   rotateCalendarFeed,
 } from "@/actions/calendar-feed";
+import { Icon } from "@/components/ui/Icon";
 import {
   buttonClass,
   buttonGhostClass,
   cardClass,
+  h2Class,
   inputClass,
 } from "@/components/ui/classes";
 
@@ -35,9 +37,9 @@ export function CalendarFeedCard({ url }: Readonly<{ url: string | null }>) {
   };
 
   return (
-    <div className={`${cardClass} flex flex-col gap-3`}>
+    <div className={`${cardClass} flex flex-col gap-4`}>
       <div className="flex flex-col gap-1">
-        <h2 className="text-lg font-medium">{t("title")}</h2>
+        <h2 className={h2Class}>{t("title")}</h2>
         <p className="text-sm text-muted">{t("intro")}</p>
       </div>
 
@@ -52,6 +54,7 @@ export function CalendarFeedCard({ url }: Readonly<{ url: string | null }>) {
               className={`${inputClass} min-w-0 flex-1 font-mono text-sm`}
             />
             <button type="button" onClick={copy} className={buttonClass}>
+              <Icon name={copied ? "check" : "copy"} size={16} />
               {copied ? t("copied") : t("copy")}
             </button>
           </div>
